@@ -1,59 +1,321 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🍽️ DinnerTable
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**DinnerTable** è un'applicazione web per la gestione e coordinamento di cene di gruppo settimanali. Permette agli utenti di organizzarsi in team, proporre di ospitare cene e partecipare agli eventi organizzati dai membri del gruppo.
 
-## About Laravel
+## 📋 Indice
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Funzionalità](#-funzionalità)
+- [Stack Tecnologico](#-stack-tecnologico)
+- [Prerequisiti](#-prerequisiti)
+- [Installazione](#-installazione)
+- [Configurazione](#-configurazione)
+- [Sviluppo](#-sviluppo)
+- [Struttura Progetto](#-struttura-progetto)
+- [Credenziali di Test](#-credenziali-di-test)
+- [Database](#-database)
+- [Changelog](#-changelog)
+- [Licenza](#-licenza)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Funzionalità
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Per gli Utenti (Pannello Friend)
+- ✅ Registrazione con verifica email obbligatoria
+- ✅ Creazione e gestione gruppi cena
+- ✅ Codice invito univoco per ogni gruppo (32 caratteri alfanumerici)
+- ✅ Partecipazione ai gruppi tramite codice invito
+- 🔜 Calendario settimanale delle cene (Monday-Sunday)
+- 🔜 Proposta per ospitare cene con orario e numero massimo ospiti
+- 🔜 Visualizzazione eventi del proprio gruppo
 
-## Learning Laravel
+### Per gli Amministratori (Pannello Admin)
+- ✅ Gestione completa utenti
+- ✅ Visualizzazione stato verifica email
+- ✅ Promozione/retrocessione amministratori
+- ✅ Gestione gruppi cena
+- ✅ Visualizzazione membri di ogni gruppo
+- ✅ Statistiche e conteggi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Caratteristiche Tecniche
+- 🎨 Home page pubblica responsive
+- 🔐 Sistema di autenticazione a due pannelli (Admin/Friend)
+- 📧 Verifica email obbligatoria
+- 🔒 Controllo accessi basato su ruoli
+- 🌍 Interfaccia completamente in italiano
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Stack Tecnologico
 
-## Laravel Sponsors
+### Backend
+- **Laravel 11.x** - Framework PHP
+- **Filament v4** - Admin panel con architettura multi-panel
+- **FilamentShield** - Gestione ruoli e permessi
+- **Spatie Laravel Permission** - Sistema di permessi
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Frontend
+- **Tailwind CSS v4** - Framework CSS
+- **Vite** - Build tool con HMR
+- **Laravel Echo** - WebSocket client
+- **Pusher JS** - Real-time communication
 
-### Premium Partners
+### Database & Cache
+- **MySQL** - Database principale
+- **Laravel Reverb** - WebSocket server
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### DevOps
+- **Docker & Docker Compose** - Containerizzazione
+- **PHP 8.3+**
+- **Node.js & NPM**
 
-## Contributing
+## 📦 Prerequisiti
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Docker & Docker Compose
+- Git
 
-## Code of Conduct
+## 🚀 Installazione
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 1. Clona il repository
+```bash
+git clone <repository-url>
+cd DinnerTable/src
+```
 
-## Security Vulnerabilities
+### 2. Setup completo automatico
+```bash
+docker-compose up -d
+docker-compose exec app composer setup
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Questo comando eseguirà automaticamente:
+- `composer install` - Installazione dipendenze PHP
+- Creazione file `.env` da `.env.example`
+- `php artisan key:generate` - Generazione chiave applicazione
+- `php artisan migrate` - Esecuzione migrations
+- `npm install` - Installazione dipendenze Node
+- `npm run build` - Build assets di produzione
 
-## License
+### 3. Crea utente amministratore
+```bash
+docker-compose exec app php artisan tinker --execute="
+App\Models\User::updateOrCreate(
+    ['email' => 'admin@example.com'],
+    [
+        'name' => 'Admin',
+        'password' => Hash::make('password'),
+        'is_admin' => true,
+        'email_verified_at' => now()
+    ]
+);"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## ⚙️ Configurazione
+
+### File .env
+
+Configurazioni principali da verificare:
+
+```env
+APP_NAME="DinnerTable"
+APP_ENV=local
+APP_URL=https://localhost
+APP_LOCALE=it
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=laravel
+
+MAIL_MAILER=log
+```
+
+### Configurazione Email
+
+Durante lo sviluppo, le email vengono salvate nei log:
+```bash
+docker-compose exec app php artisan pail
+```
+
+Per produzione, configura un servizio SMTP nel file `.env`.
+
+## 💻 Sviluppo
+
+### Avvio ambiente di sviluppo
+```bash
+docker-compose exec app composer dev
+```
+
+Questo avvia in parallelo:
+- Server PHP (`php artisan serve`)
+- Queue listener
+- Pail logs
+- Vite dev server con HMR
+
+### Comandi individuali
+
+```bash
+# Server PHP
+docker-compose exec app php artisan serve
+
+# Queue worker
+docker-compose exec app php artisan queue:listen --tries=1
+
+# Logs in tempo reale
+docker-compose exec app php artisan pail --timeout=0
+
+# Vite dev server
+npm run dev
+```
+
+### Build produzione
+```bash
+npm run build
+```
+
+### Database
+
+```bash
+# Esegui migrations
+docker-compose exec app php artisan migrate
+
+# Fresh database con seeding
+docker-compose exec app php artisan migrate:fresh --seed
+
+# Rollback
+docker-compose exec app php artisan migrate:rollback
+```
+
+### Code Quality
+
+```bash
+# Laravel Pint (code formatting)
+docker-compose exec app vendor/bin/pint
+
+# Tighten Duster (linting)
+docker-compose exec app vendor/bin/duster
+```
+
+### Testing
+
+```bash
+# Tutti i test
+docker-compose exec app composer test
+
+# Test specifico
+docker-compose exec app php artisan test --filter=TestName
+```
+
+## 📁 Struttura Progetto
+
+```
+src/
+├── app/
+│   ├── Console/
+│   │   └── Commands/          # Comandi Artisan custom
+│   ├── Filament/
+│   │   ├── Admin/             # Pannello Amministratore
+│   │   │   ├── Resources/
+│   │   │   │   ├── Users/     # Gestione utenti
+│   │   │   │   └── DinnerGroups/  # Gestione gruppi
+│   │   │   ├── Pages/
+│   │   │   └── Widgets/
+│   │   └── Friend/            # Pannello Utenti
+│   │       ├── Resources/
+│   │       ├── Pages/
+│   │       └── Widgets/
+│   ├── Models/
+│   │   ├── User.php           # Utente con verifica email
+│   │   └── DinnerGroup.php    # Gruppo cena
+│   └── Providers/
+│       └── Filament/
+│           ├── AdminPanelProvider.php
+│           └── FriendPanelProvider.php
+├── database/
+│   └── migrations/            # Schema database
+├── resources/
+│   ├── css/
+│   │   └── app.css           # Tailwind CSS
+│   ├── js/
+│   │   ├── app.js            # JavaScript principale
+│   │   └── echo.js           # Laravel Echo config
+│   └── views/
+│       └── home.blade.php    # Home page pubblica
+├── routes/
+│   ├── web.php               # Routes web
+│   └── channels.php          # Broadcast channels
+└── docker-compose.yml        # Configurazione Docker
+```
+
+## 🔐 Credenziali di Test
+
+### Amministratore
+- **Email**: `admin@example.com`
+- **Password**: `password`
+- **Accesso**: Pannello Admin (`/admin`) e Friend (`/friend`)
+
+### Utente Test
+- **Email**: `test@example.com`
+- **Password**: Creato durante registrazione
+- **Accesso**: Solo pannello Friend (`/friend`)
+
+## 🗄️ Database
+
+### Schema Principale
+
+**users**
+```sql
+- id
+- name
+- email
+- password
+- email_verified_at
+- is_admin (boolean, default: false)
+- dinner_group_id (FK nullable)
+- created_at, updated_at
+```
+
+**dinner_groups**
+```sql
+- id
+- name
+- slogan (nullable)
+- image (nullable)
+- group_code (32 chars, unique)
+- created_by (FK users)
+- created_at, updated_at
+```
+
+### Relazioni
+- `User` belongsTo `DinnerGroup`
+- `DinnerGroup` hasMany `Users` (members)
+- `DinnerGroup` belongsTo `User` (creator)
+
+## 🌐 Routes
+
+### Pubbliche
+- `/` - Home page
+
+### Pannello Friend (Utenti)
+- `/friend` - Login
+- `/friend/register` - Registrazione
+- `/friend/*` - Dashboard e funzionalità utente
+
+### Pannello Admin (Amministratori)
+- `/admin` - Login admin
+- `/admin/users` - Gestione utenti
+- `/admin/dinner-groups` - Gestione gruppi cena
+
+## 📝 Changelog
+
+Vedi [CHANGELOG.md](CHANGELOG.md) per la lista completa delle modifiche.
+
+## 🤝 Contribuire
+
+Le pull request sono benvenute! Per modifiche importanti, apri prima un issue per discutere cosa vorresti cambiare.
+
+## 📄 Licenza
+
+Questo progetto è rilasciato sotto licenza MIT. Vedi il file `LICENSE` per maggiori dettagli.
+
+---
+
+**Sviluppato con** ❤️ **usando Laravel + Filament**
