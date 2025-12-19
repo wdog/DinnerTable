@@ -1,134 +1,149 @@
 <x-filament-panels::page>
     @php
-        $user = auth()->user();
-        $group = $user->dinnerGroup;
+        $group = $this->getUserGroup();
     @endphp
 
-    @if ($group)
-        {{-- Utente è già in un gruppo --}}
-        <div class="space-y-6">
-            {{-- Card Informazioni Gruppo --}}
-            <x-filament::section>
-                <x-slot name="heading">
-                    Informazioni Gruppo
-                </x-slot>
+    <x-filament-actions::modals />
 
-                <x-slot name="description">
-                    Dettagli del tuo gruppo cena
-                </x-slot>
+    <div class="space-y-6">
+        @if ($group)
+            {{-- Informazioni Gruppo --}}
+            <x-filament::section
+                heading="Informazioni Gruppo"
+                description="Dettagli del tuo gruppo cena"
+                icon="heroicon-o-information-circle">
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Nome Gruppo --}}
                     <div>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome Gruppo</dt>
-                        <dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">{{ $group->name }}</dd>
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="tabler-chef-hat" class="h-5 w-5 text-primary-500" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome Gruppo</span>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $group->name }}</p>
                     </div>
 
-                    @if ($group->slogan)
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Slogan</dt>
-                            <dd class="mt-1 text-base text-gray-900 dark:text-white">{{ $group->slogan }}</dd>
-                        </div>
-                    @endif
-
+                    {{-- Codice Gruppo --}}
                     <div>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Codice Gruppo</dt>
-                        <dd class="mt-1">
-                            <div
-                                class="inline-flex items-center gap-2 rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-2">
-                                <span
-                                    class="text-2xl font-bold font-mono text-primary-600 dark:text-primary-400">{{ $group->group_code }}</span>
-                                <x-filament::icon-button icon="heroicon-o-clipboard" size="sm"
-                                    onclick="navigator.clipboard.writeText('{{ $group->group_code }}'); $tooltip('Copiato!', { theme: 'success' })"
-                                    tooltip="Copia codice" />
-                            </div>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Condividi questo codice con i tuoi amici per farli unire al gruppo
-                            </p>
-                        </dd>
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="heroicon-o-key" class="h-5 w-5 text-success-500" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Codice Gruppo</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <x-filament::badge color="success" size="lg">
+                                {{ $group->group_code }}
+                            </x-filament::badge>
+                            <x-filament::icon-button
+                                icon="heroicon-o-clipboard"
+                                size="sm"
+                                x-on:click="
+                                    navigator.clipboard.writeText('{{ $group->group_code }}');
+                                    $tooltip('Codice copiato!', { theme: $store.theme })
+                                "
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                @if($group->slogan)
+                    <div class="mt-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="heroicon-o-chat-bubble-left-ellipsis" class="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Slogan</span>
+                        </div>
+                        <p class="text-base text-gray-900 dark:text-white">{{ $group->slogan }}</p>
+                    </div>
+                @endif
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    {{-- Creato da --}}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="heroicon-o-user" class="h-5 w-5 text-warning-500" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato da</span>
+                        </div>
+                        <p class="text-base text-gray-900 dark:text-white">{{ $group->creator->name }}</p>
                     </div>
 
-                    <div class="flex space-x-4 items-center">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato da</dt>
-                            <dd class="mt-1 text-base text-gray-900 dark:text-white">{{ $group->creator->name }}</dd>
+                    {{-- Creato il --}}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="heroicon-o-calendar" class="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato il</span>
                         </div>
+                        <p class="text-base text-gray-900 dark:text-white">{{ $group->created_at->format('d/m/Y H:i') }}</p>
+                    </div>
 
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato il</dt>
-                            <dd class="mt-1 text-base text-gray-900 dark:text-white">
-                                {{ $group->created_at->format('d/m/Y H:i') }}</dd>
+                    {{-- Membri Totali --}}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <x-filament::icon icon="heroicon-o-users" class="h-5 w-5 text-info-500" />
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Membri Totali</span>
                         </div>
+                        <x-filament::badge color="info" size="lg">
+                            {{ $group->members()->count() }}
+                        </x-filament::badge>
                     </div>
                 </div>
             </x-filament::section>
 
-            {{-- Card Membri del Gruppo --}}
-            <x-filament::section>
-                <x-slot name="heading">
-                    Membri del Gruppo
-                </x-slot>
-
-                <x-slot name="description">
-                    {{ $group->members->count() }} {{ $group->members->count() === 1 ? 'membro' : 'membri' }}
-                </x-slot>
-
-                <div class="">
-                    <div class="flex items-center justify-start gap-2 p-3">
-                        @foreach ($group->members as $member)
-                            <div
-                                class="flex items-start  gap-3 border p-2 rounded-md border-gray-700 dark:bg-slate-800 bg-gray-300">
-
-                                <div>
-                                    <p class="font-medium text-gray-900 dark:text-white">
-                                        {{ $member->name }}
-                                        @if ($member->id === $group->created_by)
-                                            <x-filament::badge color="success"
-                                                class='px-2'>Creatore</x-filament::badge>
-                                        @endif
-                                        @if ($member->id === $user->id)
-                                            <x-filament::badge color="info" class='px-2'>Tu</x-filament::badge>
-                                        @endif
-                                    </p>
-
-                                </div>
-                                @if ($member->profile)
-                                    <div class="text-right">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Max ospiti</p>
-                                        <p class="font-semibold text-gray-900 dark:text-white">
-                                            {{ $member->profile->max_guests }}</p>
-                                    </div>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+            {{-- Tabella Membri del Gruppo --}}
+            <x-filament::section
+                heading="Membri del Gruppo"
+                description="Visualizza e gestisci i membri del tuo gruppo cena">
+                {{ $this->table }}
             </x-filament::section>
-        </div>
-    @else
-        {{-- Utente non è in un gruppo --}}
-        <div class="space-y-6">
-            <x-filament::section>
-                <x-slot name="heading">
-                    Benvenuto!
-                </x-slot>
-
-                <x-slot name="description">
-                    Non fai ancora parte di nessun gruppo cena
-                </x-slot>
+        @else
+            {{-- Benvenuto - Nessun Gruppo --}}
+            <x-filament::section
+                heading="Benvenuto!"
+                description="Non fai ancora parte di nessun gruppo cena"
+                icon="heroicon-o-user-group">
 
                 <div class="prose dark:prose-invert max-w-none">
-                    <p>Per iniziare a organizzare cene con i tuoi amici, devi:</p>
-                    <ul>
-                        <li><strong>Creare un nuovo gruppo</strong> - Diventerai il creatore e riceverai un codice da
-                            condividere</li>
-                        <li><strong>Unirti a un gruppo esistente</strong> - Inserisci il codice gruppo che ti è stato
-                            condiviso</li>
-                    </ul>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Usa i pulsanti in alto a destra per procedere.
-                    </p>
+                    <p>Per iniziare a organizzare cene con i tuoi amici, scegli una delle opzioni qui sotto:</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    {{-- Card Crea Gruppo --}}
+                    <div
+                        wire:click="mountAction('createGroupAction')"
+                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-success-500/20 dark:hover:shadow-success-500/10 hover:-translate-y-1 hover:border-success-400 dark:hover:border-success-600">
+
+                        {{-- Gradient overlay on hover --}}
+                        <div class="absolute inset-0 rounded-xl bg-linear-to-br from-success-50/50 to-transparent dark:from-success-950/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        <div class="relative z-10">
+                            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-success-100 dark:bg-success-950/40 mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <x-filament::icon icon="tabler-chef-hat-filled" class="h-10 w-10 text-success-600 dark:text-success-400" />
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Crea Nuovo Gruppo</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Diventerai il creatore del gruppo e riceverai un codice unico da condividere con i tuoi amici.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Card Unisciti Gruppo --}}
+                    <div
+                        wire:click="openJoinGroupModal"
+                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/20 dark:hover:shadow-primary-500/10 hover:-translate-y-1 hover:border-primary-400 dark:hover:border-primary-600">
+
+                        {{-- Gradient overlay on hover --}}
+                        <div class="absolute inset-0 rounded-xl bg-linear-to-br from-primary-50/50 to-transparent dark:from-primary-950/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        <div class="relative z-10">
+                            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary-100 dark:bg-primary-950/40 mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <x-filament::icon icon="tabler-glass-full-filled" class="h-10 w-10 text-primary-600 dark:text-primary-400" />
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Unisciti a un Gruppo</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Inserisci il codice gruppo che ti è stato condiviso per unirti a un gruppo esistente.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </x-filament::section>
-        </div>
-    @endif
+        @endif
+    </div>
 </x-filament-panels::page>

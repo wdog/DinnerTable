@@ -3,6 +3,7 @@
 namespace App\Filament\App\Pages;
 
 use App\Models\DinnerGroup;
+use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -11,6 +12,12 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
+use Filament\Tables;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -21,9 +28,10 @@ use Illuminate\Support\Str;
  * esistente tramite codice, o uscire dal proprio gruppo corrente.
  * Ogni utente può appartenere a un solo gruppo alla volta.
  */
-class ManageDinnerGroup extends Page implements HasForms
+class ManageDinnerGroup extends Page implements HasForms, HasTable
 {
     use InteractsWithForms;
+    use InteractsWithTable;
 
     /**
      * Nome della vista Blade da utilizzare.
@@ -151,7 +159,7 @@ class ManageDinnerGroup extends Page implements HasForms
     {
         return Action::make('createGroup')
             ->label('Crea Nuovo Gruppo')
-            ->icon('heroicon-o-plus-circle')
+            ->icon('tabler-plus-circle')
             ->color('success')
             ->schema($this->getCreateGroupFormSchema())
             ->action(function (array $data): void {
@@ -212,7 +220,7 @@ class ManageDinnerGroup extends Page implements HasForms
     {
         return Action::make('joinGroup')
             ->label('Unisciti a un Gruppo')
-            ->icon('heroicon-o-arrow-right-circle')
+            ->icon('tabler-cog')
             ->color('primary')
             ->schema($this->getJoinGroupFormSchema())
             ->action(function (array $data): void {
@@ -313,9 +321,8 @@ class ManageDinnerGroup extends Page implements HasForms
     /**
      * Ottiene le azioni da visualizzare nell'header della pagina.
      *
-     * Se l'utente non appartiene a nessun gruppo, mostra le azioni
-     * per crearne uno o unirsi a uno esistente. Se è già membro,
-     * mostra solo l'azione per uscire dal gruppo.
+     * Se l'utente non appartiene a nessun gruppo, non mostra nulla.
+     * Se è già membro, mostra solo l'azione per uscire dal gruppo.
      *
      * @return array Lista di azioni disponibili per l'header
      */
@@ -323,17 +330,163 @@ class ManageDinnerGroup extends Page implements HasForms
     {
         $user = $this->getUser();
 
-        // Se l'utente non è in un gruppo, mostra le azioni per creare o unirsi
+        // Se l'utente non è in un gruppo, nessuna azione nell'header
         if (! $user->dinnerGroup) {
-            return [
-                $this->createGroupAction(),
-                $this->joinGroupAction(),
-            ];
+            return [];
         }
 
         // Se l'utente è già in un gruppo, mostra l'azione per uscire
         return [
             $this->leaveGroupAction(),
         ];
+    }
+
+    /**
+     * Configura la tabella per visualizzare i membri del gruppo.
+     */
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query(
+                User::query()
+                    ->whereNotNull('dinner_group_id')
+                    ->where('dinner_group_id', $this->getUserGroup()?->id)
+                    ->with(['profile', 'dinnerGroup'])
+            )
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
+                    ->searchable()
+                    ->sortable()
+                    ->description(fn(User $record): string => $record->email)
+                    ->icon(
+                        fn(User $record): ?string =>
+                        $record->id === $this->getUserGroup()?->created_by
+                            ? 'heroicon-o-star'
+                            : null
+                    )
+                    ->iconColor('warning'),
+
+                Tables\Columns\TextColumn::make('profile.city')
+                    ->label('Città')
+                    ->searchable()
+                    ->sortable()
+                    ->icon('heroicon-o-map-pin')
+                    ->placeholder('Non specificata'),
+
+                Tables\Columns\TextColumn::make('profile.max_guests')
+                    ->label('Max Ospiti')
+                    ->sortable()
+                    ->alignCenter()
+                    ->badge()
+                    ->color('success'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Membro dal')
+                    ->dateTime('d/m/Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\IconColumn::make('is_creator')
+                    ->label('Creatore')
+                    ->boolean()
+                    ->state(
+                        fn(User $record): bool =>
+                        $record->id === $this->getUserGroup()?->created_by
+                    )
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('gray'),
+
+                Tables\Columns\IconColumn::make('is_you')
+                    ->label('Tu')
+                    ->boolean()
+                    ->state(
+                        fn(User $record): bool =>
+                        $record->id === $this->getUser()->id
+                    )
+                    ->trueIcon('heroicon-o-user')
+                    ->falseIcon('heroicon-o-user')
+                    ->trueColor('info')
+                    ->falseColor('gray'),
+            ])
+            ->filters([
+                Tables\Filters\Filter::make('is_creator')
+                    ->label('Solo Creatore')
+                    ->query(
+                        fn(Builder $query): Builder =>
+                        $query->where('id', $this->getUserGroup()?->created_by)
+                    )
+                    ->toggle(),
+
+                Tables\Filters\Filter::make('high_capacity')
+                    ->label('Alta Capacità (4+ ospiti)')
+                    ->query(
+                        fn(Builder $query): Builder =>
+                        $query->whereHas(
+                            'profile',
+                            fn($q) =>
+                            $q->where('max_guests', '>=', 4)
+                        )
+                    )
+                    ->toggle(),
+
+                Tables\Filters\SelectFilter::make('city')
+                    ->label('Città')
+                    ->relationship('profile', 'city')
+                    ->searchable()
+                    ->preload(),
+            ])
+            ->recordAction(
+                fn (User $record): Action =>
+                    Action::make('viewProfile')
+                        ->modalHeading("Profilo di {$record->name}")
+                        ->modalContent(view('filament.app.pages.components.member-profile', [
+                            'user' => $record,
+                            'isCreator' => $record->id === $this->getUserGroup()?->created_by,
+                            'isYou' => $record->id === $this->getUser()->id,
+                        ]))
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Chiudi')
+            )
+            ->emptyStateHeading('Nessun membro nel gruppo')
+            ->emptyStateDescription('Il gruppo non ha ancora membri.')
+            ->emptyStateIcon('heroicon-o-users')
+            ->defaultSort('created_at', 'asc')
+            ->poll('30s')
+            ->striped();
+    }
+
+    /**
+     * Metodo wrapper per chiamare l'action createGroup
+     */
+    public function openCreateGroupModal()
+    {
+        $this->mountAction('createGroupAction');
+    }
+
+    /**
+     * Metodo wrapper per chiamare l'action joinGroup
+     */
+    public function openJoinGroupModal()
+    {
+        $this->mountAction('joinGroupAction');
+    }
+
+    public function getHeading(): string | Htmlable
+    {
+        return $this->getUserGroup()
+            ? 'Il Mio Gruppo Cena'
+            : 'Unisciti o Crea un Gruppo';
+    }
+
+    public function getSubheading(): string | Htmlable | null
+    {
+        if ($group = $this->getUserGroup()) {
+            return "Gruppo: {$group->name}";
+        }
+
+        return 'Per iniziare, crea un nuovo gruppo o unisciti a uno esistente.';
     }
 }
