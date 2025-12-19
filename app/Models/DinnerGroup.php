@@ -6,20 +6,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Modello per i gruppi cena.
+ *
+ * Rappresenta un gruppo di utenti che partecipano insieme alle cene.
+ * Ogni gruppo ha un codice univoco per permettere ad altri utenti di unirsi.
+ */
 class DinnerGroup extends Model
 {
+    /**
+     * Nome della tabella associata al modello.
+     *
+     * @var string
+     */
     protected $table = 'dinner_groups';
 
+    /**
+     * Attributi assegnabili in massa.
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'name',
         'slogan',
-        'image',
+        'group_image',
         'group_code',
         'created_by',
     ];
 
     /**
-     * Get the user who created the team.
+     * Ottiene l'utente che ha creato il gruppo.
+     *
+     * @return BelongsTo Relazione con il creatore del gruppo
      */
     public function creator(): BelongsTo
     {
@@ -27,7 +45,9 @@ class DinnerGroup extends Model
     }
 
     /**
-     * Get all members of the dinner group.
+     * Ottiene tutti i membri del gruppo cena.
+     *
+     * @return HasMany Relazione con gli utenti membri del gruppo
      */
     public function members(): HasMany
     {
