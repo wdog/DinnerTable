@@ -412,13 +412,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->falseColor('gray'),
             ])
             ->filters([
-                Tables\Filters\Filter::make('is_creator')
-                    ->label('Solo Creatore')
-                    ->query(
-                        fn(Builder $query): Builder =>
-                        $query->where('id', $this->getUserGroup()?->created_by)
-                    )
-                    ->toggle(),
+
 
                 Tables\Filters\Filter::make('high_capacity')
                     ->label('Alta Capacità (4+ ospiti)')
@@ -434,22 +428,23 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
 
                 Tables\Filters\SelectFilter::make('city')
                     ->label('Città')
-                    ->relationship('profile', 'city')
-                    ->searchable()
-                    ->preload(),
+                    ->options(function () {
+                        return \App\Models\Profile::query()
+                            ->whereNotNull('city')
+                            ->distinct()
+                            ->pluck('city', 'city');
+                    })
+                    ->query(function (Builder $query, array $data) {
+                        return $query->when(
+                            $data['value'],
+                            fn(Builder $query) => $query->whereHas(
+                                'profile',
+                                fn($q) => $q->where('city', $data['value'])
+                            )
+                        );
+                    })
+                    ->searchable(),
             ])
-            ->recordAction(
-                fn (User $record): Action =>
-                    Action::make('viewProfile')
-                        ->modalHeading("Profilo di {$record->name}")
-                        ->modalContent(view('filament.app.pages.components.member-profile', [
-                            'user' => $record,
-                            'isCreator' => $record->id === $this->getUserGroup()?->created_by,
-                            'isYou' => $record->id === $this->getUser()->id,
-                        ]))
-                        ->modalSubmitAction(false)
-                        ->modalCancelActionLabel('Chiudi')
-            )
             ->emptyStateHeading('Nessun membro nel gruppo')
             ->emptyStateDescription('Il gruppo non ha ancora membri.')
             ->emptyStateIcon('heroicon-o-users')
