@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['team_id']);
-            $table->renameColumn('team_id', 'dinner_group_id');
-            $table->foreign('dinner_group_id')->references('id')->on('dinner_groups')->onDelete('set null');
+            $table->foreignId('dinner_group_id')->nullable()->after('is_admin')->constrained('dinner_groups')->nullOnDelete();
         });
     }
 
@@ -25,8 +23,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['dinner_group_id']);
-            $table->renameColumn('dinner_group_id', 'team_id');
-            $table->foreign('team_id')->references('id')->on('teams')->onDelete('set null');
+            $table->dropColumn('dinner_group_id');
         });
     }
 };

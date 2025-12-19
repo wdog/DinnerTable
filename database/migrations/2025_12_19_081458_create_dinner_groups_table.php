@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
+        Schema::create('dinner_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('team_code', 8)->unique();
+            $table->string('group_code', 8)->unique();
+            $table->string('slogan')->nullable();
+            $table->string('image')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('dinner_groups');
     }
 };

@@ -14,8 +14,8 @@
                     <h1 class="text-2xl font-bold text-lime-600">DinnerTable</h1>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="/friend" class="text-gray-700 hover:text-lime-600 transition">Accedi</a>
-                    <a href="/friend/register" class="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-700 transition">Registrati</a>
+                    <a href="/dinner" class="text-gray-700 hover:text-lime-600 transition">Accedi</a>
+                    <a href="/dinner/register" class="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-700 transition">Registrati</a>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     Crea o unisciti a un gruppo, proponi di ospitare e partecipa alle cene!
                 </p>
                 <div class="flex gap-4 justify-center">
-                    <a href="/friend/register" class="bg-lime-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-lime-700 transition">
+                    <a href="/dinner/register" class="bg-lime-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-lime-700 transition">
                         Inizia ora
                     </a>
                     <a href="#features" class="bg-white text-lime-600 px-8 py-3 rounded-lg text-lg font-semibold border-2 border-lime-600 hover:bg-lime-50 transition">
@@ -81,7 +81,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h3 class="text-3xl font-bold text-gray-900 mb-6">Pronto a iniziare?</h3>
                 <p class="text-xl text-gray-600 mb-8">Registrati ora e inizia a organizzare le tue cene di gruppo!</p>
-                <a href="/friend/register" class="bg-lime-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-lime-700 transition inline-block">
+                <a href="/dinner/register" class="bg-lime-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-lime-700 transition inline-block">
                     Registrati gratuitamente
                 </a>
             </div>
@@ -102,15 +102,15 @@
                     <h4 class="text-lg font-semibold mb-4">Link Utili</h4>
                     <ul class="space-y-2">
                         <li><a href="#features" class="text-gray-400 hover:text-lime-400 transition">Come funziona</a></li>
-                        <li><a href="/friend/register" class="text-gray-400 hover:text-lime-400 transition">Registrati</a></li>
-                        <li><a href="/friend" class="text-gray-400 hover:text-lime-400 transition">Accedi</a></li>
+                        <li><a href="/dinner/register" class="text-gray-400 hover:text-lime-400 transition">Registrati</a></li>
+                        <li><a href="/dinner" class="text-gray-400 hover:text-lime-400 transition">Accedi</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Area Riservata</h4>
                     <ul class="space-y-2">
-                        <li><a href="/friend" class="text-gray-400 hover:text-lime-400 transition">Accedi come Friend</a></li>
+                        <li><a href="/dinner" class="text-gray-400 hover:text-lime-400 transition">Accedi come Friend</a></li>
                         <li><a href="/admin" class="text-gray-400 hover:text-lime-400 transition">Accedi come Admin</a></li>
                     </ul>
                 </div>

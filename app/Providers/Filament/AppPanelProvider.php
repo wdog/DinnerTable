@@ -11,7 +11,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -19,14 +18,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class FriendPanelProvider extends PanelProvider
+class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // non usare /app perche' dedicata a reverb
         return $panel
-            ->default()
-            ->id('friend')
-            ->path('friend')
+            ->id('dinner')
+            ->path('dinner')
             ->login()
             ->registration()
             ->emailVerification()
@@ -35,15 +34,14 @@ class FriendPanelProvider extends PanelProvider
                 'primary' => Color::Purple,
                 'gray' => Color::Slate,
             ])
-            ->discoverResources(in: app_path('Filament/Friend/Resources'), for: 'App\Filament\Friend\Resources')
-            ->discoverPages(in: app_path('Filament/Friend/Pages'), for: 'App\Filament\Friend\Pages')
+            ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
+            ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')
+            ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Friend/Widgets'), for: 'App\Filament\Friend\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -56,6 +54,7 @@ class FriendPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->plugins([])
             ->authMiddleware([
                 Authenticate::class,
             ]);
