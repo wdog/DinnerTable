@@ -36,8 +36,12 @@ class AppPanelProvider extends PanelProvider
             ->emailVerification()
             ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->colors([
-                'primary' => Color::Purple,
-                'gray' => Color::Slate,
+                'primary' => Color::Orange,
+                'danger' => Color::Red,
+                'warning' => Color::Amber,
+                'success' => Color::Lime,
+                'info' => Color::Sky,
+                'gray' => Color::Neutral,
             ])
             ->darkMode()
             ->viteTheme('resources/css/filament/dinner/theme.css')
