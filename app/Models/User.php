@@ -7,6 +7,7 @@ use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -63,10 +64,37 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
+     * Get the user's profile.
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
      * Get the dinner group that the user belongs to.
      */
     public function dinnerGroup(): BelongsTo
     {
         return $this->belongsTo(DinnerGroup::class);
+    }
+
+    /**
+     * Check if user has completed their profile.
+     */
+    public function hasCompletedProfile(): bool
+    {
+        return $this->profile && $this->profile->isComplete();
+    }
+
+    /**
+     * Bootstrap the model and its traits.
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Automatically create an empty profile for new users
+            $user->profile()->create();
+        });
     }
 }

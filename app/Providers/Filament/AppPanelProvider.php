@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\EnsureProfileIsComplete;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,6 +28,7 @@ class AppPanelProvider extends PanelProvider
             ->id('dinner')
             ->path('dinner')
             ->login()
+            ->profile(\App\Filament\App\Auth\Pages\EditProfile::class)
             ->registration()
             ->emailVerification()
             ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
@@ -57,6 +59,7 @@ class AppPanelProvider extends PanelProvider
             ->plugins([])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureProfileIsComplete::class,
             ]);
     }
 }

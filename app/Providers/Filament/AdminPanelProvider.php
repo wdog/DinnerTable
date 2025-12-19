@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->colors([
                 'primary' => Color::Lime,
             ])
