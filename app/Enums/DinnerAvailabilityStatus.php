@@ -6,12 +6,11 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum DinnerAvailabilityStatus: string implements HasIcon, HasColor, HasLabel
+enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
 {
     case AVAILABLE = 'available';
     case UNAVAILABLE = 'unavailable';
     case MAYBE = 'maybe';
-
 
     public function getLabel(): string
     {

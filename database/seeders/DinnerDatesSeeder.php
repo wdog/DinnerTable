@@ -6,7 +6,6 @@ use App\Enums\DinnerAvailabilityStatus;
 use App\Models\DinnerAvailability;
 use App\Models\DinnerDate;
 use App\Models\DinnerGroup;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -60,7 +59,7 @@ class DinnerDatesSeeder extends Seeder
                 }
             }
 
-            $this->command->info('  ✓ Create '.count($dates).' date per il gruppo');
+            $this->command->info('  ✓ Create ' . count($dates) . ' date per il gruppo');
 
             // Per ogni membro del gruppo, crea disponibilità random (0-4 date)
             foreach ($group->members as $member) {
