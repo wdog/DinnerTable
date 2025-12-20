@@ -124,6 +124,46 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
     }
 
     /**
+     * Prepara i dati della relazione prima di caricarli nel form.
+     *
+     * @param  string  $relationship  Nome della relazione
+     * @param  array  $data  Dati della relazione
+     * @return array Dati preparati
+     */
+    protected function mutateRelationshipDataBeforeFill(string $relationship, array $data): array
+    {
+        if ($relationship === 'profile') {
+            // Converti avatar_url da stringa a array per FileUpload
+            if (isset($data['avatar_url']) && is_string($data['avatar_url']) && ! empty($data['avatar_url'])) {
+                $data['avatar_url'] = [$data['avatar_url']];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Prepara i dati della relazione prima di salvarli nel database.
+     *
+     * @param  string  $relationship  Nome della relazione
+     * @param  array  $data  Dati della relazione
+     * @return array Dati preparati per il salvataggio
+     */
+    protected function mutateRelationshipDataBeforeSave(string $relationship, array $data): array
+    {
+        if ($relationship === 'profile') {
+            // Converti avatar_url da array a stringa per il database
+            if (isset($data['avatar_url'])) {
+                if (is_array($data['avatar_url'])) {
+                    $data['avatar_url'] = ! empty($data['avatar_url']) ? $data['avatar_url'][0] : null;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Prepara i dati prima di salvarli nel database.
      * Converte il campo privacy_accepted (boolean) in privacy_accepted_at (timestamp).
      * Se privacy_accepted è true, imposta privacy_accepted_at a now(), altrimenti a null.
