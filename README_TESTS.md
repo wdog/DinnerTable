@@ -2,11 +2,11 @@
 
 ## 📊 Stato Corrente dei Test
 
-**Totale Test**: 56
-- ✅ **Passati**: 46 test (82%)
-- ❌ **Falliti**: 10 test (18%)
+**Totale Test**: 44
+- ✅ **Passati**: 44 test (100%)
+- ❌ **Falliti**: 0 test
 
-### Test Funzionanti ✅
+### Test Disponibili ✅
 
 #### User Model Tests (14/14 passati)
 ```bash
@@ -36,7 +36,7 @@ Questi test verificano:
 - Cascade delete
 - CRUD operations
 
-#### Registration Simple Tests (14/14 passati) ✨
+#### Registration Tests (14/14 passati) ✨
 ```bash
 docker-compose exec app ./vendor/bin/pest tests/Feature/Auth/RegistrationSimpleTest.php
 ```
@@ -51,17 +51,6 @@ Questi test verificano la registrazione usando l'approccio TDD corretto (testand
 - Email non verificata di default
 - Flag is_admin con default a false
 - Factory funzionante
-
-### Test da Fixare ❌
-
-#### Registration Tests (0/10 falliti)
-```bash
-docker-compose exec app ./vendor/bin/pest tests/Feature/Auth/RegistrationTest.php
-```
-
-**Problema**: I test usano approccio HTTP standard ma Filament usa Livewire.
-
-**Soluzione**: Questi test sono lasciati come esempio di cosa NON fare. Usa invece RegistrationSimpleTest.php che segue l'approccio TDD corretto. Vedi [TESTING_GUIDE.md](TESTING_GUIDE.md)
 
 ## 🚀 Quick Start
 
@@ -148,28 +137,34 @@ test('user can be created', function () {
 - Testa direttamente il model (non HTTP/Livewire)
 - User ha tutti i campi fillable necessari
 - Factory funziona correttamente
+- Model User ha default value per is_admin impostato a false
 
-### Esempio 2: Test che Fallisce ❌
+### Esempio 2: Test Completo con Validazione ✅
 
 ```php
-test('user can register with valid data', function () {
-    $response = $this->post('/dinner/register', [
-        'name' => 'Mario Rossi',
-        'email' => 'mario@example.com',
-        'password' => 'Password123!',
-    ]);
+test('email must be unique', function () {
+    // Crea primo utente
+    User::factory()->create(['email' => 'existing@example.com']);
 
-    $response->assertRedirect();
+    // Prova a creare secondo utente con stessa email
+    expect(function () {
+        User::create([
+            'name' => 'New User',
+            'email' => 'existing@example.com',
+            'password' => Hash::make('password'),
+        ]);
+    })->toThrow(\Exception::class);
+
+    // Verifica che esista ancora solo 1 utente
+    expect(User::where('email', 'existing@example.com')->count())->toBe(1);
 });
 ```
 
-**Perché fallisce?**
-- Filament non usa percorsi HTTP standard
-- Il percorso `/dinner/register` non esiste
-- Risposta: 405 Method Not Allowed
-
-**Come fixarlo?**
-Vedi [TESTING_GUIDE.md](TESTING_GUIDE.md#opzione-1-usare-filament-testing-tools)
+**Perché è un buon test?**
+- Segue il pattern AAA (Arrange-Act-Assert)
+- Testa la validazione a livello database
+- Verifica che l'eccezione viene lanciata
+- Controlla lo stato finale del database
 
 ## 🔨 Esercizi Progressivi
 
