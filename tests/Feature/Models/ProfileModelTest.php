@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -16,7 +16,6 @@ uses(RefreshDatabase::class);
  * 2. Implementa la funzionalità
  * 3. Fai passare il test
  */
-
 test('profile is created when user is created', function () {
     $user = User::factory()->create();
 

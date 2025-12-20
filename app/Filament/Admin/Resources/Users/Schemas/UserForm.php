@@ -16,9 +16,9 @@ class UserForm
             ->components([
 
                 Section::make('Informazioni Utente')
-                ->columnSpanFull()
-                ->columns(2)
-                ->schema([
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->schema([
                         TextInput::make('name')
                             ->label('Nome')
                             ->required(),
@@ -30,7 +30,7 @@ class UserForm
                             ->label('Password')
                             ->password()
                             ->required()
-                            ->dehydrated(fn($state) => filled($state))
+                            ->dehydrated(fn ($state) => filled($state))
                             ->requiredWith('name'),
                         Toggle::make('is_admin')
                             ->label('Amministratore')
@@ -38,7 +38,7 @@ class UserForm
                             ->inline(false),
                         DateTimePicker::make('email_verified_at')
                             ->label('Email verificata il'),
-                    ])
+                    ]),
             ]);
     }
 }

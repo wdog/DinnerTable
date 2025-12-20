@@ -8,6 +8,7 @@ use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -113,5 +114,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
             // Automatically create an empty profile for new users
             $user->profile()->create();
         });
+    }
+
+    public function dates(): HasMany
+    {
+        return $this->hasMany(DinnerDate::class);
+    }
+
+    public function availabilities(): HasMany
+    {
+        return $this->hasMany(DinnerAvailability::class);
     }
 }

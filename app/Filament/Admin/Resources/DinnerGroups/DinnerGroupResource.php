@@ -40,7 +40,7 @@ class DinnerGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MembersRelationManager::class
+            MembersRelationManager::class,
         ];
     }
 

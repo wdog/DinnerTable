@@ -98,7 +98,7 @@ class DinnerGroupSeeder extends Seeder
                     // Crea l'utente
                     $user = User::create([
                         'name' => "{$firstName} {$lastName}",
-                        'email' => strtolower(Str::slug($firstName.'.'.$lastName.$userIndex)).'@example.com',
+                        'email' => strtolower(Str::slug($firstName . '.' . $lastName . $userIndex)) . '@example.com',
                         'password' => bcrypt('password'),
                         'email_verified_at' => now(),
                     ]);
@@ -163,7 +163,7 @@ class DinnerGroupSeeder extends Seeder
                 $group = DinnerGroup::create([
                     'name' => $fullGroupName,
                     'slogan' => $this->slogans[array_rand($this->slogans)],
-                    'group_code' => strtoupper(Str::random(8)),
+                    'group_code' => strtoupper(Str::random(14)),
                     'created_by' => $creator->id,
                 ]);
 
@@ -185,10 +185,10 @@ class DinnerGroupSeeder extends Seeder
         }
 
         $this->command->newLine();
-        $this->command->info("🎉 Seeding completato!");
-        $this->command->info("   📊 Utenti creati: 100");
+        $this->command->info('🎉 Seeding completato!');
+        $this->command->info('   📊 Utenti creati: 100');
         $this->command->info("   👥 Gruppi creati: {$groupsCreated}");
-        $this->command->info("   🏙️  Città: ".count($this->cities));
+        $this->command->info('   🏙️  Città: ' . count($this->cities));
 
         // Statistiche finali
         $usersInGroups = User::whereNotNull('dinner_group_id')->count();

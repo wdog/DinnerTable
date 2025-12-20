@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -14,7 +14,6 @@ uses(RefreshDatabase::class);
  * Questi test mostrano come testare i model direttamente
  * senza dover gestire HTTP requests o Livewire components
  */
-
 test('user can be created', function () {
     // Arrange: Prepara i dati
     $userData = [
@@ -73,7 +72,7 @@ test('user email must be unique', function () {
 
     // Prova a creare secondo utente con stessa email
     // Questo dovrebbe lanciare un'eccezione
-    expect(fn() => User::factory()->create(['email' => 'test@example.com']))
+    expect(fn () => User::factory()->create(['email' => 'test@example.com']))
         ->toThrow(\Exception::class);
 });
 

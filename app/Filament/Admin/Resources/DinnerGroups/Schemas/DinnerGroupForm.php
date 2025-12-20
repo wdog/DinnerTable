@@ -18,7 +18,6 @@ class DinnerGroupForm
                     ->columnSpanFull()
                     ->schema([
 
-
                         TextInput::make('name')
                             ->required(),
                         TextInput::make('group_code')
@@ -34,7 +33,7 @@ class DinnerGroupForm
                             ->avatar()
                             ->circleCropper()
                             ->maxSize(2048)
-                            ->helperText('Carica una foto del profilo (max 2MB)')
+                            ->helperText('Carica una foto del profilo (max 2MB)'),
                     ]),
             ]);
     }

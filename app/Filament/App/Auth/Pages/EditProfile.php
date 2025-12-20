@@ -120,8 +120,6 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
         return $data;
     }
 
-
-
     /**
      * Prepara i dati prima di salvarli nel database.
      * Converte il campo privacy_accepted (boolean) in privacy_accepted_at (timestamp).

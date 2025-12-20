@@ -342,9 +342,9 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
             ->columns([
                 Tables\Columns\ImageColumn::make('profile.avatar_url')
                     ->label('Avatar')
+                    ->disk('public')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.svg'))
-                    ->size(40),
+                    ->defaultImageUrl(url('/images/default-avatar.svg')),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nome')
