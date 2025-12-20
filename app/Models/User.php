@@ -75,7 +75,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return $this->profile?->avatar_url
+            ? asset('storage/' . $this->profile->avatar_url)
+            : null;
     }
 
     /**

@@ -340,6 +340,12 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->with(['profile', 'dinnerGroup'])
             )
             ->columns([
+                Tables\Columns\ImageColumn::make('profile.avatar_url')
+                    ->label('Avatar')
+                    ->circular()
+                    ->defaultImageUrl(url('/images/default-avatar.svg'))
+                    ->size(40),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()

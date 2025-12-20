@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\DinnerGroups\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class DinnerGroupForm
@@ -11,13 +13,27 @@ class DinnerGroupForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('team_code')
-                    ->required(),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric(),
+                Section::make('Informazioni Gruppo')
+                    ->columns(2)
+                    ->schema([
+
+
+                        TextInput::make('name')
+                            ->required(),
+                        TextInput::make('group_code')
+                            ->required(),
+
+                        FileUpload::make('group_image')
+                            ->label('Dinner Group Image')
+                            ->image()
+                            ->previewable()
+                            ->directory('dinner-group')
+                            ->visibility('public')
+                            ->avatar()
+                            ->circleCropper()
+                            ->maxSize(2048)
+                            ->helperText('Carica una foto del profilo (max 2MB)')
+                    ]),
             ]);
     }
 }
