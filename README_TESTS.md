@@ -2,9 +2,9 @@
 
 ## 📊 Stato Corrente dei Test
 
-**Totale Test**: 42
-- ✅ **Passati**: 32 test (76%)
-- ❌ **Falliti**: 10 test (24%)
+**Totale Test**: 56
+- ✅ **Passati**: 46 test (82%)
+- ❌ **Falliti**: 10 test (18%)
 
 ### Test Funzionanti ✅
 
@@ -19,7 +19,7 @@ Questi test verificano:
 - Factory
 - Validazione email unica
 - Hash password
-- Flag admin
+- Flag admin (con default value a false)
 - Timestamps
 - CRUD operations
 
@@ -36,16 +36,32 @@ Questi test verificano:
 - Cascade delete
 - CRUD operations
 
+#### Registration Simple Tests (14/14 passati) ✨
+```bash
+docker-compose exec app ./vendor/bin/pest tests/Feature/Auth/RegistrationSimpleTest.php
+```
+
+Questi test verificano la registrazione usando l'approccio TDD corretto (testando i model):
+- Creazione utente con dati validi
+- Validazione campi obbligatori (name, email, password)
+- Email unica
+- Password hashata
+- Creazione automatica profilo
+- Profilo non completo di default
+- Email non verificata di default
+- Flag is_admin con default a false
+- Factory funzionante
+
 ### Test da Fixare ❌
 
-#### Registration Tests (0/10 passati)
+#### Registration Tests (0/10 falliti)
 ```bash
 docker-compose exec app ./vendor/bin/pest tests/Feature/Auth/RegistrationTest.php
 ```
 
 **Problema**: I test usano approccio HTTP standard ma Filament usa Livewire.
 
-**Soluzione**: Vedi [TESTING_GUIDE.md](TESTING_GUIDE.md)
+**Soluzione**: Questi test sono lasciati come esempio di cosa NON fare. Usa invece RegistrationSimpleTest.php che segue l'approccio TDD corretto. Vedi [TESTING_GUIDE.md](TESTING_GUIDE.md)
 
 ## 🚀 Quick Start
 

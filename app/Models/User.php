@@ -30,6 +30,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     ];
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'is_admin' => false,
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
