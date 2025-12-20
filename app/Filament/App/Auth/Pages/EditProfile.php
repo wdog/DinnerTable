@@ -35,10 +35,6 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
                             FileUpload::make('avatar_url')
                                 ->label('Avatar')
                                 ->image()
-                                ->imageEditor()
-                                ->imageEditorAspectRatios([
-                                    '1:1',
-                                ])
                                 ->directory('avatars')
                                 ->visibility('public')
                                 ->avatar()
@@ -124,7 +120,8 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
     }
 
     /**
-     * Prepara i dati della relazione prima di caricarli nel form.
+     * Prepara i dati della relazione profile prima di caricarli nel form.
+     * Converte avatar_url da stringa a array per il componente FileUpload.
      *
      * @param  string  $relationship  Nome della relazione
      * @param  array  $data  Dati della relazione
@@ -133,9 +130,11 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
     protected function mutateRelationshipDataBeforeFill(string $relationship, array $data): array
     {
         if ($relationship === 'profile') {
-            // Converti avatar_url da stringa a array per FileUpload
+            // FileUpload si aspetta un array, non una stringa
             if (isset($data['avatar_url']) && is_string($data['avatar_url']) && ! empty($data['avatar_url'])) {
                 $data['avatar_url'] = [$data['avatar_url']];
+            } else {
+                $data['avatar_url'] = [];
             }
         }
 
@@ -143,7 +142,8 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
     }
 
     /**
-     * Prepara i dati della relazione prima di salvarli nel database.
+     * Prepara i dati della relazione profile prima di salvarli.
+     * Converte avatar_url da array a stringa per il database.
      *
      * @param  string  $relationship  Nome della relazione
      * @param  array  $data  Dati della relazione
@@ -152,11 +152,9 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
     protected function mutateRelationshipDataBeforeSave(string $relationship, array $data): array
     {
         if ($relationship === 'profile') {
-            // Converti avatar_url da array a stringa per il database
-            if (isset($data['avatar_url'])) {
-                if (is_array($data['avatar_url'])) {
-                    $data['avatar_url'] = ! empty($data['avatar_url']) ? $data['avatar_url'][0] : null;
-                }
+            // Converti array di FileUpload in stringa per il database
+            if (isset($data['avatar_url']) && is_array($data['avatar_url'])) {
+                $data['avatar_url'] = ! empty($data['avatar_url']) ? $data['avatar_url'][0] : null;
             }
         }
 
