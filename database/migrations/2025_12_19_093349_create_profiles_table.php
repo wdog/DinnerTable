@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('postal_code', 5)->nullable();
             $table->unsignedInteger('max_guests')->nullable();
             $table->timestamp('privacy_accepted_at')->nullable();
+            $table->string('avatar_url')->nullable();
             $table->timestamps();
         });
     }

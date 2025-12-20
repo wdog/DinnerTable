@@ -35,50 +35,36 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
 
     /**
      * Nome della vista Blade da utilizzare.
-     *
-     * @var string
      */
     protected string $view = 'filament.app.pages.manage-dinner-group';
 
     /**
      * Icona di navigazione della pagina.
-     *
-     * @var string|BackedEnum|null
      */
     protected static string|BackedEnum|null $navigationIcon = 'tabler-chef-hat';
 
     /**
      * Etichetta del link di navigazione.
-     *
-     * @var string|null
      */
     protected static ?string $navigationLabel = 'Il Mio Gruppo Cena';
 
     /**
      * Titolo della pagina.
-     *
-     * @var string|null
      */
     protected static ?string $title = 'Gestione Gruppo';
 
     /**
      * Dati del form per la creazione di un gruppo.
-     *
-     * @var array|null
      */
     public ?array $createData = [];
 
     /**
      * Dati del form per unirsi a un gruppo.
-     *
-     * @var array|null
      */
     public ?array $joinData = [];
 
     /**
      * Inizializza il componente e carica i dati iniziali.
-     *
-     * @return void
      */
     public function mount(): void
     {
@@ -220,7 +206,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
     {
         return Action::make('joinGroup')
             ->label('Unisciti a un Gruppo')
-            ->icon('tabler-cog')
+            ->icon('tabler-door-enter')
             ->color('primary')
             ->schema($this->getJoinGroupFormSchema())
             ->action(function (array $data): void {
@@ -281,7 +267,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
     {
         return Action::make('leaveGroup')
             ->label('Esci dal Gruppo')
-            ->icon('heroicon-o-arrow-left-on-rectangle')
+            ->icon('tabler-door-exit')
             ->color('danger')
             ->requiresConfirmation()
             ->modalHeading('Conferma Uscita')
@@ -358,20 +344,24 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->label('Nome')
                     ->searchable()
                     ->sortable()
-                    ->description(fn(User $record): string => $record->email)
+                    ->description(fn (User $record): string => $record->email)
                     ->icon(
-                        fn(User $record): ?string =>
-                        $record->id === $this->getUserGroup()?->created_by
-                            ? 'heroicon-o-star'
-                            : null
+                        fn (User $record): ?string => $record->id === $this->getUserGroup()?->created_by
+                            ? 'tabler-crown'
+                            : 'tabler-user'
                     )
-                    ->iconColor('warning'),
+                    ->iconColor(
+                        fn (User $record): string => $record->id === $this->getUserGroup()?->created_by
+                            ? 'warning'
+                            : 'gray'
+                    ),
 
                 Tables\Columns\TextColumn::make('profile.city')
                     ->label('Città')
                     ->searchable()
                     ->sortable()
-                    ->icon('heroicon-o-map-pin')
+                    ->icon('tabler-map-pin')
+                    ->iconColor('danger')
                     ->placeholder('Non specificata'),
 
                 Tables\Columns\TextColumn::make('profile.max_guests')
@@ -379,49 +369,47 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->sortable()
                     ->alignCenter()
                     ->badge()
+                    ->icon('tabler-users-group')
                     ->color('success'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Membro dal')
                     ->dateTime('d/m/Y')
                     ->sortable()
+                    ->icon('tabler-calendar-event')
+                    ->iconColor('info')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('is_creator')
                     ->label('Creatore')
                     ->boolean()
                     ->state(
-                        fn(User $record): bool =>
-                        $record->id === $this->getUserGroup()?->created_by
+                        fn (User $record): bool => $record->id === $this->getUserGroup()?->created_by
                     )
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
+                    ->trueIcon('tabler-crown')
+                    ->falseIcon('tabler-minus')
+                    ->trueColor('warning')
                     ->falseColor('gray'),
 
                 Tables\Columns\IconColumn::make('is_you')
                     ->label('Tu')
                     ->boolean()
                     ->state(
-                        fn(User $record): bool =>
-                        $record->id === $this->getUser()->id
+                        fn (User $record): bool => $record->id === $this->getUser()->id
                     )
-                    ->trueIcon('heroicon-o-user')
-                    ->falseIcon('heroicon-o-user')
+                    ->trueIcon('tabler-user-check')
+                    ->falseIcon('tabler-user')
                     ->trueColor('info')
                     ->falseColor('gray'),
             ])
             ->filters([
 
-
                 Tables\Filters\Filter::make('high_capacity')
                     ->label('Alta Capacità (4+ ospiti)')
                     ->query(
-                        fn(Builder $query): Builder =>
-                        $query->whereHas(
+                        fn (Builder $query): Builder => $query->whereHas(
                             'profile',
-                            fn($q) =>
-                            $q->where('max_guests', '>=', 4)
+                            fn ($q) => $q->where('max_guests', '>=', 4)
                         )
                     )
                     ->toggle(),
@@ -437,9 +425,9 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->query(function (Builder $query, array $data) {
                         return $query->when(
                             $data['value'],
-                            fn(Builder $query) => $query->whereHas(
+                            fn (Builder $query) => $query->whereHas(
                                 'profile',
-                                fn($q) => $q->where('city', $data['value'])
+                                fn ($q) => $q->where('city', $data['value'])
                             )
                         );
                     })
@@ -447,7 +435,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
             ])
             ->emptyStateHeading('Nessun membro nel gruppo')
             ->emptyStateDescription('Il gruppo non ha ancora membri.')
-            ->emptyStateIcon('heroicon-o-users')
+            ->emptyStateIcon('tabler-users-off')
             ->defaultSort('created_at', 'asc')
             ->poll('30s')
             ->striped();
@@ -469,14 +457,14 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
         $this->mountAction('joinGroupAction');
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return $this->getUserGroup()
             ? 'Il Mio Gruppo Cena'
             : 'Unisciti o Crea un Gruppo';
     }
 
-    public function getSubheading(): string | Htmlable | null
+    public function getSubheading(): string|Htmlable|null
     {
         if ($group = $this->getUserGroup()) {
             return "Gruppo: {$group->name}";

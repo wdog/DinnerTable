@@ -15,6 +15,7 @@ class Profile extends Model
         'postal_code',
         'max_guests',
         'privacy_accepted_at',
+        'avatar_url',
     ];
 
     protected function casts(): array

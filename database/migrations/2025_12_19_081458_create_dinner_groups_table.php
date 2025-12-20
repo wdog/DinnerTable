@@ -21,8 +21,6 @@ return new class extends Migration
      * - slogan: slogan opzionale del gruppo
      * - group_image: immagine opzionale del gruppo
      * - created_by: riferimento all'utente creatore del gruppo
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -41,8 +39,6 @@ return new class extends Migration
      * Annulla la migration.
      *
      * Elimina la tabella 'dinner_groups' dal database.
-     *
-     * @return void
      */
     public function down(): void
     {

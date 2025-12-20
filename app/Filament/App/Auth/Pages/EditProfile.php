@@ -3,6 +3,7 @@
 namespace App\Filament\App\Auth\Pages;
 
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
@@ -29,13 +30,29 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
             ->components([
                 Flex::make([
                     Section::make('Informazioni Personali')
+                        ->relationship('profile')
                         ->schema([
-                            $this->getNameFormComponent(),
-                            $this->getEmailFormComponent(),
+                            FileUpload::make('avatar_url')
+                                ->label('Avatar')
+                                ->image()
+                                ->imageEditor()
+                                ->imageEditorAspectRatios([
+                                    '1:1',
+                                ])
+                                ->directory('avatars')
+                                ->visibility('public')
+                                ->avatar()
+                                ->circleCropper()
+                                ->maxSize(2048)
+                                ->helperText('Carica una foto del profilo (max 2MB)')
+                                ->columnSpanFull(),
+
                         ])
                         ->columns(2),
                     Section::make('Sicurezza')
                         ->schema([
+                            $this->getNameFormComponent(),
+                            $this->getEmailFormComponent(),
                             $this->getPasswordFormComponent(),
                             $this->getPasswordConfirmationFormComponent(),
                             $this->getCurrentPasswordFormComponent(),

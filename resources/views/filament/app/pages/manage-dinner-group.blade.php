@@ -9,7 +9,7 @@
         @if ($group)
             {{-- Informazioni Gruppo --}}
             <x-filament::section heading="Informazioni Gruppo" description="Dettagli del tuo gruppo cena"
-                icon="heroicon-o-information-circle">
+                icon="tabler-info-circle">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {{-- Nome Gruppo --}}
@@ -24,7 +24,7 @@
                     @if ($group->slogan)
                         <div>
                             <div class="flex items-center gap-2 mb-2">
-                                <x-filament::icon icon="heroicon-o-chat-bubble-left-ellipsis"
+                                <x-filament::icon icon="tabler-quote"
                                     class="h-5 w-5 text-gray-500 dark:text-gray-400" />
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Slogan</span>
                             </div>
@@ -34,14 +34,14 @@
                     {{-- Codice Gruppo --}}
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <x-filament::icon icon="heroicon-o-key" class="h-5 w-5 text-success-500" />
+                            <x-filament::icon icon="tabler-key" class="h-5 w-5 text-success-500" />
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Codice Gruppo</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <x-filament::badge color="success" class="text-2xl">
                                 {{ $group->group_code }}
                             </x-filament::badge>
-                            <x-filament::icon-button icon="tabler-clipboard"
+                            <x-filament::icon-button icon="tabler-copy"
                                 x-on:click="
                                     navigator.clipboard.writeText('{{ $group->group_code }}');
                                     $tooltip('Codice copiato!', { theme: $store.theme })
@@ -56,7 +56,7 @@
                     {{-- Creato da --}}
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <x-filament::icon icon="heroicon-o-user" class="h-5 w-5 text-warning-500" />
+                            <x-filament::icon icon="tabler-crown" class="h-5 w-5 text-warning-500" />
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato da</span>
                         </div>
                         <p class="text-base text-gray-900 dark:text-white">{{ $group->creator->name }}</p>
@@ -65,7 +65,7 @@
                     {{-- Creato il --}}
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <x-filament::icon icon="heroicon-o-calendar"
+                            <x-filament::icon icon="tabler-calendar-plus"
                                 class="h-5 w-5 text-gray-500 dark:text-gray-400" />
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creato il</span>
                         </div>
@@ -76,7 +76,7 @@
                     {{-- Membri Totali --}}
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <x-filament::icon icon="heroicon-o-users" class="h-5 w-5 text-info-500" />
+                            <x-filament::icon icon="tabler-users-group" class="h-5 w-5 text-info-500" />
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Membri Totali</span>
                         </div>
                         <x-filament::badge color="info" size="lg">
@@ -88,13 +88,14 @@
 
             {{-- Tabella Membri del Gruppo --}}
             <x-filament::section heading="Membri del Gruppo"
-                description="Visualizza e gestisci i membri del tuo gruppo cena">
+                description="Visualizza e gestisci i membri del tuo gruppo cena"
+                icon="tabler-users">
                 {{ $this->table }}
             </x-filament::section>
         @else
             {{-- Benvenuto - Nessun Gruppo --}}
             <x-filament::section heading="Benvenuto!" description="Non fai ancora parte di nessun gruppo cena"
-                icon="heroicon-o-user-group">
+                icon="tabler-user-plus">
 
                 <div class="prose dark:prose-invert max-w-none">
                     <p>Per iniziare a organizzare cene con i tuoi amici, scegli una delle opzioni qui sotto:</p>
@@ -103,21 +104,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                     {{-- Card Crea Gruppo --}}
                     <div wire:click="mountAction('createGroupAction')"
-                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/20 dark:hover:shadow-orange-500/10 hover:-translate-y-1 hover:border-orange-400 dark:hover:border-orange-600">
+                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border-2 border-lime-300 dark:border-lime-700 bg-lime-50 dark:bg-lime-900 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-lime-500/30 dark:hover:shadow-lime-500/20 hover:-translate-y-1 hover:border-lime-500 dark:hover:border-lime-500">
 
                         {{-- Gradient overlay on hover --}}
                         <div
-                            class="absolute inset-0 rounded-xl bg-linear-to-br from-orange-50/50 to-transparent dark:from-orange-950/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            class="absolute inset-0 rounded-xl bg-linear-to-br from-lime-100 to-lime-200/50 dark:from-lime-800/50 dark:to-lime-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         </div>
 
                         <div class="relative z-10">
                             <div
-                                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 dark:bg-orange-950/40 mb-4 group-hover:scale-110 transition-transform duration-300">
+                                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-lime-200 dark:bg-lime-800 mb-4 group-hover:scale-110 transition-transform duration-300 group-hover:bg-lime-300 dark:group-hover:bg-lime-700">
                                 <x-filament::icon icon="tabler-chef-hat-filled"
-                                    class="h-10 w-10 text-orange-600 dark:text-orange-400" />
+                                    class="h-10 w-10 text-amber-700 dark:text-amber-300" />
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Crea Nuovo Gruppo</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                            <h3 class="text-xl font-bold text-lime-900 dark:text-lime-100 mb-3">Crea Nuovo Gruppo</h3>
+                            <p class="text-sm text-lime-700 dark:text-lime-300 leading-relaxed">
                                 Diventerai il creatore del gruppo e riceverai un codice unico da condividere con i tuoi
                                 amici.
                             </p>
@@ -126,21 +127,21 @@
 
                     {{-- Card Unisciti Gruppo --}}
                     <div wire:click="openJoinGroupModal"
-                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-amber-500/10 hover:-translate-y-1 hover:border-amber-400 dark:hover:border-amber-600">
+                        class="group relative flex flex-col items-center text-center p-8 rounded-xl border-2 border-cyan-300 dark:border-cyan-700 bg-cyan-50 dark:bg-cyan-900 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/30 dark:hover:shadow-cyan-500/20 hover:-translate-y-1 hover:border-cyan-500 dark:hover:border-cyan-500">
 
                         {{-- Gradient overlay on hover --}}
                         <div
-                            class="absolute inset-0 rounded-xl bg-linear-to-br from-amber-50/50 to-transparent dark:from-amber-950/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            class="absolute inset-0 rounded-xl bg-linear-to-br from-cyan-100 to-cyan-200/50 dark:from-cyan-800/50 dark:to-cyan-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         </div>
 
                         <div class="relative z-10">
                             <div
-                                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/40 mb-4 group-hover:scale-110 transition-transform duration-300">
+                                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-200 dark:bg-cyan-800 mb-4 group-hover:scale-110 transition-transform duration-300 group-hover:bg-cyan-300 dark:group-hover:bg-cyan-700">
                                 <x-filament::icon icon="tabler-glass-full-filled"
-                                    class="h-10 w-10 text-amber-600 dark:text-amber-400" />
+                                    class="h-10 w-10 text-amber-700 dark:text-amber-300" />
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Unisciti a un Gruppo</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                            <h3 class="text-xl font-bold text-cyan-900 dark:text-cyan-100 mb-3">Unisciti a un Gruppo</h3>
+                            <p class="text-sm text-cyan-700 dark:text-cyan-300 leading-relaxed">
                                 Inserisci il codice gruppo che ti è stato condiviso per unirti a un gruppo esistente.
                             </p>
                         </div>

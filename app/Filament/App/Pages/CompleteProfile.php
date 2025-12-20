@@ -4,15 +4,15 @@ namespace App\Filament\App\Pages;
 
 use BackedEnum;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Pages\Page;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Auth;
-use Filament\Support\Exceptions\Halt;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Pagina per il completamento del profilo utente.
@@ -27,29 +27,21 @@ class CompleteProfile extends Page implements HasForms
 
     /**
      * Icona di navigazione della pagina.
-     *
-     * @var string|BackedEnum|null
      */
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     /**
      * Indica se la pagina deve apparire nella navigazione.
-     *
-     * @var bool
      */
     protected static bool $shouldRegisterNavigation = false;
 
     /**
      * Nome della vista Blade da utilizzare.
-     *
-     * @var string
      */
     protected string $view = 'filament.app.pages.complete-profile';
 
     /**
      * Dati del form.
-     *
-     * @var array|null
      */
     public ?array $data = [];
 
@@ -58,8 +50,6 @@ class CompleteProfile extends Page implements HasForms
      *
      * Se il profilo è già completo, reindirizza l'utente alla dashboard.
      * Altrimenti, pre-compila il form con i dati esistenti del profilo.
-     *
-     * @return void
      */
     public function mount(): void
     {
@@ -90,7 +80,7 @@ class CompleteProfile extends Page implements HasForms
      * - Informazioni Privacy: accettazione della privacy policy
      * - Indirizzo e Ospitalità: dati di residenza e capacità di ospitare
      *
-     * @param Schema $schema Schema del form
+     * @param  Schema  $schema  Schema del form
      * @return Schema Schema configurato con i campi del form
      */
     public function form(Schema $schema)
@@ -148,7 +138,6 @@ class CompleteProfile extends Page implements HasForms
      * Aggiorna il profilo dell'utente con i dati inseriti nel form,
      * mostra una notifica di successo e reindirizza alla dashboard.
      *
-     * @return void
      * @throws Halt Se il salvataggio viene interrotto
      */
     public function save(): void
