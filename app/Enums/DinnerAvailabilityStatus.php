@@ -11,6 +11,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
     case AVAILABLE = 'available';
     case UNAVAILABLE = 'unavailable';
     case MAYBE = 'maybe';
+    case CANCELLED = 'cancelled';
+    case BOOKED = 'booked';
 
     public function getLabel(): string
     {
@@ -18,6 +20,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::AVAILABLE => 'Disponibile',
             self::UNAVAILABLE => 'Non disponibile',
             self::MAYBE => 'Forse',
+            self::CANCELLED => 'Cancellato',
+            self::BOOKED => 'Prenotato',
         };
     }
 
@@ -27,6 +31,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::AVAILABLE => 'success',
             self::UNAVAILABLE => 'danger',
             self::MAYBE => 'warning',
+            self::CANCELLED => 'gray',
+            self::BOOKED => 'info',
         };
     }
 
@@ -36,6 +42,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::AVAILABLE => 'tabler-circle-check',
             self::UNAVAILABLE => 'tabler-circle-x',
             self::MAYBE => 'tabler-brain',
+            self::CANCELLED => 'tabler-ban',
+            self::BOOKED => 'tabler-calendar-check',
         };
     }
 }
