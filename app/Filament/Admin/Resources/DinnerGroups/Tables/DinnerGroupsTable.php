@@ -17,8 +17,8 @@ class DinnerGroupsTable
         return $table
             ->columns([
                 ImageColumn::make('group_image')
+                    ->disk('public')
                     ->circular(),
-
                 TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()

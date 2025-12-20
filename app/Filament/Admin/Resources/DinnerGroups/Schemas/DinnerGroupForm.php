@@ -14,7 +14,8 @@ class DinnerGroupForm
         return $schema
             ->components([
                 Section::make('Informazioni Gruppo')
-                    ->columns(2)
+                    ->columns(3)
+                    ->columnSpanFull()
                     ->schema([
 
 
@@ -27,6 +28,7 @@ class DinnerGroupForm
                             ->label('Dinner Group Image')
                             ->image()
                             ->previewable()
+                            ->disk('public')
                             ->directory('dinner-group')
                             ->visibility('public')
                             ->avatar()

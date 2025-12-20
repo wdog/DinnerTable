@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\DinnerGroups;
 use App\Filament\Admin\Resources\DinnerGroups\Pages\CreateDinnerGroup;
 use App\Filament\Admin\Resources\DinnerGroups\Pages\EditDinnerGroup;
 use App\Filament\Admin\Resources\DinnerGroups\Pages\ListDinnerGroups;
+use App\Filament\Admin\Resources\DinnerGroups\RelationManagers\MembersRelationManager;
 use App\Filament\Admin\Resources\DinnerGroups\Schemas\DinnerGroupForm;
 use App\Filament\Admin\Resources\DinnerGroups\Tables\DinnerGroupsTable;
 use App\Models\DinnerGroup;
@@ -39,7 +40,7 @@ class DinnerGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MembersRelationManager::class
         ];
     }
 

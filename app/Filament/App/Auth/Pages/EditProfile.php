@@ -30,12 +30,12 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
             ->components([
                 Flex::make([
                     Section::make('Informazioni Personali')
-                        ->relationship('profile')
+                        // ->relationship('profile')
                         ->schema([
                             FileUpload::make('avatar_url')
                                 ->label('Avatar')
-                                ->image()
                                 ->directory('avatars')
+                                ->disk('public')
                                 ->visibility('public')
                                 ->avatar()
                                 ->circleCropper()
@@ -116,50 +116,11 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
         // Converti privacy_accepted_at (timestamp) in privacy_accepted (boolean)
         $data['privacy_accepted'] = ! is_null($this->getUser()->profile->privacy_accepted_at);
 
+        // dd($data);
         return $data;
     }
 
-    /**
-     * Prepara i dati della relazione profile prima di caricarli nel form.
-     * Converte avatar_url da stringa a array per il componente FileUpload.
-     *
-     * @param  string  $relationship  Nome della relazione
-     * @param  array  $data  Dati della relazione
-     * @return array Dati preparati
-     */
-    protected function mutateRelationshipDataBeforeFill(string $relationship, array $data): array
-    {
-        if ($relationship === 'profile') {
-            // FileUpload si aspetta un array, non una stringa
-            if (isset($data['avatar_url']) && is_string($data['avatar_url']) && ! empty($data['avatar_url'])) {
-                $data['avatar_url'] = [$data['avatar_url']];
-            } else {
-                $data['avatar_url'] = [];
-            }
-        }
 
-        return $data;
-    }
-
-    /**
-     * Prepara i dati della relazione profile prima di salvarli.
-     * Converte avatar_url da array a stringa per il database.
-     *
-     * @param  string  $relationship  Nome della relazione
-     * @param  array  $data  Dati della relazione
-     * @return array Dati preparati per il salvataggio
-     */
-    protected function mutateRelationshipDataBeforeSave(string $relationship, array $data): array
-    {
-        if ($relationship === 'profile') {
-            // Converti array di FileUpload in stringa per il database
-            if (isset($data['avatar_url']) && is_array($data['avatar_url'])) {
-                $data['avatar_url'] = ! empty($data['avatar_url']) ? $data['avatar_url'][0] : null;
-            }
-        }
-
-        return $data;
-    }
 
     /**
      * Prepara i dati prima di salvarli nel database.
@@ -176,6 +137,11 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
         // Converti privacy_accepted (boolean) in privacy_accepted_at (timestamp)
         if (isset($data['privacy_accepted'])) {
             $profileData['privacy_accepted_at'] = $data['privacy_accepted'] ? now() : null;
+        }
+
+        if (isset($data['avatar_url'])) {
+            $profileData['avatar_url'] = $data['avatar_url'];
+            unset($data['avatar_url']);
         }
 
         // Aggiorna il profilo dell'utente
