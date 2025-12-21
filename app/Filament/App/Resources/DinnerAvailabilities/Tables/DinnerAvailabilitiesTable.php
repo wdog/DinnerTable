@@ -36,6 +36,12 @@ class DinnerAvailabilitiesTable
                     ->badge()
                     ->searchable(),
                 IconColumn::make('can_host')
+                    ->label('Può ospitare')
+                    ->alignCenter()
+                    ->trueIcon('tabler-chef-hat-filled')
+                    ->falseIcon('tabler-pacman')
+                    ->trueColor('success')
+                    ->falseColor('info')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()

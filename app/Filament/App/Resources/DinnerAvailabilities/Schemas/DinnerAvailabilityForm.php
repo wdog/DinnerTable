@@ -31,7 +31,13 @@ class DinnerAvailabilityForm
                             ->closeOnDateSelection()
                             ->format('Y-m-d')
                             ->native(false)
-                            ->minDate(now()->format('Y-m-d'))
+                            ->minDate(function ($context) {
+                                if ($context == 'create') {
+                                    return Carbon::now()->format('Y-m-d');
+                                }
+
+                                return null;
+                            })
 
                             ->formatStateUsing(function ($record) {
                                 return $record?->dinnerDate

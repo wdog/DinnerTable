@@ -32,7 +32,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::UNAVAILABLE => 'danger',
             self::MAYBE => 'warning',
             self::CANCELLED => 'gray',
-            self::BOOKED => 'info',
+            self::BOOKED => 'purple',
         };
     }
 
@@ -43,7 +43,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::UNAVAILABLE => 'tabler-circle-x',
             self::MAYBE => 'tabler-brain',
             self::CANCELLED => 'tabler-ban',
-            self::BOOKED => 'tabler-calendar-check',
+            self::BOOKED => 'tabler-pacman',
         };
     }
 }
