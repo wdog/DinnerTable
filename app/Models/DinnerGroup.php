@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Modello per i gruppi cena.
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class DinnerGroup extends Model
 {
     use HasFactory;
+
     /**
      * Nome della tabella associata al modello.
      *

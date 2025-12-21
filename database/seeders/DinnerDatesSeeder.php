@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Enums\DinnerAvailabilityStatus;
-use App\Models\DinnerAvailability;
+use Carbon\Carbon;
 use App\Models\DinnerDate;
 use App\Models\DinnerGroup;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use App\Models\DinnerAvailability;
+use App\Enums\DinnerAvailabilityStatus;
 
 class DinnerDatesSeeder extends Seeder
 {
@@ -45,11 +45,11 @@ class DinnerDatesSeeder extends Seeder
                 $dinnerDate = DinnerDate::firstOrCreate(
                     [
                         'dinner_group_id' => $group->id,
-                        'dinner_date' => $date->toDateString(),
+                        'dinner_date'     => $date->toDateString(),
                     ],
                     [
                         'is_closed' => false,
-                        'notes' => null,
+                        'notes'     => null,
                     ]
                 );
 
@@ -59,7 +59,7 @@ class DinnerDatesSeeder extends Seeder
                 }
             }
 
-            $this->command->info('  ✓ Create ' . count($dates) . ' date per il gruppo');
+            $this->command->info('  ✓ Create '.count($dates).' date per il gruppo');
 
             // Per ogni membro del gruppo, crea disponibilità random (0-4 date)
             foreach ($group->members as $member) {
@@ -104,11 +104,11 @@ class DinnerDatesSeeder extends Seeder
 
                     DinnerAvailability::create([
                         'dinner_date_id' => $dinnerDate->id,
-                        'user_id' => $member->id,
-                        'status' => $status,
-                        'can_host' => $canHost,
-                        'max_guests' => $maxGuests,
-                        'note' => $canHost ? 'Disponibile ad ospitare!' : null,
+                        'user_id'        => $member->id,
+                        'status'         => $status,
+                        'can_host'       => $canHost,
+                        'max_guests'     => $maxGuests,
+                        'note'           => $canHost ? 'Disponibile ad ospitare!' : null,
                     ]);
 
                     $totalAvailabilities++;

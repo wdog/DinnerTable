@@ -2,24 +2,24 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\EnsureProfileIsComplete;
-use App\Models\User;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
+use App\Models\User;
 use Filament\PanelProvider;
+use Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
+use Filament\Http\Middleware\Authenticate;
+use Illuminate\Session\Middleware\StartSession;
+use App\Http\Middleware\EnsureProfileIsComplete;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -37,9 +37,9 @@ class AppPanelProvider extends PanelProvider
             ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->colors([
                 'primary' => Color::Lime,
-                'danger' => Color::Rose,
+                'danger'  => Color::Rose,
                 'warning' => [
-                    50 => '#fffbeb',
+                    50  => '#fffbeb',
                     100 => '#fef3c7',
                     200 => '#fde68a',
                     300 => '#fcd34d',
@@ -52,7 +52,7 @@ class AppPanelProvider extends PanelProvider
                     950 => '#451a03',
                 ],
                 'success' => [
-                    50 => '#f0fdf4',
+                    50  => '#f0fdf4',
                     100 => '#dcfce7',
                     200 => '#bbf7d0',
                     300 => '#86efac',
@@ -65,7 +65,7 @@ class AppPanelProvider extends PanelProvider
                     950 => '#052e16',
                 ],
                 'info' => [
-                    50 => '#fffbeb',
+                    50  => '#fffbeb',
                     100 => '#fef3c7',
                     200 => '#fde68a',
                     300 => '#fcd34d',
@@ -78,7 +78,7 @@ class AppPanelProvider extends PanelProvider
                     950 => '#451a03',
                 ],
                 'gray' => [
-                    50 => '#f9f8f3',
+                    50  => '#f9f8f3',
                     100 => '#f1f0e5',
                     200 => '#e3e0ca',
                     300 => '#d0cba5',
@@ -91,7 +91,7 @@ class AppPanelProvider extends PanelProvider
                     950 => '#1c190b',
                 ],
                 'purple' => [
-                    50 => '#faf5ff',
+                    50  => '#faf5ff',
                     100 => '#f3e8ff',
                     200 => '#e9d5ff',
                     300 => '#d8b4fe',

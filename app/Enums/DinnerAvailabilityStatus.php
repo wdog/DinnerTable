@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
 enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
@@ -23,13 +23,13 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             // Host states
-            self::AVAILABLE_TO_HOST => 'Cucina',
-            self::ALMOST_FULL => 'Quasi pieno',
-            self::FULL => 'Pieno',
-            self::HOST_CANCELLED => 'Annullato',
+            self::AVAILABLE_TO_HOST => 'Disponibile ad ospitare',
+            self::ALMOST_FULL       => 'Quasi pieno',
+            self::FULL              => 'Pieno',
+            self::HOST_CANCELLED    => 'Annullato',
             // Guest states
-            self::AVAILABLE => 'Mangia',
-            self::BOOKED => 'Ha Prenotato',
+            self::AVAILABLE   => 'Vorrebbe Mangiare',
+            self::BOOKED      => 'Ha Prenotato',
             self::UNAVAILABLE => 'Non è disponibile',
         };
     }
@@ -39,12 +39,12 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             // Host states
             self::AVAILABLE_TO_HOST => 'success',
-            self::ALMOST_FULL => 'warning',
-            self::FULL => 'danger',
-            self::HOST_CANCELLED => 'danger',
+            self::ALMOST_FULL       => 'warning',
+            self::FULL              => 'danger',
+            self::HOST_CANCELLED    => 'danger',
             // Guest states
-            self::AVAILABLE => 'purple',
-            self::BOOKED => 'purple',
+            self::AVAILABLE   => 'purple',
+            self::BOOKED      => 'purple',
             self::UNAVAILABLE => 'danger',
         };
     }
@@ -54,12 +54,12 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             // Host states
             self::AVAILABLE_TO_HOST => 'tabler-chef-hat-filled',
-            self::ALMOST_FULL => 'tabler-users',
-            self::FULL => 'tabler-door-off',
-            self::HOST_CANCELLED => 'tabler-ban',
+            self::ALMOST_FULL       => 'tabler-users',
+            self::FULL              => 'tabler-door-off',
+            self::HOST_CANCELLED    => 'tabler-ban',
             // Guest states
-            self::AVAILABLE => 'tabler-tools-kitchen-3',
-            self::BOOKED => 'tabler-tools-kitchen-3',
+            self::AVAILABLE   => 'tabler-tools-kitchen-3',
+            self::BOOKED      => 'tabler-tools-kitchen-3',
             self::UNAVAILABLE => 'tabler-circle-x',
         };
     }

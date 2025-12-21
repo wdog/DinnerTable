@@ -164,13 +164,7 @@
                                                         </span>
                                                     </div>
                                                 @endif
-                                                <code>
-                                                    ===
-                                                    {{ $availability['id'] }}
-                                                    ===
-                                                    {{ $availability['can_book'] }}
-                                                    ===
-                                                </code>
+
 
                                                 {{-- Pulsante prenota --}}
                                                 @if ($availability['can_book'])

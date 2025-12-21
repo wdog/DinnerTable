@@ -3,24 +3,25 @@
 namespace App\Filament\App\Pages;
 
 use UnitEnum;
+use Exception;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use App\Models\DinnerDate;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
-use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
+use App\Policies\DinnerBookingPolicy;
+use App\Rules\ValidateBookingCapacity;
 use App\Enums\DinnerAvailabilityStatus;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Notifications\Notification;
-use App\Rules\ValidateBookingCapacity;
-use App\Policies\DinnerBookingPolicy;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
@@ -31,6 +32,7 @@ use App\Policies\DinnerBookingPolicy;
 class GroupAvailabilities extends Page implements HasActions
 {
     use InteractsWithActions;
+
     /**
      * Icona nella navigazione.
      */
@@ -49,7 +51,6 @@ class GroupAvailabilities extends Page implements HasActions
     public ?string $bookingAvailabilityId = null;
 
     public array $bookingData = [];
-
 
     /**
      * Ottiene il titolo dinamico della pagina con il nome del gruppo.
@@ -156,7 +157,7 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function getMonthName(): string
     {
-        if (! $this->selectedMonth) {
+        if ( ! $this->selectedMonth) {
             return '';
         }
 
@@ -192,7 +193,7 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function loadCalendarData(): void
     {
-        if (! $this->selectedMonth) {
+        if ( ! $this->selectedMonth) {
             $this->calendarData = [];
 
             return;
@@ -237,8 +238,6 @@ class GroupAvailabilities extends Page implements HasActions
                 // ! Applica i filtri alle disponibilità
                 $filteredAvailabilities = $availabilities->filter(function ($availability) {
 
-
-
                     if ($availability->status === DinnerAvailabilityStatus::UNAVAILABLE) {
                         return false;
                     }
@@ -257,28 +256,28 @@ class GroupAvailabilities extends Page implements HasActions
                 });
 
                 $calendar[] = [
-                    'empty' => false,
-                    'date' => $dinnerDate->dinner_date,
-                    'day' => $day,
-                    'day_name' => Carbon::parse($dinnerDate->dinner_date)->isoFormat('ddd'),
-                    'is_closed' => $dinnerDate->is_closed,
-                    'notes' => $dinnerDate->notes,
+                    'empty'                => false,
+                    'date'                 => $dinnerDate->dinner_date,
+                    'day'                  => $day,
+                    'day_name'             => Carbon::parse($dinnerDate->dinner_date)->isoFormat('ddd'),
+                    'is_closed'            => $dinnerDate->is_closed,
+                    'notes'                => $dinnerDate->notes,
                     'total_availabilities' => $filteredAvailabilities->count(),
-                    'can_host_count' => $filteredAvailabilities->where('can_host', true)->count(),
-                    'availabilities' => $filteredAvailabilities->map(function ($availability) {
+                    'can_host_count'       => $filteredAvailabilities->where('can_host', true)->count(),
+                    'availabilities'       => $filteredAvailabilities->map(function ($availability) {
 
                         $canBook = $this->canBook($availability->id);
 
                         return [
-                            'id' => $availability->id,
-                            'user_name' => $availability->user->name,
-                            'status' => $availability->status,
-                            'can_host' => $availability->can_host,
-                            'note' => $availability->note,
-                            'can_book' => $canBook,
-                            'max_guests' => $availability->max_guests ?? 0,
+                            'id'              => $availability->id,
+                            'user_name'       => $availability->user->name,
+                            'status'          => $availability->status,
+                            'can_host'        => $availability->can_host,
+                            'note'            => $availability->note,
+                            'can_book'        => $canBook,
+                            'max_guests'      => $availability->max_guests ?? 0,
                             'available_spots' => $availability->available_spots ?? 0,
-                            'total_booked' => $availability->total_booked_guests ?? 0,
+                            'total_booked'    => $availability->total_booked_guests ?? 0,
                         ];
                     })->toArray(),
                 ];
@@ -286,18 +285,18 @@ class GroupAvailabilities extends Page implements HasActions
                 // Giorno senza dati nel database
                 $currentDate = Carbon::create($year, $month, $day);
                 $calendar[] = [
-                    'empty' => false,
-                    'date' => $currentDate,
-                    'day' => $day,
-                    'day_name' => $currentDate->isoFormat('ddd'),
-                    'is_closed' => false,
-                    'notes' => null,
+                    'empty'                => false,
+                    'date'                 => $currentDate,
+                    'day'                  => $day,
+                    'day_name'             => $currentDate->isoFormat('ddd'),
+                    'is_closed'            => false,
+                    'notes'                => null,
                     'total_availabilities' => 0,
-                    'available_count' => 0,
-                    'maybe_count' => 0,
-                    'unavailable_count' => 0,
-                    'can_host_count' => 0,
-                    'availabilities' => [],
+                    'available_count'      => 0,
+                    'maybe_count'          => 0,
+                    'unavailable_count'    => 0,
+                    'can_host_count'       => 0,
+                    'availabilities'       => [],
                 ];
             }
         }
@@ -323,12 +322,13 @@ class GroupAvailabilities extends Page implements HasActions
     public function canBook(int $availabilityId): bool
     {
         $availability = DinnerAvailability::find($availabilityId);
-        if (!$availability) {
+        if ( ! $availability) {
             return false;
         }
 
         // Usa direttamente la policy
         $policy = app(DinnerBookingPolicy::class);
+
         return $policy->book(Auth::user(), $availability);
     }
 
@@ -350,7 +350,7 @@ class GroupAvailabilities extends Page implements HasActions
             ->modalHeading(function () {
                 $availability = DinnerAvailability::with(['user', 'dinnerDate'])->find($this->bookingAvailabilityId);
 
-                if (!$availability) {
+                if ( ! $availability) {
                     return 'Nuova Prenotazione';
                 }
 
@@ -365,31 +365,18 @@ class GroupAvailabilities extends Page implements HasActions
             ->modalWidth('lg')
             ->schema([
                 TextInput::make('guests_count')
-                    ->label('Numero di ospiti aggiuntivi')
-                    ->helperText('Quante persone porti con te? (Tu sei già contato)')
+                    ->label('Numero di ospiti')
+                    ->helperText('Quante persone mangeranno?')
                     ->integer()
+                    ->prefixIcon(Heroicon::OutlinedUsers)
                     ->minValue(0)
                     ->default(0)
                     ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set) {
-                        // Calcola il totale
-                        $total = (int) $state + 1; // +1 per il guest stesso
-                        $set('total_guests_display', $total);
-                    })
                     ->rules([
                         function () {
                             return new ValidateBookingCapacity($this->bookingAvailabilityId);
                         },
                     ]),
-
-                TextInput::make('total_guests_display')
-                    ->label('Totale persone')
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->default(1)
-                    ->prefix('👥')
-                    ->helperText('Include te e i tuoi ospiti'),
 
                 TagsInput::make('bringing_items')
                     ->label('Cosa porti?')
@@ -412,7 +399,7 @@ class GroupAvailabilities extends Page implements HasActions
 
                     // Verifica autorizzazione tramite policy
                     $policy = app(DinnerBookingPolicy::class);
-                    if (!$policy->book($user, $availability)) {
+                    if ( ! $policy->book($user, $availability)) {
                         Notification::make()
                             ->title('Non autorizzato')
                             ->body('Non puoi prenotare questa disponibilità.')
@@ -422,16 +409,15 @@ class GroupAvailabilities extends Page implements HasActions
                         return;
                     }
 
+                    // dd($data);
                     // Crea la prenotazione
                     DinnerBooking::create([
                         'host_availability_id' => $this->bookingAvailabilityId,
-                        'guest_user_id' => $user->id,
-                        'guests_count' => $data['guests_count'] ?? 0,
-                        'bringing_items' => !empty($data['bringing_items'])
-                            ? implode(', ', $data['bringing_items'])
-                            : null,
-                        'notes' => $data['notes'] ?? null,
-                        'status' => 'confirmed',
+                        'guest_user_id'        => $user->id,
+                        'guests_count'         => $data['guests_count'] ?? 0,
+                        'bringing_items'       => $data['bringing_items'],
+                        'notes'                => $data['notes'] ?? null,
+                        'status'               => 'confirmed',
                     ]);
 
                     // Observer gestirà automaticamente il cambio di stato dell'host e del guest
@@ -447,10 +433,10 @@ class GroupAvailabilities extends Page implements HasActions
 
                     // Reset delle proprietà
                     $this->bookingAvailabilityId = null;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Notification::make()
                         ->title('Errore')
-                        ->body('Si è verificato un errore durante la prenotazione: ' . $e->getMessage())
+                        ->body('Si è verificato un errore durante la prenotazione: '.$e->getMessage())
                         ->danger()
                         ->send();
                 }

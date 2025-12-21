@@ -2,21 +2,21 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Schemas;
 
-use App\Enums\DinnerAvailabilityStatus;
-use App\Models\DinnerAvailability;
-use App\Models\DinnerDate;
-use Carbon\Carbon;
 use Closure;
-use Filament\Forms\Components\DatePicker;
+use Carbon\Carbon;
+use App\Models\DinnerDate;
+use Filament\Schemas\Schema;
+use App\Models\DinnerAvailability;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use App\Enums\DinnerAvailabilityStatus;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Auth;
 
 class DinnerAvailabilityForm
 {
@@ -40,7 +40,6 @@ class DinnerAvailabilityForm
                                     return Carbon::now()->format('Y-m-d');
                                 }
 
-                                return null;
                             })
 
                             ->formatStateUsing(function ($record) {
@@ -57,7 +56,7 @@ class DinnerAvailabilityForm
                                             ->where('dinner_date', $dateSearch)
                                             ->first();
 
-                                        if (! $dinnerDate) {
+                                        if ( ! $dinnerDate) {
                                             return true;
                                         }
 
@@ -83,11 +82,11 @@ class DinnerAvailabilityForm
                             ->default(false)
                             ->boolean()
                             ->colors([
-                                true => 'primary',
+                                true  => 'primary',
                                 false => 'info',
                             ])
                             ->icons([
-                                true => 'tabler-chef-hat',
+                                true  => 'tabler-chef-hat',
                                 false => 'tabler-tools-kitchen-3',
                             ])
                             ->inline()

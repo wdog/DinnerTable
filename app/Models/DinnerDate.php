@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DinnerDate extends Model
 {
@@ -17,7 +17,7 @@ class DinnerDate extends Model
 
     protected $casts = [
         'dinner_date' => 'date',
-        'is_closed' => 'boolean',
+        'is_closed'   => 'boolean',
     ];
 
     public function group(): BelongsTo

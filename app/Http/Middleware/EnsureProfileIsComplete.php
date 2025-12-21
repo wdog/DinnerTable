@@ -18,17 +18,17 @@ class EnsureProfileIsComplete
         $user = $request->user();
 
         // Se l'utente non è autenticato o è admin, lascia passare
-        if (! $user || $user->is_admin) {
+        if ( ! $user || $user->is_admin) {
             return $next($request);
         }
 
         // Se non ha un profilo, crealo
-        if (! $user->profile) {
+        if ( ! $user->profile) {
             $user->profile()->create();
         }
 
         // Se il profilo non è completo, reindirizza alla pagina di completamento
-        if (! $user->hasCompletedProfile() && ! $request->routeIs('filament.dinner.pages.complete-profile')) {
+        if ( ! $user->hasCompletedProfile() && ! $request->routeIs('filament.dinner.pages.complete-profile')) {
             return redirect()->route('filament.dinner.pages.complete-profile');
         }
 

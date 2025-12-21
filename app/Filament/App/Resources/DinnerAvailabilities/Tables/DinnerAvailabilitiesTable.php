@@ -2,13 +2,13 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Tables;
 
+use Filament\Tables\Table;
+use Filament\Actions\EditAction;
+use Filament\Tables\Grouping\Group;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Grouping\Group;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
 class DinnerAvailabilitiesTable
@@ -21,7 +21,7 @@ class DinnerAvailabilitiesTable
                     ->titlePrefixedWithLabel(false)
                     ->collapsible()
                     ->getTitleFromRecordUsing(
-                        fn (Model $record): string => 'Dinner del ' . $record->dinnerDate->dinner_date->format('d/m/Y')
+                        fn (Model $record): string => 'Dinner del '.$record->dinnerDate->dinner_date->format('d/m/Y')
                     ),
             ])
             ->defaultSort('dinnerDate.dinner_date', 'desc')

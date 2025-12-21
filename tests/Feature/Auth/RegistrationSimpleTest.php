@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -27,8 +27,8 @@ uses(RefreshDatabase::class);
 test('user can be registered with valid data', function () {
     // Arrange: Prepara i dati
     $userData = [
-        'name' => 'Mario Rossi',
-        'email' => 'mario.rossi@example.com',
+        'name'     => 'Mario Rossi',
+        'email'    => 'mario.rossi@example.com',
         'password' => Hash::make('Password123!'),
     ];
 
@@ -48,8 +48,8 @@ test('user can be registered with valid data', function () {
 test('name is required for registration', function () {
     expect(function () {
         User::create([
-            'name' => null,
-            'email' => 'test@example.com',
+            'name'     => null,
+            'email'    => 'test@example.com',
             'password' => Hash::make('password'),
         ]);
     })->toThrow(\Exception::class);
@@ -61,8 +61,8 @@ test('name is required for registration', function () {
 test('email is required for registration', function () {
     expect(function () {
         User::create([
-            'name' => 'Test User',
-            'email' => null,
+            'name'     => 'Test User',
+            'email'    => null,
             'password' => Hash::make('password'),
         ]);
     })->toThrow(\Exception::class);
@@ -78,8 +78,8 @@ test('email must be unique', function () {
     // Prova a creare secondo utente con stessa email
     expect(function () {
         User::create([
-            'name' => 'New User',
-            'email' => 'existing@example.com',
+            'name'     => 'New User',
+            'email'    => 'existing@example.com',
             'password' => Hash::make('password'),
         ]);
     })->toThrow(\Exception::class);
@@ -94,8 +94,8 @@ test('email must be unique', function () {
 test('password is required for registration', function () {
     expect(function () {
         User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name'     => 'Test User',
+            'email'    => 'test@example.com',
             'password' => null,
         ]);
     })->toThrow(\Exception::class);
@@ -108,8 +108,8 @@ test('password is hashed when user is created', function () {
     $plainPassword = 'MySecretPassword123!';
 
     $user = User::create([
-        'name' => 'Test User',
-        'email' => 'test@example.com',
+        'name'     => 'Test User',
+        'email'    => 'test@example.com',
         'password' => Hash::make($plainPassword),
     ]);
 

@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Pages;
 
-use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 class EditDinnerAvailability extends EditRecord
 {

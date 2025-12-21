@@ -2,10 +2,10 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Pages;
 
-use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 use App\Models\DinnerDate;
-use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
+use Filament\Resources\Pages\CreateRecord;
+use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 class CreateDinnerAvailability extends CreateRecord
 {
@@ -15,7 +15,7 @@ class CreateDinnerAvailability extends CreateRecord
     {
 
         $dinnerDate = DinnerDate::firstOrCreate([
-            'dinner_date' => $data['dinnerDate']['dinner_date'],
+            'dinner_date'     => $data['dinnerDate']['dinner_date'],
             'dinner_group_id' => Auth::user()->dinner_group_id,
         ]);
 

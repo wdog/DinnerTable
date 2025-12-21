@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Profile;
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -17,8 +17,8 @@ uses(RefreshDatabase::class);
 test('user can be created', function () {
     // Arrange: Prepara i dati
     $userData = [
-        'name' => 'Mario Rossi',
-        'email' => 'mario@example.com',
+        'name'     => 'Mario Rossi',
+        'email'    => 'mario@example.com',
         'password' => bcrypt('password'),
     ];
 
@@ -88,8 +88,8 @@ test('user password is hashed', function () {
     $plainPassword = 'my-secret-password';
 
     $user = User::create([
-        'name' => 'Test User',
-        'email' => 'test@example.com',
+        'name'     => 'Test User',
+        'email'    => 'test@example.com',
         'password' => bcrypt($plainPassword),
     ]);
 

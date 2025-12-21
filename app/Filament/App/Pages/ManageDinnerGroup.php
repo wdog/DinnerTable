@@ -2,25 +2,25 @@
 
 namespace App\Filament\App\Pages;
 
-use App\Models\DinnerGroup;
-use App\Models\User;
-use BackedEnum;
-use Filament\Actions\Action;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
-use Filament\Pages\Page;
-use Filament\Support\Exceptions\Halt;
-use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use UnitEnum;
+use BackedEnum;
+use App\Models\User;
+use Filament\Tables;
+use Filament\Pages\Page;
+use Filament\Tables\Table;
+use App\Models\DinnerGroup;
+use Illuminate\Support\Str;
+use Filament\Actions\Action;
+use Illuminate\Support\Facades\Auth;
+use Filament\Support\Exceptions\Halt;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 /**
  * Pagina per la gestione dei gruppi cena.
@@ -177,8 +177,8 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
 
                     // Crea il gruppo
                     $group = DinnerGroup::create([
-                        'name' => $data['name'],
-                        'slogan' => $data['slogan'] ?? null,
+                        'name'       => $data['name'],
+                        'slogan'     => $data['slogan'] ?? null,
                         'group_code' => $groupCode,
                         'created_by' => $user->id,
                     ]);
@@ -234,7 +234,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     // Trova il gruppo tramite codice
                     $group = DinnerGroup::where('group_code', strtoupper($data['group_code']))->first();
 
-                    if (! $group) {
+                    if ( ! $group) {
                         Notification::make()
                             ->danger()
                             ->title('Gruppo Non Trovato')
@@ -283,7 +283,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     /** @var \App\Models\User $user */
                     $user = $this->getUser();
 
-                    if (! $user->dinnerGroup) {
+                    if ( ! $user->dinnerGroup) {
                         Notification::make()
                             ->warning()
                             ->title('Attenzione')
@@ -323,7 +323,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
         $user = $this->getUser();
 
         // Se l'utente non è in un gruppo, nessuna azione nell'header
-        if (! $user->dinnerGroup) {
+        if ( ! $user->dinnerGroup) {
             return [];
         }
 

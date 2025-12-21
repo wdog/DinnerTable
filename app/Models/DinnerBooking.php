@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Observers\DinnerBookingObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\DinnerBookingObserver;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 #[ObservedBy([DinnerBookingObserver::class])]
 class DinnerBooking extends Model
@@ -20,8 +20,8 @@ class DinnerBooking extends Model
     ];
 
     protected $casts = [
-        'guests_count' => 'integer',
-        // 'bringing_items' => 'array', // tags
+        'guests_count'   => 'integer',
+        'bringing_items' => 'array', // tags
     ];
 
     /**
@@ -45,7 +45,7 @@ class DinnerBooking extends Model
      */
     public function getTotalGuestsAttribute(): int
     {
-        return $this->guests_count + 1; // +1 per il guest stesso
+        return $this->guests_count; // +1 per il guest stesso
     }
 
     /**

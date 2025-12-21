@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\DinnerGroup;
 use App\Models\User;
-use Illuminate\Database\Seeder;
+use App\Models\DinnerGroup;
 use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class DinnerGroupSeeder extends Seeder
 {
@@ -15,19 +15,19 @@ class DinnerGroupSeeder extends Seeder
     private array $cities = [
         'Roma' => [
             'postal_codes' => ['00100', '00118', '00153', '00186'],
-            'streets' => ['Via del Corso', 'Via Nazionale', 'Viale Trastevere', 'Via Veneto', 'Via Cola di Rienzo'],
+            'streets'      => ['Via del Corso', 'Via Nazionale', 'Viale Trastevere', 'Via Veneto', 'Via Cola di Rienzo'],
         ],
         'Milano' => [
             'postal_codes' => ['20121', '20122', '20123', '20124'],
-            'streets' => ['Corso Buenos Aires', 'Via Dante', 'Corso Vittorio Emanuele', 'Via Torino', 'Corso Magenta'],
+            'streets'      => ['Corso Buenos Aires', 'Via Dante', 'Corso Vittorio Emanuele', 'Via Torino', 'Corso Magenta'],
         ],
         'Napoli' => [
             'postal_codes' => ['80121', '80122', '80133', '80134'],
-            'streets' => ['Via Toledo', 'Corso Umberto I', 'Via Chiaia', 'Via dei Tribunali', 'Spaccanapoli'],
+            'streets'      => ['Via Toledo', 'Corso Umberto I', 'Via Chiaia', 'Via dei Tribunali', 'Spaccanapoli'],
         ],
         'Firenze' => [
             'postal_codes' => ['50121', '50122', '50123', '50125'],
-            'streets' => ['Via de\' Tornabuoni', 'Via Roma', 'Borgo San Lorenzo', 'Via Cavour', 'Via de\' Calzaiuoli'],
+            'streets'      => ['Via de\' Tornabuoni', 'Via Roma', 'Borgo San Lorenzo', 'Via Cavour', 'Via de\' Calzaiuoli'],
         ],
     ];
 
@@ -97,25 +97,25 @@ class DinnerGroupSeeder extends Seeder
 
                     // Crea l'utente
                     $user = User::create([
-                        'name' => "{$firstName} {$lastName}",
-                        'email' => strtolower(Str::slug($firstName . '.' . $lastName . $userIndex)) . '@example.com',
-                        'password' => bcrypt('password'),
+                        'name'              => "{$firstName} {$lastName}",
+                        'email'             => strtolower(Str::slug($firstName.'.'.$lastName.$userIndex)).'@example.com',
+                        'password'          => bcrypt('password'),
                         'email_verified_at' => now(),
                     ]);
 
                     // Completa il profilo
                     $user->profile->update([
-                        'city' => $cityName,
-                        'address' => $street,
-                        'house_number' => (string) $houseNumber,
-                        'postal_code' => $postalCode,
-                        'max_guests' => rand(2, 8),
+                        'city'                => $cityName,
+                        'address'             => $street,
+                        'house_number'        => (string) $houseNumber,
+                        'postal_code'         => $postalCode,
+                        'max_guests'          => rand(2, 8),
                         'privacy_accepted_at' => now(),
                     ]);
 
                     // Aggiungi l'utente all'array per città e CAP
                     $key = "{$cityName}_{$postalCode}";
-                    if (! isset($usersByLocation[$key])) {
+                    if ( ! isset($usersByLocation[$key])) {
                         $usersByLocation[$key] = [];
                     }
                     $usersByLocation[$key][] = $user;
@@ -161,8 +161,8 @@ class DinnerGroupSeeder extends Seeder
 
                 // Crea il gruppo
                 $group = DinnerGroup::create([
-                    'name' => $fullGroupName,
-                    'slogan' => $this->slogans[array_rand($this->slogans)],
+                    'name'       => $fullGroupName,
+                    'slogan'     => $this->slogans[array_rand($this->slogans)],
                     'group_code' => strtoupper(Str::random(14)),
                     'created_by' => $creator->id,
                 ]);
@@ -188,7 +188,7 @@ class DinnerGroupSeeder extends Seeder
         $this->command->info('🎉 Seeding completato!');
         $this->command->info('   📊 Utenti creati: 100');
         $this->command->info("   👥 Gruppi creati: {$groupsCreated}");
-        $this->command->info('   🏙️  Città: ' . count($this->cities));
+        $this->command->info('   🏙️  Città: '.count($this->cities));
 
         // Statistiche finali
         $usersInGroups = User::whereNotNull('dinner_group_id')->count();

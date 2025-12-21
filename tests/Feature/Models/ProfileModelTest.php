@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Profile;
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -42,11 +42,11 @@ test('profile is complete when all required fields are filled', function () {
 
     // Completa il profilo
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -57,11 +57,11 @@ test('profile is incomplete without city', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => null,
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => null,
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -72,11 +72,11 @@ test('profile is incomplete without address', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => null,
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => null,
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -87,11 +87,11 @@ test('profile is incomplete without house number', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => null,
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => null,
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -102,11 +102,11 @@ test('profile is incomplete without postal code', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => null,
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => null,
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -117,11 +117,11 @@ test('profile is incomplete without max guests', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => null,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => null,
         'privacy_accepted_at' => now(),
     ]);
 
@@ -132,11 +132,11 @@ test('profile is incomplete without privacy acceptance', function () {
     $user = User::factory()->create();
 
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => null,
     ]);
 
@@ -161,13 +161,13 @@ test('profile avatar url is nullable', function () {
 
     // E il profilo può essere completo senza avatar
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 4,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 4,
         'privacy_accepted_at' => now(),
-        'avatar_url' => null,
+        'avatar_url'          => null,
     ]);
 
     expect($user->fresh()->profile->isComplete())->toBeTrue();
@@ -192,11 +192,11 @@ test('max guests must be a positive number', function () {
 
     // Testa che 0 sia invalido per completare il profilo
     $user->profile->update([
-        'city' => 'Roma',
-        'address' => 'Via Roma',
-        'house_number' => '10',
-        'postal_code' => '00100',
-        'max_guests' => 0,
+        'city'                => 'Roma',
+        'address'             => 'Via Roma',
+        'house_number'        => '10',
+        'postal_code'         => '00100',
+        'max_guests'          => 0,
         'privacy_accepted_at' => now(),
     ]);
 

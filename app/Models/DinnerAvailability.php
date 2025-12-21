@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DinnerAvailability extends Model
 {
@@ -20,8 +20,8 @@ class DinnerAvailability extends Model
     ];
 
     protected $casts = [
-        'status' => DinnerAvailabilityStatus::class,
-        'can_host' => 'boolean',
+        'status'     => DinnerAvailabilityStatus::class,
+        'can_host'   => 'boolean',
         'max_guests' => 'integer',
     ];
 
@@ -79,7 +79,7 @@ class DinnerAvailability extends Model
         return $this->confirmedBookings()
             ->get()
             ->sum(function ($booking) {
-                return $booking->total_guests; // guests_count + 1 (il guest stesso)
+                return $booking->total_guests;
             });
     }
 
@@ -88,7 +88,7 @@ class DinnerAvailability extends Model
      */
     public function hasAvailableSpots(): bool
     {
-        if (! $this->can_host || ! $this->max_guests) {
+        if ( ! $this->can_host || ! $this->max_guests) {
             return false;
         }
 
@@ -100,7 +100,7 @@ class DinnerAvailability extends Model
      */
     public function getAvailableSpotsAttribute(): int
     {
-        if (! $this->can_host || ! $this->max_guests) {
+        if ( ! $this->can_host || ! $this->max_guests) {
             return 0;
         }
 

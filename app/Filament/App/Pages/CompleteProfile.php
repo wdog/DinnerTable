@@ -4,15 +4,15 @@ namespace App\Filament\App\Pages;
 
 use BackedEnum;
 use Filament\Forms;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Auth;
+use Filament\Support\Exceptions\Halt;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Concerns\InteractsWithForms;
 
 /**
  * Pagina per il completamento del profilo utente.
@@ -64,11 +64,11 @@ class CompleteProfile extends Page implements HasForms
         }
 
         $this->form->fill([
-            'city' => $user->profile->city,
-            'address' => $user->profile->address,
-            'house_number' => $user->profile->house_number,
-            'postal_code' => $user->profile->postal_code,
-            'max_guests' => $user->profile->max_guests,
+            'city'             => $user->profile->city,
+            'address'          => $user->profile->address,
+            'house_number'     => $user->profile->house_number,
+            'postal_code'      => $user->profile->postal_code,
+            'max_guests'       => $user->profile->max_guests,
             'privacy_accepted' => ! is_null($user->profile->privacy_accepted_at),
         ]);
     }
@@ -150,11 +150,11 @@ class CompleteProfile extends Page implements HasForms
             /** @var User $user */
             $user = Auth::user();
             $user->profile->update([
-                'city' => $data['city'],
-                'address' => $data['address'],
-                'house_number' => $data['house_number'],
-                'postal_code' => $data['postal_code'],
-                'max_guests' => $data['max_guests'],
+                'city'                => $data['city'],
+                'address'             => $data['address'],
+                'house_number'        => $data['house_number'],
+                'postal_code'         => $data['postal_code'],
+                'max_guests'          => $data['max_guests'],
                 'privacy_accepted_at' => $data['privacy_accepted'] ? now() : null,
             ]);
 

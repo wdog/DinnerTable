@@ -2,12 +2,9 @@
 
 namespace App\Policies;
 
-use App\Enums\DinnerAvailabilityStatus;
-use App\Models\DinnerAvailability;
-use App\Models\DinnerBooking;
 use App\Models\User;
-use Carbon\Carbon;
-use Closure;
+use App\Models\DinnerBooking;
+use App\Models\DinnerAvailability;
 
 class DinnerBookingPolicy
 {
@@ -60,17 +57,17 @@ class DinnerBookingPolicy
         }
 
         // 4. La disponibilità deve essere di tipo host
-        if (! $availability->can_host) {
+        if ( ! $availability->can_host) {
             return false;
         }
 
         // 5. Lo stato deve permettere prenotazioni (AVAILABLE_TO_HOST o ALMOST_FULL)
-        if (! $availability->status->canAcceptBookings()) {
+        if ( ! $availability->status->canAcceptBookings()) {
             return false;
         }
 
         // 6. Devono esserci posti disponibili
-        if (! $availability->hasAvailableSpots()) {
+        if ( ! $availability->hasAvailableSpots()) {
             return false;
         }
 

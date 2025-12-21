@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Pages;
 
-use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 class ListDinnerAvailabilities extends ListRecords
 {

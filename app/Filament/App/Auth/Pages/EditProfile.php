@@ -2,13 +2,13 @@
 
 namespace App\Filament\App\Auth\Pages;
 
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Flex;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
 
 class EditProfile extends \Filament\Auth\Pages\EditProfile
 {

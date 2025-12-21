@@ -2,18 +2,18 @@
 
 namespace App\Filament\Admin\Resources\DinnerGroups;
 
-use App\Filament\Admin\Resources\DinnerGroups\Pages\CreateDinnerGroup;
+use BackedEnum;
+use Filament\Tables\Table;
+use App\Models\DinnerGroup;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use App\Filament\Admin\Resources\DinnerGroups\Pages\EditDinnerGroup;
 use App\Filament\Admin\Resources\DinnerGroups\Pages\ListDinnerGroups;
-use App\Filament\Admin\Resources\DinnerGroups\RelationManagers\MembersRelationManager;
+use App\Filament\Admin\Resources\DinnerGroups\Pages\CreateDinnerGroup;
 use App\Filament\Admin\Resources\DinnerGroups\Schemas\DinnerGroupForm;
 use App\Filament\Admin\Resources\DinnerGroups\Tables\DinnerGroupsTable;
-use App\Models\DinnerGroup;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
+use App\Filament\Admin\Resources\DinnerGroups\RelationManagers\MembersRelationManager;
 
 class DinnerGroupResource extends Resource
 {
@@ -47,9 +47,9 @@ class DinnerGroupResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListDinnerGroups::route('/'),
+            'index'  => ListDinnerGroups::route('/'),
             'create' => CreateDinnerGroup::route('/create'),
-            'edit' => EditDinnerGroup::route('/{record}/edit'),
+            'edit'   => EditDinnerGroup::route('/{record}/edit'),
         ];
     }
 }

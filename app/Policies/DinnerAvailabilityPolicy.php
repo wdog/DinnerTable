@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\DinnerAvailability;
 use App\Models\User;
+use App\Models\DinnerAvailability;
 
 class DinnerAvailabilityPolicy
 {

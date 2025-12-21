@@ -2,9 +2,9 @@
 
 namespace App\Observers;
 
-use App\Enums\DinnerAvailabilityStatus;
-use App\Models\DinnerAvailability;
 use App\Models\DinnerBooking;
+use App\Models\DinnerAvailability;
+use App\Enums\DinnerAvailabilityStatus;
 
 class DinnerBookingObserver
 {
@@ -54,7 +54,7 @@ class DinnerBookingObserver
     protected function updateHostStatus(DinnerAvailability $hostAvailability): void
     {
         // Solo se può ospitare
-        if (! $hostAvailability->can_host) {
+        if ( ! $hostAvailability->can_host) {
             return;
         }
 
@@ -68,8 +68,8 @@ class DinnerBookingObserver
 
         $newStatus = match (true) {
             $totalBookedGuests >= $maxGuests => DinnerAvailabilityStatus::FULL,
-            $totalBookedGuests > 0 => DinnerAvailabilityStatus::ALMOST_FULL,
-            default => DinnerAvailabilityStatus::AVAILABLE_TO_HOST,
+            $totalBookedGuests > 0           => DinnerAvailabilityStatus::ALMOST_FULL,
+            default                          => DinnerAvailabilityStatus::AVAILABLE_TO_HOST,
         };
 
         // Usa saveQuietly per evitare loop infiniti
@@ -92,7 +92,7 @@ class DinnerBookingObserver
             ->where('dinner_date_id', $dinnerDate->id)
             ->first();
 
-        if (! $guestAvailability) {
+        if ( ! $guestAvailability) {
             return;
         }
 

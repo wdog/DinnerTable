@@ -22,7 +22,7 @@ class Profile extends Model
     {
         return [
             'privacy_accepted_at' => 'datetime',
-            'max_guests' => 'integer',
+            'max_guests'          => 'integer',
         ];
     }
 

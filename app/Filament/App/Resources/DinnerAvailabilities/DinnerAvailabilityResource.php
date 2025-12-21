@@ -2,20 +2,20 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities;
 
-use App\Filament\App\Resources\DinnerAvailabilities\Pages\CreateDinnerAvailability;
+use UnitEnum;
+use BackedEnum;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use App\Models\DinnerAvailability;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\EditDinnerAvailability;
+use App\Filament\App\Resources\DinnerAvailabilities\Pages\CreateDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\ListDinnerAvailabilities;
 use App\Filament\App\Resources\DinnerAvailabilities\Schemas\DinnerAvailabilityForm;
 use App\Filament\App\Resources\DinnerAvailabilities\Tables\DinnerAvailabilitiesTable;
-use App\Models\DinnerAvailability;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use UnitEnum;
 
 class DinnerAvailabilityResource extends Resource
 {
@@ -58,9 +58,9 @@ class DinnerAvailabilityResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListDinnerAvailabilities::route('/'),
+            'index'  => ListDinnerAvailabilities::route('/'),
             'create' => CreateDinnerAvailability::route('/create'),
-            'edit' => EditDinnerAvailability::route('/{record}/edit'),
+            'edit'   => EditDinnerAvailability::route('/{record}/edit'),
         ];
     }
 }

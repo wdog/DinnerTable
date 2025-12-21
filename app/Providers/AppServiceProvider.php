@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Models\DinnerBooking;
-use App\Observers\DinnerBookingObserver;
 use Illuminate\Support\ServiceProvider;
+use App\Observers\DinnerBookingObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DinnerBooking::observe(DinnerBookingObserver::class);
+        // DinnerBooking::observe(DinnerBookingObserver::class);
     }
 }

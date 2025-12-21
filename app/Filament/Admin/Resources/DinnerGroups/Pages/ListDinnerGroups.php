@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources\DinnerGroups\Pages;
 
-use App\Filament\Admin\Resources\DinnerGroups\DinnerGroupResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Admin\Resources\DinnerGroups\DinnerGroupResource;
 
 class ListDinnerGroups extends ListRecords
 {

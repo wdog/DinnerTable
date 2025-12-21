@@ -2,8 +2,8 @@
 
 namespace App\Rules;
 
-use App\Models\DinnerAvailability;
 use Closure;
+use App\Models\DinnerAvailability;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class ValidateBookingCapacity implements ValidationRule
@@ -20,19 +20,19 @@ class ValidateBookingCapacity implements ValidationRule
     {
         $hostAvailability = DinnerAvailability::find($this->hostAvailabilityId);
 
-        if (! $hostAvailability) {
+        if ( ! $hostAvailability) {
             $fail("La disponibilità dell'host non esiste.", null);
 
             return;
         }
 
-        if (! $hostAvailability->can_host) {
+        if ( ! $hostAvailability->can_host) {
             $fail('Questa disponibilità non può ospitare.', null);
 
             return;
         }
 
-        if (! $hostAvailability->max_guests) {
+        if ( ! $hostAvailability->max_guests) {
             $fail("L'host non ha specificato il numero massimo di ospiti.", null);
 
             return;

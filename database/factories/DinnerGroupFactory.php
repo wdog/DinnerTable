@@ -17,8 +17,8 @@ class DinnerGroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->words(3, true) . ' Dinner Group',
-            'slogan' => fake()->sentence(),
+            'name'       => fake()->words(3, true).' Dinner Group',
+            'slogan'     => fake()->sentence(),
             'group_code' => strtoupper(\Illuminate\Support\Str::random(14)),
             'created_by' => \App\Models\User::factory(),
         ];

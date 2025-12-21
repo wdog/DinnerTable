@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Resources\DinnerGroups\Pages;
 
-use App\Filament\Admin\Resources\DinnerGroups\DinnerGroupResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Admin\Resources\DinnerGroups\DinnerGroupResource;
 
 class CreateDinnerGroup extends CreateRecord
 {
