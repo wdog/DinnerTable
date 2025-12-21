@@ -1,22 +1,35 @@
 <x-filament-panels::page>
-    {{-- Selettore mese --}}
-    <div class="mb-6">
-        <x-filament::section>
-            <x-slot name="heading">
-                Seleziona il mese
-            </x-slot>
-
-            {{ $this->form }}
-        </x-filament::section>
-    </div>
-
     {{-- Calendario --}}
     @if (count($calendarData) > 0)
         <x-filament::section>
-            {{-- Header mese corrente --}}
+            {{-- Header con navigazione mese --}}
             <x-slot name="heading">
-                <div class="text-2xl font-bold text-custom-600 dark:text-custom-400 capitalize">
-                    {{ $this->getMonthName() }}
+                <div class="flex items-center gap-3 w-full">
+                    {{-- Freccia precedente --}}
+                    <button wire:click="previousMonth"
+                            class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            type="button">
+                        <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+
+                    {{-- Selettore mese/anno --}}
+                    <select wire:model.live="selectedMonth"
+                            class="text-xl font-bold text-custom-600 dark:text-custom-400 capitalize bg-transparent border-0 focus:ring-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-3 py-1 transition-colors">
+                        @foreach($this->getMonthOptions() as $value => $label)
+                            <option value="{{ $value }}" class="text-gray-900 dark:text-gray-100">{{ $label }}</option>
+                        @endforeach
+                    </select>
+
+                    {{-- Freccia successiva --}}
+                    <button wire:click="nextMonth"
+                            class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            type="button">
+                        <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
             </x-slot>
             {{-- Header giorni della settimana --}}

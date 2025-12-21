@@ -7,22 +7,16 @@ use BackedEnum;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use App\Models\DinnerDate;
-use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Form;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Concerns\InteractsWithForms;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
  *
  * Pagina personalizzata con layout custom per mostrare il calendario
- * delle disponibilità dei membri del gruppo con selezione del mese.
+ * delle disponibilità dei membri del gruppo con navigazione tra i mesi.
  */
-class GroupAvailabilities extends Page implements HasForms
+class GroupAvailabilities extends Page
 {
-    use InteractsWithForms;
 
     /**
      * Icona nella navigazione.
@@ -65,41 +59,43 @@ class GroupAvailabilities extends Page implements HasForms
     public array $calendarData = [];
 
     /**
-     * Dati del form.
-     */
-    public ?array $data = [];
-
-    /**
      * Inizializza il componente.
      */
     public function mount(): void
     {
         // Imposta il mese corrente come default
         $this->selectedMonth = Carbon::now()->format('Y-m');
-        $this->data = ['selectedMonth' => $this->selectedMonth];
         $this->loadCalendarData();
     }
 
     /**
-     * Configurazione del form per la selezione del mese.
+     * Naviga al mese precedente.
      */
-    public function form(Schema $schema)
+    public function previousMonth(): void
     {
-        return $schema
-            ->components(
-                [
-                    Select::make('selectedMonth')
-                        ->label('Seleziona Mese')
-                        ->options($this->getMonthOptions())
-                        ->default(Carbon::now()->format('Y-m'))
-                        ->live()
-                        ->afterStateUpdated(function ($state) {
-                            $this->selectedMonth = $state;
-                            $this->loadCalendarData();
-                        }),
-                ]
-            )
-            ->statePath('data');
+        [$year, $month] = explode('-', $this->selectedMonth);
+        $date = Carbon::create($year, $month, 1)->subMonth();
+        $this->selectedMonth = $date->format('Y-m');
+        $this->loadCalendarData();
+    }
+
+    /**
+     * Naviga al mese successivo.
+     */
+    public function nextMonth(): void
+    {
+        [$year, $month] = explode('-', $this->selectedMonth);
+        $date = Carbon::create($year, $month, 1)->addMonth();
+        $this->selectedMonth = $date->format('Y-m');
+        $this->loadCalendarData();
+    }
+
+    /**
+     * Cambia il mese selezionato dal dropdown.
+     */
+    public function updatedSelectedMonth(): void
+    {
+        $this->loadCalendarData();
     }
 
     /**
@@ -123,10 +119,10 @@ class GroupAvailabilities extends Page implements HasForms
      *
      * @return array Opzioni del mese (chiave: Y-m, valore: label)
      */
-    protected function getMonthOptions(): array
+    public function getMonthOptions(): array
     {
         $options = [];
-        $start = Carbon::now()->subMonths(3);
+        $start = Carbon::now()->subMonths(2);
         $end = Carbon::now()->addMonths(12);
 
         for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
@@ -136,6 +132,7 @@ class GroupAvailabilities extends Page implements HasForms
 
         return $options;
     }
+
 
     /**
      * Carica i dati del calendario per il mese selezionato.
