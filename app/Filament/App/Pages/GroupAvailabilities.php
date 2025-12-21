@@ -20,7 +20,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use App\Rules\ValidateBookingCapacity;
-use Illuminate\Support\Facades\Gate;
+use App\Policies\DinnerBookingPolicy;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
@@ -327,8 +327,9 @@ class GroupAvailabilities extends Page implements HasActions
             return false;
         }
 
-        // Usa Gate per verificare il metodo custom 'book' della policy
-        return Gate::forUser(Auth::user())->allows('book', $availability);
+        // Usa direttamente la policy
+        $policy = app(DinnerBookingPolicy::class);
+        return $policy->book(Auth::user(), $availability);
     }
 
     /**
@@ -409,8 +410,9 @@ class GroupAvailabilities extends Page implements HasActions
                     $availability = DinnerAvailability::findOrFail($this->bookingAvailabilityId);
                     $user = Auth::user();
 
-                    // Verifica autorizzazione tramite gate 'book'
-                    if (!Gate::forUser($user)->allows('book', $availability)) {
+                    // Verifica autorizzazione tramite policy
+                    $policy = app(DinnerBookingPolicy::class);
+                    if (!$policy->book($user, $availability)) {
                         Notification::make()
                             ->title('Non autorizzato')
                             ->body('Non puoi prenotare questa disponibilità.')

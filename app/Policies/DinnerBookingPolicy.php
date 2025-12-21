@@ -43,7 +43,7 @@ class DinnerBookingPolicy
      */
     public function book(User $user, DinnerAvailability $availability): bool
     {
-        return true;
+        // return true;
         // 1. L'utente deve appartenere a un gruppo
         if ($user->dinner_group_id === null) {
             return false;
