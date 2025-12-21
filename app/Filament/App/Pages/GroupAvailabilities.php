@@ -20,6 +20,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use App\Rules\ValidateBookingCapacity;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
@@ -233,8 +234,10 @@ class GroupAvailabilities extends Page implements HasActions
             if ($dinnerDate) {
                 $availabilities = $dinnerDate->availabilities;
 
-                // Applica i filtri alle disponibilità
+                // ! Applica i filtri alle disponibilità
                 $filteredAvailabilities = $availabilities->filter(function ($availability) {
+
+
 
                     if ($availability->status === DinnerAvailabilityStatus::UNAVAILABLE) {
                         return false;
@@ -245,7 +248,7 @@ class GroupAvailabilities extends Page implements HasActions
                         return false;
                     }
 
-                    // Filtro per can_host
+                    // TODO Filtro per can_host - in futuro devo vedere solo i prenotabili $can_host = true
                     if ($this->filterCanHost && ! $availability->can_host) {
                         return false;
                     }
@@ -263,6 +266,7 @@ class GroupAvailabilities extends Page implements HasActions
                     'total_availabilities' => $filteredAvailabilities->count(),
                     'can_host_count' => $filteredAvailabilities->where('can_host', true)->count(),
                     'availabilities' => $filteredAvailabilities->map(function ($availability) {
+
                         $canBook = $this->canBook($availability->id);
 
                         return [
@@ -319,15 +323,12 @@ class GroupAvailabilities extends Page implements HasActions
     public function canBook(int $availabilityId): bool
     {
         $availability = DinnerAvailability::find($availabilityId);
-
         if (!$availability) {
             return false;
         }
 
-        $user = Auth::user();
-
-        // Usa la policy per verificare se può prenotare
-        return $user->can('book', $availability);
+        // Usa Gate per verificare il metodo custom 'book' della policy
+        return Gate::forUser(Auth::user())->allows('book', $availability);
     }
 
     /**
@@ -408,8 +409,8 @@ class GroupAvailabilities extends Page implements HasActions
                     $availability = DinnerAvailability::findOrFail($this->bookingAvailabilityId);
                     $user = Auth::user();
 
-                    // Verifica autorizzazione tramite policy
-                    if (!$user->can('book', $availability)) {
+                    // Verifica autorizzazione tramite gate 'book'
+                    if (!Gate::forUser($user)->allows('book', $availability)) {
                         Notification::make()
                             ->title('Non autorizzato')
                             ->body('Non puoi prenotare questa disponibilità.')
@@ -444,7 +445,6 @@ class GroupAvailabilities extends Page implements HasActions
 
                     // Reset delle proprietà
                     $this->bookingAvailabilityId = null;
-
                 } catch (\Exception $e) {
                     Notification::make()
                         ->title('Errore')

@@ -152,24 +152,30 @@
                                                     <div class="text-xs mb-2 flex items-center gap-1">
                                                         @svg('tabler-users', 'w-3 h-3')
                                                         <span>
-                                                            Posti: {{ $availability['total_booked'] ?? 0 }}/{{ $availability['max_guests'] }}
+                                                            Posti:
+                                                            {{ $availability['total_booked'] ?? 0 }}/{{ $availability['max_guests'] }}
                                                             @if (($availability['available_spots'] ?? 0) > 0)
-                                                                <span class="font-semibold">({{ $availability['available_spots'] }} liberi)</span>
+                                                                <span
+                                                                    class="font-semibold">({{ $availability['available_spots'] }}
+                                                                    liberi)</span>
                                                             @else
                                                                 <span class="font-semibold text-red-700">(PIENO)</span>
                                                             @endif
                                                         </span>
                                                     </div>
                                                 @endif
+                                                <code>
+                                                    ===
+                                                    {{ $availability['id'] }}
+                                                    ===
+                                                    {{ $availability['can_book'] }}
+                                                    ===
+                                                </code>
 
                                                 {{-- Pulsante prenota --}}
                                                 @if ($availability['can_book'])
-                                                    <x-filament::button
-                                                        size="xs"
-                                                        color="success"
-                                                        class="w-full"
-                                                        wire:click="openBookingModal({{ $availability['id'] }})"
-                                                    >
+                                                    <x-filament::button size="xs" color="success" class="w-full"
+                                                        wire:click="openBookingModal({{ $availability['id'] }})">
                                                         @svg('tabler-circle-plus', 'w-4 h-4 mr-1')
                                                         Prenota
                                                     </x-filament::button>
