@@ -17,6 +17,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
+use App\Rules\ValidateBookingCapacity;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
@@ -260,13 +263,18 @@ class GroupAvailabilities extends Page implements HasActions
                     'total_availabilities' => $filteredAvailabilities->count(),
                     'can_host_count' => $filteredAvailabilities->where('can_host', true)->count(),
                     'availabilities' => $filteredAvailabilities->map(function ($availability) {
+                        $canBook = $this->canBook($availability->id);
+
                         return [
                             'id' => $availability->id,
                             'user_name' => $availability->user->name,
                             'status' => $availability->status,
                             'can_host' => $availability->can_host,
                             'note' => $availability->note,
-                            'can_book' => (int) $this->canBook($availability->id),
+                            'can_book' => $canBook,
+                            'max_guests' => $availability->max_guests ?? 0,
+                            'available_spots' => $availability->available_spots ?? 0,
+                            'total_booked' => $availability->total_booked_guests ?? 0,
                         ];
                     })->toArray(),
                 ];
@@ -305,49 +313,145 @@ class GroupAvailabilities extends Page implements HasActions
         return Auth::check() && Auth::user()->dinner_group_id !== null;
     }
 
+    /**
+     * Verifica se l'utente corrente può prenotare una specifica disponibilità.
+     */
     public function canBook(int $availabilityId): bool
     {
         $availability = DinnerAvailability::find($availabilityId);
-        // TODO manca il controllo sullo stato e sul numero di ospiti
-        if ($availability->can_host) {
-            return true;
+
+        if (!$availability) {
+            return false;
         }
 
-        return false;
+        $user = Auth::user();
+
+        // Usa la policy per verificare se può prenotare
+        return $user->can('book', $availability);
     }
 
-    public function openEditModal($bookingAvailabilityId): void
+    /**
+     * Apre il modal di prenotazione per una specifica disponibilità.
+     */
+    public function openBookingModal(int $availabilityId): void
     {
-        $this->bookingAvailabilityId = $bookingAvailabilityId;
+        $this->bookingAvailabilityId = $availabilityId;
         $this->mountAction('createBooking');
     }
 
+    /**
+     * Action per creare una nuova prenotazione.
+     */
     public function createBooking(): Action
     {
-        return  Action::make('createBooking')
-            // ->modalHeading('Nuova prenotazione')
-            ->modalHeading(fn() => "Prenotazione per #{$this->bookingAvailabilityId}")
-            ->modalSubmitActionLabel('Salva')
-            ->modalWidth('md')
+        return Action::make('createBooking')
+            ->modalHeading(function () {
+                $availability = DinnerAvailability::with(['user', 'dinnerDate'])->find($this->bookingAvailabilityId);
+
+                if (!$availability) {
+                    return 'Nuova Prenotazione';
+                }
+
+                $date = Carbon::parse($availability->dinnerDate->dinner_date)->isoFormat('dddd D MMMM YYYY');
+                $hostName = $availability->user->name;
+                $availableSpots = $availability->available_spots;
+
+                return "Prenota da {$hostName} - {$date} (Posti disponibili: {$availableSpots})";
+            })
+            ->modalSubmitActionLabel('Conferma Prenotazione')
+            ->modalCancelActionLabel('Annulla')
+            ->modalWidth('lg')
             ->schema([
                 TextInput::make('guests_count')
-                    ->label('Numero ospiti')
+                    ->label('Numero di ospiti aggiuntivi')
+                    ->helperText('Quante persone porti con te? (Tu sei già contato)')
                     ->integer()
-                    ->minValue(1)
-                    ->required(),
+                    ->minValue(0)
+                    ->default(0)
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set) {
+                        // Calcola il totale
+                        $total = (int) $state + 1; // +1 per il guest stesso
+                        $set('total_guests_display', $total);
+                    })
+                    ->rules([
+                        function () {
+                            return new ValidateBookingCapacity($this->bookingAvailabilityId);
+                        },
+                    ]),
 
-                TextInput::make('bringing_items')
-                    ->label('Cosa porto?'),
+                TextInput::make('total_guests_display')
+                    ->label('Totale persone')
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->default(1)
+                    ->prefix('👥')
+                    ->helperText('Include te e i tuoi ospiti'),
 
-                TextInput::make('notes')
-                    ->label('Note organizzatore'),
+                TagsInput::make('bringing_items')
+                    ->label('Cosa porti?')
+                    ->helperText('Vino, dolce, antipasto, ecc.')
+                    ->placeholder('Aggiungi elemento')
+                    ->separator(',')
+                    ->nullable(),
+
+                Textarea::make('notes')
+                    ->label('Note e allergie')
+                    ->helperText('Intolleranze alimentari, preferenze, note per l\'host')
+                    ->rows(3)
+                    ->maxLength(500)
+                    ->nullable(),
             ])
-            ->mountUsing(function (Action $action) {
-                $action->data([
-                    'bookingAvailabilityId' => $this->bookingAvailabilityId,
-                ]);
-            })
-            ->action(fn(array $data) => dd($data));
+            ->action(function (array $data) {
+                try {
+                    $availability = DinnerAvailability::findOrFail($this->bookingAvailabilityId);
+                    $user = Auth::user();
+
+                    // Verifica autorizzazione tramite policy
+                    if (!$user->can('book', $availability)) {
+                        Notification::make()
+                            ->title('Non autorizzato')
+                            ->body('Non puoi prenotare questa disponibilità.')
+                            ->danger()
+                            ->send();
+
+                        return;
+                    }
+
+                    // Crea la prenotazione
+                    DinnerBooking::create([
+                        'host_availability_id' => $this->bookingAvailabilityId,
+                        'guest_user_id' => $user->id,
+                        'guests_count' => $data['guests_count'] ?? 0,
+                        'bringing_items' => !empty($data['bringing_items'])
+                            ? implode(', ', $data['bringing_items'])
+                            : null,
+                        'notes' => $data['notes'] ?? null,
+                        'status' => 'confirmed',
+                    ]);
+
+                    // Observer gestirà automaticamente il cambio di stato dell'host e del guest
+
+                    Notification::make()
+                        ->title('Prenotazione confermata!')
+                        ->body("Hai prenotato con successo per {$availability->user->name}")
+                        ->success()
+                        ->send();
+
+                    // Ricarica i dati del calendario
+                    $this->loadCalendarData();
+
+                    // Reset delle proprietà
+                    $this->bookingAvailabilityId = null;
+
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->title('Errore')
+                        ->body('Si è verificato un errore durante la prenotazione: ' . $e->getMessage())
+                        ->danger()
+                        ->send();
+                }
+            });
     }
-    /** --- */
 }

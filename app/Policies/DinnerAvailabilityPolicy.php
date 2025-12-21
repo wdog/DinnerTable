@@ -44,8 +44,17 @@ class DinnerAvailabilityPolicy
      */
     public function delete(User $user, DinnerAvailability $dinnerAvailability): bool
     {
-        // TODO eliminare se non ci sono prenotazioni per la disponibilità
-        return $user->id === $dinnerAvailability->user_id;
+        // Può eliminare solo se è il proprietario
+        if ($user->id !== $dinnerAvailability->user_id) {
+            return false;
+        }
+
+        // Non può eliminare se ci sono prenotazioni confermate
+        $hasConfirmedBookings = $dinnerAvailability->bookings()
+            ->where('status', 'confirmed')
+            ->exists();
+
+        return ! $hasConfirmedBookings;
     }
 
     /**

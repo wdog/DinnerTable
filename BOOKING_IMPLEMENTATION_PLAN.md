@@ -178,22 +178,25 @@ AVAILABLE
    - ✅ GUEST: AVAILABLE → BOOKED (e viceversa)
    - ✅ Gestisce eventi: created, updated, deleted
    - ✅ Usa `saveQuietly()` per evitare loop infiniti
+3. ✅ `app/Enums/DinnerBookingStatus.php` - enum per stati prenotazioni (PENDING, CONFIRMED, CANCELLED)
 
-**File da modificare:**
-3. ⏳ `app/Providers/AppServiceProvider.php` - registrare observer nella boot() (PROSSIMO)
+**Commit creato:** d87c4b4 - "feat: implementato sistema prenotazioni cene con gestione stati"
 
 **Risultato:**
 - ✅ ValidateBookingCapacity verifica posti disponibili considerando guests_count + 1
 - ✅ Observer gestisce automaticamente tutti i cambi di stato
 - ✅ Non modifica status HOST_CANCELLED (manuale)
-- ⏳ Manca solo registrazione observer in AppServiceProvider
+- ✅ Enum DinnerBookingStatus creato per stati prenotazioni
 
-### STEP 3: Autorizzazioni
-**File da creare:**
-10. `app/Policies/DinnerBookingPolicy.php` - policy completa per bookings con metodo `book()`
-
-**File da modificare:**
-11. `app/Policies/DinnerAvailabilityPolicy.php` - aggiornare metodo `delete()` per impedire cancellazione se ci sono prenotazioni
+### ✅ STEP 3: Registrazione Observer e Autorizzazioni (COMPLETATO)
+**File modificati:**
+1. ✅ `app/Providers/AppServiceProvider.php` - registrato DinnerBookingObserver nella boot()
+2. ✅ `app/Policies/DinnerBookingPolicy.php` - policy completa per bookings con metodo `book()`
+   - Verifica tutte le condizioni: stesso gruppo, non propria disponibilità, can_host=true
+   - Controlla status (AVAILABLE_TO_HOST o ALMOST_FULL)
+   - Verifica posti disponibili e prenotazioni duplicate
+   - Impedisce prenotazioni multiple nello stesso giorno
+3. ✅ `app/Policies/DinnerAvailabilityPolicy.php` - aggiornato metodo `delete()` per impedire cancellazione con prenotazioni confermate
 
 **Cosa fa:**
 - Definisce chi può vedere/creare/modificare/cancellare prenotazioni
@@ -207,28 +210,47 @@ AVAILABLE
   - **Non ha altre prenotazioni confermate nello stesso giorno**
 - Impedisce cancellazione disponibilità con prenotazioni attive
 
-### STEP 4: Interfaccia Calendario
-**File da modificare:**
-12. `app/Filament/App/Pages/GroupAvailabilities.php` - aggiungere:
-    - Proprietà pubbliche per gestire modal (`$bookingAvailabilityId`, `$bookingData`)
-    - Metodo `canBook(int $availabilityId): bool`
-    - Metodo `openBookingModal(int $availabilityId): void`
-    - Metodo `createBooking(array $data): void`
-    - Modificare `loadCalendarData()` per includere info prenotazioni nelle availabilities
-    - Aggiornare colori/badge per visualizzare nuovi stati
+### ✅ STEP 4: Interfaccia Calendario e Form Prenotazione (COMPLETATO)
+**File modificati:**
+1. ✅ `app/Filament/App/Pages/GroupAvailabilities.php`:
+   - ✅ Aggiunte proprietà `$bookingAvailabilityId` e `$bookingData`
+   - ✅ Implementato metodo `canBook()` che usa la policy
+   - ✅ Implementato metodo `openBookingModal()`
+   - ✅ Creato Action `createBooking()` con form completo:
+     - Campo `guests_count` con validazione capacità
+     - Campo `total_guests_display` che mostra il totale in tempo reale
+     - Campo `bringing_items` come TagsInput
+     - Campo `notes` per allergie e note
+   - ✅ Aggiornato `loadCalendarData()` per includere info prenotazioni (max_guests, available_spots, total_booked, can_book)
+   - ✅ Gestione creazione prenotazione con notifiche success/error
+   - ✅ Ricaricamento automatico calendario dopo prenotazione
 
-13. `resources/views/filament/app/pages/group-availabilities.blade.php` - aggiungere:
-    - Pulsante "Prenota" nel loop delle availabilities (visibile solo se `can_book = true`)
-    - Mostrare info posti (es: "Posti: 3/8") per chi può ospitare con status AVAILABLE_TO_HOST o ALMOST_FULL
-    - Badge colorati per distinguere stati: verde (AVAILABLE_TO_HOST), arancione (ALMOST_FULL), rosso (FULL)
-    - Modal di prenotazione con form (guests_count, bringing_items, notes)
-    - Script per aprire modal via Livewire event
+2. ✅ `resources/views/filament/app/pages/group-availabilities.blade.php`:
+   - ✅ Aggiunto pulsante "Prenota" visibile solo se `can_book = true`
+   - ✅ Mostra info posti disponibili per host: "Posti: X/Y (Z liberi)" o "(PIENO)"
+   - ✅ Badge colorati per host (verde) e guest (rosa)
+   - ✅ Modal gestito tramite Filament Action
+   - ✅ Aggiornati filtri con nuovi stati (optgroup per Host e Guest)
 
-**Cosa fa:**
-- Mostra pulsante "Prenota" solo dove possibile
-- Apre modal con form per inserire dati prenotazione
-- Gestisce validazione e creazione prenotazione
-- Aggiorna calendario dopo prenotazione
+**Risultato:**
+- ✅ Form prenotazione completamente funzionante
+- ✅ Validazione in tempo reale della capacità
+- ✅ UI migliorata con info posti e stati colorati
+- ✅ Observer gestisce automaticamente i cambi di stato
+
+## Stato Attuale
+
+### ✅ Completato (STEP 0-4)
+- ✅ Enum DinnerAvailabilityStatus aggiornato con 7 stati
+- ✅ Database e modelli creati (dinner_bookings, max_guests)
+- ✅ Business logic implementata (ValidateBookingCapacity, DinnerBookingObserver)
+- ✅ Observer registrato in AppServiceProvider
+- ✅ Policy implementate (DinnerBookingPolicy, DinnerAvailabilityPolicy)
+- ✅ Form prenotazione completo nel calendario
+- ✅ UI calendario migliorata con posti disponibili e pulsante prenota
+- ✅ Filtri aggiornati con nuovi stati
+
+### ⏳ Prossimi Step (Opzionali)
 
 ### STEP 5: Risorsa Filament (Opzionale ma Consigliato)
 **File da creare:**

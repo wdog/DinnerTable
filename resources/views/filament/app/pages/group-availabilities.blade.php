@@ -45,11 +45,17 @@
                         <x-filament::input.wrapper class="w-auto">
                             <x-filament::input.select wire:model.live="filterStatus">
                                 <option value="">Tutti gli status</option>
-                                <option value="available">Disponibile</option>
-                                <option value="unavailable">Non disponibile</option>
-                                <option value="maybe">Forse</option>
-                                <option value="cancelled">Cancellato</option>
-                                <option value="booked">Prenotato</option>
+                                <optgroup label="Host (chi cucina)">
+                                    <option value="available_to_host">Disponibile ad ospitare</option>
+                                    <option value="almost_full">Quasi pieno</option>
+                                    <option value="full">Pieno</option>
+                                    <option value="host_cancelled">Cancellato (host)</option>
+                                </optgroup>
+                                <optgroup label="Guest (chi mangia)">
+                                    <option value="available">Disponibile</option>
+                                    <option value="booked">Ha prenotato</option>
+                                    <option value="unavailable">Non disponibile</option>
+                                </optgroup>
                             </x-filament::input.select>
                         </x-filament::input.wrapper>
 
@@ -117,30 +123,21 @@
 
 
 
-                                            <div class=" {{ $bgClass }} {{ $textClass }} rounded">
-
-                                                @if ($availability['can_book'])
-                                                    <x-filament::button class="w-12 block mx-auto"
-                                                         wire:click="openEditModal('{{ $availability['id'] }}')"
-
-                                                        >
-                                                        @svg('tabler-circle-plus', 'w-4 h-4 ml-1')
-                                                    </x-filament::button>
-                                                @endif
+                                            <div class=" {{ $bgClass }} {{ $textClass }} rounded p-2">
 
                                                 {{-- Badge con colore basato su status --}}
-                                                <div class='flex justify-start items-center gap-1'>
+                                                <div class='flex justify-start items-center gap-1 mb-2'>
 
                                                     @if ($canHost)
                                                         <div>
-                                                            @svg('tabler-chef-hat-filled', 'w-4 h-4 ml-1')
+                                                            @svg('tabler-chef-hat-filled', 'w-4 h-4')
                                                         </div>
                                                     @else
-                                                        <div>@svg('tabler-tools-kitchen-3', 'w-4 h-4 ml-1')</div>
+                                                        <div>@svg('tabler-tools-kitchen-3', 'w-4 h-4')</div>
                                                     @endif
 
                                                     <div class="w-full ">
-                                                        <div class="sm:text-xs/tight lg:text-base/tight">
+                                                        <div class="sm:text-xs/tight lg:text-base/tight font-semibold">
                                                             {{ $availability['user_name'] }}
                                                         </div>
                                                         <div class="text-xs/tight ">
@@ -149,6 +146,34 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                {{-- Info posti disponibili (solo per host) --}}
+                                                @if ($canHost && isset($availability['max_guests']))
+                                                    <div class="text-xs mb-2 flex items-center gap-1">
+                                                        @svg('tabler-users', 'w-3 h-3')
+                                                        <span>
+                                                            Posti: {{ $availability['total_booked'] ?? 0 }}/{{ $availability['max_guests'] }}
+                                                            @if (($availability['available_spots'] ?? 0) > 0)
+                                                                <span class="font-semibold">({{ $availability['available_spots'] }} liberi)</span>
+                                                            @else
+                                                                <span class="font-semibold text-red-700">(PIENO)</span>
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                @endif
+
+                                                {{-- Pulsante prenota --}}
+                                                @if ($availability['can_book'])
+                                                    <x-filament::button
+                                                        size="xs"
+                                                        color="success"
+                                                        class="w-full"
+                                                        wire:click="openBookingModal({{ $availability['id'] }})"
+                                                    >
+                                                        @svg('tabler-circle-plus', 'w-4 h-4 mr-1')
+                                                        Prenota
+                                                    </x-filament::button>
+                                                @endif
                                             </div>
                                         @endforeach
 
