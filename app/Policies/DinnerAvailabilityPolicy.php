@@ -36,7 +36,7 @@ class DinnerAvailabilityPolicy
      */
     public function update(User $user, DinnerAvailability $dinnerAvailability): bool
     {
-        return $user->id === $dinnerAvailability->user_id;;
+        return $user->id === $dinnerAvailability->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class DinnerAvailabilityPolicy
     public function delete(User $user, DinnerAvailability $dinnerAvailability): bool
     {
         // TODO eliminare se non ci sono prenotazioni per la disponibilità
-        return $user->id === $dinnerAvailability->user_id;;
+        return $user->id === $dinnerAvailability->user_id;
     }
 
     /**

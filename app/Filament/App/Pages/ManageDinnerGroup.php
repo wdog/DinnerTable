@@ -20,6 +20,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use UnitEnum;
 
 /**
  * Pagina per la gestione dei gruppi cena.
@@ -52,6 +53,11 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
      * Titolo della pagina.
      */
     protected static ?string $title = 'Gestione Gruppo';
+
+    /**
+     * Gruppo di navigazione.
+     */
+    protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
 
     /**
      * Dati del form per la creazione di un gruppo.

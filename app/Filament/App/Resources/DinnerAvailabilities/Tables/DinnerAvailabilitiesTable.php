@@ -39,7 +39,7 @@ class DinnerAvailabilitiesTable
                     ->label('Può ospitare')
                     ->alignCenter()
                     ->trueIcon('tabler-chef-hat-filled')
-                    ->falseIcon('tabler-pacman')
+                    ->falseIcon('tabler-tools-kitchen-3')
                     ->trueColor('success')
                     ->falseColor('info')
                     ->boolean(),

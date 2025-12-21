@@ -7,7 +7,16 @@ use BackedEnum;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use App\Models\DinnerDate;
+use Filament\Actions\Action;
+use App\Models\DinnerBooking;
+use App\Enums\DinnerBookingStatus;
+use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\DinnerAvailabilityStatus;
+use Filament\Forms\Components\TextInput;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Forms\Components\TagsInput;
 
 /**
  * Pagina per visualizzare tutte le disponibilità dei membri del gruppo cena.
@@ -15,9 +24,9 @@ use Illuminate\Support\Facades\Auth;
  * Pagina personalizzata con layout custom per mostrare il calendario
  * delle disponibilità dei membri del gruppo con navigazione tra i mesi.
  */
-class GroupAvailabilities extends Page
+class GroupAvailabilities extends Page implements HasActions
 {
-
+    use InteractsWithActions;
     /**
      * Icona nella navigazione.
      */
@@ -26,17 +35,29 @@ class GroupAvailabilities extends Page
     /**
      * Label nella navigazione.
      */
-    protected static ?string $navigationLabel = 'Disponibilità Gruppo';
-
-    /**
-     * Titolo della pagina.
-     */
-    protected static ?string $title = 'Disponibilità del Gruppo';
+    protected static ?string $navigationLabel = 'Calendario Disponibilità';
 
     /**
      * Vista blade della pagina.
      */
     protected string $view = 'filament.app.pages.group-availabilities';
+
+    public ?string $bookingAvailabilityId = null;
+
+    public array $bookingData = [];
+
+
+    /**
+     * Ottiene il titolo dinamico della pagina con il nome del gruppo.
+     */
+    public function getTitle(): string
+    {
+        $groupName = Auth::user()->dinnerGroup?->name;
+
+        return $groupName
+            ? "Disponibilità - {$groupName}"
+            : 'Disponibilità del Gruppo';
+    }
 
     /**
      * Ordine nella navigazione.
@@ -52,6 +73,16 @@ class GroupAvailabilities extends Page
      * Mese e anno selezionati (formato Y-m).
      */
     public ?string $selectedMonth = null;
+
+    /**
+     * Filtro per status disponibilità.
+     */
+    public ?string $filterStatus = null;
+
+    /**
+     * Filtro per "può ospitare".
+     */
+    public bool $filterCanHost = false;
 
     /**
      * Date del mese corrente con disponibilità.
@@ -99,6 +130,22 @@ class GroupAvailabilities extends Page
     }
 
     /**
+     * Aggiorna il calendario quando cambia il filtro status.
+     */
+    public function updatedFilterStatus(): void
+    {
+        $this->loadCalendarData();
+    }
+
+    /**
+     * Aggiorna il calendario quando cambia il filtro can_host.
+     */
+    public function updatedFilterCanHost(): void
+    {
+        $this->loadCalendarData();
+    }
+
+    /**
      * Ottiene il nome formattato del mese corrente.
      *
      * @return string Nome del mese e anno in italiano (es. "Dicembre 2025")
@@ -132,7 +179,6 @@ class GroupAvailabilities extends Page
 
         return $options;
     }
-
 
     /**
      * Carica i dati del calendario per il mese selezionato.
@@ -184,6 +230,26 @@ class GroupAvailabilities extends Page
             if ($dinnerDate) {
                 $availabilities = $dinnerDate->availabilities;
 
+                // Applica i filtri alle disponibilità
+                $filteredAvailabilities = $availabilities->filter(function ($availability) {
+
+                    if ($availability->status === DinnerAvailabilityStatus::UNAVAILABLE) {
+                        return false;
+                    }
+
+                    // Filtro per status
+                    if ($this->filterStatus && $availability->status->value !== $this->filterStatus) {
+                        return false;
+                    }
+
+                    // Filtro per can_host
+                    if ($this->filterCanHost && ! $availability->can_host) {
+                        return false;
+                    }
+
+                    return true;
+                });
+
                 $calendar[] = [
                     'empty' => false,
                     'date' => $dinnerDate->dinner_date,
@@ -191,17 +257,16 @@ class GroupAvailabilities extends Page
                     'day_name' => Carbon::parse($dinnerDate->dinner_date)->isoFormat('ddd'),
                     'is_closed' => $dinnerDate->is_closed,
                     'notes' => $dinnerDate->notes,
-                    'total_availabilities' => $availabilities->count(),
-                    'available_count' => $availabilities->where('status', 'available')->count(),
-                    'maybe_count' => $availabilities->where('status', 'maybe')->count(),
-                    'unavailable_count' => $availabilities->where('status', 'unavailable')->count(),
-                    'can_host_count' => $availabilities->where('can_host', true)->count(),
-                    'availabilities' => $availabilities->map(function ($availability) {
+                    'total_availabilities' => $filteredAvailabilities->count(),
+                    'can_host_count' => $filteredAvailabilities->where('can_host', true)->count(),
+                    'availabilities' => $filteredAvailabilities->map(function ($availability) {
                         return [
-                            'user_name' => $availability->user->name ,
+                            'id' => $availability->id,
+                            'user_name' => $availability->user->name,
                             'status' => $availability->status,
                             'can_host' => $availability->can_host,
                             'note' => $availability->note,
+                            'can_book' => (int) $this->canBook($availability->id),
                         ];
                     })->toArray(),
                 ];
@@ -239,4 +304,50 @@ class GroupAvailabilities extends Page
     {
         return Auth::check() && Auth::user()->dinner_group_id !== null;
     }
+
+    public function canBook(int $availabilityId): bool
+    {
+        $availability = DinnerAvailability::find($availabilityId);
+        // TODO manca il controllo sullo stato e sul numero di ospiti
+        if ($availability->can_host) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function openEditModal($bookingAvailabilityId): void
+    {
+        $this->bookingAvailabilityId = $bookingAvailabilityId;
+        $this->mountAction('createBooking');
+    }
+
+    public function createBooking(): Action
+    {
+        return  Action::make('createBooking')
+            // ->modalHeading('Nuova prenotazione')
+            ->modalHeading(fn() => "Prenotazione per #{$this->bookingAvailabilityId}")
+            ->modalSubmitActionLabel('Salva')
+            ->modalWidth('md')
+            ->schema([
+                TextInput::make('guests_count')
+                    ->label('Numero ospiti')
+                    ->integer()
+                    ->minValue(1)
+                    ->required(),
+
+                TextInput::make('bringing_items')
+                    ->label('Cosa porto?'),
+
+                TextInput::make('notes')
+                    ->label('Note organizzatore'),
+            ])
+            ->mountUsing(function (Action $action) {
+                $action->data([
+                    'bookingAvailabilityId' => $this->bookingAvailabilityId,
+                ]);
+            })
+            ->action(fn(array $data) => dd($data));
+    }
+    /** --- */
 }

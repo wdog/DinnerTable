@@ -76,20 +76,30 @@ class DinnerDatesSeeder extends Seeder
                     ->values();
 
                 foreach ($selectedDates as $dinnerDate) {
-                    // Status random: 80% AVAILABLE, 15% MAYBE, 5% UNAVAILABLE
-                    $statusRand = rand(1, 100);
-                    if ($statusRand <= 80) {
-                        $status = DinnerAvailabilityStatus::AVAILABLE;
-                    } elseif ($statusRand <= 95) {
-                        $status = DinnerAvailabilityStatus::MAYBE;
-                    } else {
-                        $status = DinnerAvailabilityStatus::UNAVAILABLE;
-                    }
+                    // Decidi prima se può ospitare (30% probabilità)
+                    $canHost = rand(1, 100) <= 30;
 
-                    // can_host: 30% true se status è AVAILABLE, altrimenti false
-                    $canHost = false;
-                    if ($status === DinnerAvailabilityStatus::AVAILABLE && rand(1, 100) <= 30) {
-                        $canHost = true;
+                    if ($canHost) {
+                        // HOST: usa solo stati iniziali validi
+                        // AVAILABLE_TO_HOST è l'unico stato iniziale per un host
+                        // ALMOST_FULL, FULL vengono impostati automaticamente dall'Observer quando ci sono prenotazioni
+                        // HOST_CANCELLED può essere impostato solo manualmente dall'utente
+                        $status = DinnerAvailabilityStatus::AVAILABLE_TO_HOST;
+
+                        // Max guests random tra 4 e 10
+                        $maxGuests = rand(4, 10);
+                    } else {
+                        // GUEST: usa stati iniziali validi
+                        // 85% AVAILABLE, 15% UNAVAILABLE
+                        // BOOKED viene impostato automaticamente dall'Observer quando prenota
+                        $statusRand = rand(1, 100);
+                        if ($statusRand <= 85) {
+                            $status = DinnerAvailabilityStatus::AVAILABLE;
+                        } else {
+                            $status = DinnerAvailabilityStatus::UNAVAILABLE;
+                        }
+
+                        $maxGuests = null;
                     }
 
                     DinnerAvailability::create([
@@ -97,6 +107,7 @@ class DinnerDatesSeeder extends Seeder
                         'user_id' => $member->id,
                         'status' => $status,
                         'can_host' => $canHost,
+                        'max_guests' => $maxGuests,
                         'note' => $canHost ? 'Disponibile ad ospitare!' : null,
                     ]);
 
@@ -133,14 +144,31 @@ class DinnerDatesSeeder extends Seeder
         // Statistiche per status
         $this->command->newLine();
         $this->command->info('📈 Statistiche per status:');
+
+        // Stati HOST
+        $availableToHost = DinnerAvailability::where('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST)->count();
+        $almostFull = DinnerAvailability::where('status', DinnerAvailabilityStatus::ALMOST_FULL)->count();
+        $full = DinnerAvailability::where('status', DinnerAvailabilityStatus::FULL)->count();
+        $hostCancelled = DinnerAvailability::where('status', DinnerAvailabilityStatus::HOST_CANCELLED)->count();
+
+        // Stati GUEST
         $available = DinnerAvailability::where('status', DinnerAvailabilityStatus::AVAILABLE)->count();
-        $maybe = DinnerAvailability::where('status', DinnerAvailabilityStatus::MAYBE)->count();
+        $booked = DinnerAvailability::where('status', DinnerAvailabilityStatus::BOOKED)->count();
         $unavailable = DinnerAvailability::where('status', DinnerAvailabilityStatus::UNAVAILABLE)->count();
+
         $canHostCount = DinnerAvailability::where('can_host', true)->count();
 
-        $this->command->info("  • Disponibili: {$available}");
-        $this->command->info("  • Forse: {$maybe}");
-        $this->command->info("  • Non disponibili: {$unavailable}");
-        $this->command->info("  • Possono ospitare: {$canHostCount}");
+        $this->command->info('  Host stati:');
+        $this->command->info("    • Disponibili ad ospitare: {$availableToHost}");
+        $this->command->info("    • Quasi pieni: {$almostFull}");
+        $this->command->info("    • Pieni: {$full}");
+        $this->command->info("    • Annullati: {$hostCancelled}");
+        $this->command->newLine();
+        $this->command->info('  Guest stati:');
+        $this->command->info("    • Disponibili: {$available}");
+        $this->command->info("    • Prenotati: {$booked}");
+        $this->command->info("    • Non disponibili: {$unavailable}");
+        $this->command->newLine();
+        $this->command->info("  • Totale che possono ospitare: {$canHostCount}");
     }
 }

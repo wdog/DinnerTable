@@ -24,6 +24,7 @@ return new class extends Migration
 
             $table->string('status'); // available | unavailable | maybe
             $table->boolean('can_host')->default(false);
+            $table->unsignedInteger('max_guests')->nullable();
             $table->text('note')->nullable();
 
             $table->timestamps();

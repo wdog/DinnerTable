@@ -125,4 +125,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     {
         return $this->hasMany(DinnerAvailability::class);
     }
+
+    /**
+     * Prenotazioni effettuate dall'utente come guest.
+     */
+    public function guestBookings(): HasMany
+    {
+        return $this->hasMany(DinnerBooking::class, 'guest_user_id');
+    }
 }

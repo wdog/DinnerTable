@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class DinnerAvailabilityResource extends Resource
 {
@@ -23,6 +24,13 @@ class DinnerAvailabilityResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Dinner Date';
+
+    protected static ?string $navigationLabel = 'Disponibilità';
+
+    /**
+     * Gruppo di navigazione.
+     */
+    protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
 
     public static function getEloquentQuery(): Builder
     {
