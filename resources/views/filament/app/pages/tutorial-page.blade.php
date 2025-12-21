@@ -95,7 +95,7 @@
                     </ol>
                 </div>
 
-                <div class="bg-gradient-to-r from-green-50 to-orange-50 dark:from-green-900/20 dark:to-orange-900/20 p-6 rounded-xl border-2 border-green-200 dark:border-green-700">
+                <div class="bg-linear-to-r from-green-50 to-orange-50 dark:from-green-900/20 dark:to-orange-900/20 p-6 rounded-xl border-2 border-green-200 dark:border-green-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                         ⚡ Stati Automatici
                     </h3>
