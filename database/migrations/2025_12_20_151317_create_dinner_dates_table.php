@@ -18,9 +18,6 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->date('dinner_date');
-            $table->boolean('is_closed')->default(false);
-            $table->text('notes')->nullable();
-
             $table->timestamps();
 
             $table->unique(['dinner_group_id', 'dinner_date']);

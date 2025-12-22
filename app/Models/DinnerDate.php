@@ -11,13 +11,10 @@ class DinnerDate extends Model
     protected $fillable = [
         'dinner_group_id',
         'dinner_date',
-        'is_closed',
-        'notes',
     ];
 
     protected $casts = [
         'dinner_date' => 'date',
-        'is_closed'   => 'boolean',
     ];
 
     public function group(): BelongsTo

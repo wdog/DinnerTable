@@ -11,7 +11,6 @@ test('dinner date can be created', function () {
     $dinnerDate = DinnerDate::create([
         'dinner_group_id' => $group->id,
         'dinner_date'     => '2025-12-25',
-        'is_closed'       => false,
     ]);
     expect($dinnerDate)->not->toBeNull()
         ->and($dinnerDate->dinner_group_id)->toBe($group->id);
