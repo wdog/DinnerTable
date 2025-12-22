@@ -124,17 +124,15 @@ class DinnerAvailabilityResource extends Resource
     /**
      * Definisce le relazioni Filament disponibili per questa risorsa.
      *
-     * Attualmente non ci sono relation managers configurati.
-     * Potrebbero essere aggiunti in futuro per gestire:
-     * - Prenotazioni ricevute (per host)
-     * - Storico modifiche
+     * Relation managers configurati:
+     * - BookingsRelationManager: Gestione prenotazioni ricevute (solo per host)
      *
      * @return array Array di relation managers
      */
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\BookingsRelationManager::class,
         ];
     }
 

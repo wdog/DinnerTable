@@ -22,6 +22,7 @@ class DinnerBooking extends Model
     protected $casts = [
         'guests_count'   => 'integer',
         'bringing_items' => 'array', // tags
+        'status'         => \App\Enums\DinnerBookingStatus::class,
     ];
 
     /**

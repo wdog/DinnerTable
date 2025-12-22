@@ -27,7 +27,7 @@ class DinnerAvailabilityForm
             ->components([
 
                 Section::make()
-                    ->columns(3)
+                    ->columns(2)
                     ->schema([
                         // !
                         DatePicker::make('dinnerDate.dinner_date')
