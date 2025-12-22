@@ -92,4 +92,13 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::ALMOST_FULL,
         ]);
     }
+
+    public function canUpdateBookings(): bool
+    {
+        return ! in_array($this, [
+            self::AVAILABLE_TO_HOST,
+            self::COMPLETED,
+            self::HOST_CANCELLED,
+        ]);
+    }
 }

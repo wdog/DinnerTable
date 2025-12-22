@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Profile extends Model
@@ -45,5 +46,12 @@ class Profile extends Model
             ! empty($this->postal_code) &&
             ! empty($this->max_guests) &&
             ! is_null($this->privacy_accepted_at);
+    }
+
+    public function fullAddress(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->address . ', ' . $this->house_number . ', ' . $this->city . ', ' . $this->postal_code
+        );
     }
 }

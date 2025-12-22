@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
+            ->databaseNotifications()
             ->colors([
                 'primary' => Color::Lime,
             ])

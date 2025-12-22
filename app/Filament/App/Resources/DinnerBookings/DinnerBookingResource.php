@@ -58,7 +58,10 @@ class DinnerBookingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return DinnerBookingForm::configure($schema);
+        return DinnerBookingForm::configure($schema)
+            ->disabled(
+                fn ($record) => ! $record->hostAvailability->status->canUpdateBookings()
+            );
     }
 
     public static function table(Table $table): Table

@@ -16,4 +16,13 @@ class EditDinnerBooking extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function getFormActions(): array
+    {
+        if ( ! $this->record->hostAvailability->status->canUpdateBookings()) {
+            return [];
+        }
+
+        return parent::getFormActions();
+    }
 }

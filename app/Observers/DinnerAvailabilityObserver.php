@@ -39,9 +39,11 @@ class DinnerAvailabilityObserver
     public function updated(DinnerAvailability $dinnerAvailability): void
     {
         // Verifica se lo stato è cambiato a HOST_CANCELLED
-        if ($dinnerAvailability->wasChanged('status') &&
+        if (
+            $dinnerAvailability->wasChanged('status') &&
             $dinnerAvailability->status === DinnerAvailabilityStatus::HOST_CANCELLED &&
-            $dinnerAvailability->can_host) {
+            $dinnerAvailability->can_host
+        ) {
             $this->handleHostCancellation($dinnerAvailability);
         }
     }
@@ -79,7 +81,7 @@ class DinnerAvailabilityObserver
             $booking->saveQuietly(); // Usa saveQuietly per evitare loop con DinnerBookingObserver
 
             $cancelledCount++;
-
+            Log::debug("Cancelled booking: {$booking->id}");
             // Invia notifica all'ospite
             try {
                 Notification::send(
