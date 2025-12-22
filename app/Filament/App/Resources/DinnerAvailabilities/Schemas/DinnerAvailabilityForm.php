@@ -27,7 +27,10 @@ class DinnerAvailabilityForm
             ->components([
 
                 Section::make()
-                    ->columns(2)
+                    ->columns([
+                        'xs' => 2,
+                        'md' => 4,
+                    ])
                     ->schema([
                         // !
                         DatePicker::make('dinnerDate.dinner_date')
@@ -41,13 +44,11 @@ class DinnerAvailabilityForm
                                     return Carbon::now()->format('Y-m-d');
                                 }
                             })
-
                             ->formatStateUsing(function ($record) {
                                 return $record?->dinnerDate
                                     ->dinner_date?->format('Y-m-d')
                                     ?? Carbon::now()->toDateString();
                             })
-
                             ->rules([
                                 function ($livewire) {
                                     return function ($attribute, $value, Closure $fail) use ($livewire) {
@@ -134,7 +135,7 @@ class DinnerAvailabilityForm
                             ->live()
                             ->required(),
 
-                        // Campo max_guests visibile solo quando can_host è true
+                        // ! Campo max_guests visibile solo quando can_host è true
                         TextInput::make('max_guests')
                             ->label('Numero massimo ospiti')
                             ->numeric()
@@ -144,20 +145,22 @@ class DinnerAvailabilityForm
                             ->visible(fn (Get $get) => $get('can_host') === true)
                             ->required(fn (Get $get) => $get('can_host') === true)
                             ->dehydrated() // IMPORTANTE: assicura che il campo venga sempre processato anche quando nascosto
-                            ->hint('Valore di default dal tuo profilo'),
+                            ->helperText('Valore di default dal tuo profilo'),
 
-                        // Campo cancellation_reason visibile solo quando status è HOST_CANCELLED
+                        // ! Campo cancellation_reason visibile solo quando status è HOST_CANCELLED
                         Select::make('cancellation_reason')
                             ->label('Motivo della cancellazione')
                             ->options(CancellationReason::class)
-                            ->visible(fn (Get $get) => $get('can_host') === true &&
-                                $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
+                            ->visible(
+                                fn (Get $get) => $get('can_host') === true &&
+                                    $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
                             )
-                            ->required(fn (Get $get) => $get('can_host') === true &&
-                                $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
+                            ->required(
+                                fn (Get $get) => $get('can_host') === true &&
+                                    $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
                             )
-                            ->helperText('Specifica il motivo per cui stai cancellando la cena')
-                            ->columnSpan(2),
+                            ->helperText('Specifica il motivo per cui stai cancellando la cena'),
+                        // ! NOTES
 
                         Textarea::make('note')
                             ->columnSpanFull(),

@@ -64,6 +64,8 @@ class DinnerAvailabilityResource extends Resource
      */
     protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
 
+    protected static ?int $navigationSort = 3;
+
     /**
      * Configura la query Eloquent per questa risorsa.
      *

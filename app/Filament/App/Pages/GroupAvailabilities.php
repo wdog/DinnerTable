@@ -65,14 +65,14 @@ class GroupAvailabilities extends Page implements HasActions
     }
 
     /**
-     * Ordine nella navigazione.
-     */
-    protected static ?int $navigationSort = 3;
-
-    /**
      * Gruppo di navigazione.
      */
     protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
+
+    /**
+     * Ordine nella navigazione.
+     */
+    protected static ?int $navigationSort = 1;
 
     /**
      * Mese e anno selezionati (formato Y-m).

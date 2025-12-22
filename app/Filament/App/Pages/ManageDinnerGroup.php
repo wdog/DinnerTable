@@ -59,6 +59,8 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
      */
     protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
 
+    protected static ?int $navigationSort = 98;
+
     /**
      * Dati del form per la creazione di un gruppo.
      */

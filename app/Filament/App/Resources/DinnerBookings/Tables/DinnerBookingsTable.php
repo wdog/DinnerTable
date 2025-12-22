@@ -3,14 +3,13 @@
 namespace App\Filament\App\Resources\DinnerBookings\Tables;
 
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use App\Enums\DinnerBookingStatus;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\DeleteBulkAction;
 
 class DinnerBookingsTable
 {
@@ -20,18 +19,26 @@ class DinnerBookingsTable
             ->columns([
                 TextColumn::make('hostAvailability.dinnerDate.dinner_date')
                     ->label('Data')
-                    ->date('d/m/Y (l)')
+                    ->date('l - d F Y')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('hostAvailability.user.nome')
+                TextColumn::make('hostAvailability.user.name')
                     ->label('Host')
-                    ->description(fn ($record) => $record->hostAvailability->user->cognome)
-                    ->searchable(['nome', 'cognome'])
                     ->sortable(),
 
-                TextColumn::make('hostAvailability.user.profile.citta')
+                TextColumn::make('hostAvailability.user.profile.city')
                     ->label('Città')
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('hostAvailability.user.profile.address')
+                    ->label('Indirizzo')
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('hostAvailability.user.profile.house_number')
+                    ->label('Civico')
                     ->searchable()
                     ->toggleable(),
 
@@ -75,9 +82,10 @@ class DinnerBookingsTable
             ])
             ->defaultSort('hostAvailability.dinnerDate.dinner_date', 'desc')
             ->recordActions([
-                // Azione per confermare la prenotazione
+                // ! Azione per confermare la prenotazione
                 Action::make('confirm')
                     ->label('Conferma')
+
                     ->icon('tabler-check')
                     ->color('success')
                     ->visible(fn ($record) => $record->status === DinnerBookingStatus::PENDING)
@@ -95,7 +103,7 @@ class DinnerBookingsTable
                             ->send();
                     }),
 
-                // Azione per annullare la prenotazione
+                // ! Azione per annullare la prenotazione
                 Action::make('cancel')
                     ->label('Annulla')
                     ->icon('tabler-x')
@@ -115,16 +123,14 @@ class DinnerBookingsTable
                             ->send();
                     }),
 
+                // ! edit
                 EditAction::make()
                     ->label('Modifica'),
-
+                // ! delete
                 DeleteAction::make()
                     ->label('Elimina'),
             ])
-            ->actions([
-                DeleteBulkAction::make()
-                    ->label('Elimina selezionate'),
-            ])
+
             ->emptyStateHeading('Nessuna prenotazione')
             ->emptyStateDescription('Non hai ancora effettuato prenotazioni. Crea la tua prima prenotazione!')
             ->emptyStateIcon('tabler-calendar-off');

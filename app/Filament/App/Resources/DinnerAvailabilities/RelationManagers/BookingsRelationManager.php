@@ -53,8 +53,7 @@ class BookingsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('guest.name')
                     ->label('Ospite')
-                    ->description(fn ($record) => $record->guest->cognome)
-                    ->searchable(['nome', 'cognome'])
+                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('guests_count')
@@ -104,7 +103,7 @@ class BookingsRelationManager extends RelationManager
                     ->label('Dettagli')
                     ->icon('tabler-eye')
                     ->color('gray')
-                    ->modalHeading(fn ($record) => "Prenotazione di {$record->guest->nome} {$record->guest->cognome}")
+                    ->modalHeading(fn ($record) => "Prenotazione di {$record->guest->name}")
                     ->modalContent(fn ($record) => view('filament.app.modals.booking-details', ['booking' => $record]))
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Chiudi'),

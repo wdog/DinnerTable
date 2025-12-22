@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking;
 use App\Filament\App\Resources\DinnerBookings\Pages\ListDinnerBookings;
-use App\Filament\App\Resources\DinnerBookings\Pages\CreateDinnerBooking;
 use App\Filament\App\Resources\DinnerBookings\Schemas\DinnerBookingForm;
 use App\Filament\App\Resources\DinnerBookings\Tables\DinnerBookingsTable;
 
@@ -22,9 +21,9 @@ use App\Filament\App\Resources\DinnerBookings\Tables\DinnerBookingsTable;
  * Permette all'utente di:
  * - Visualizzare tutte le sue prenotazioni
  * - Modificare dettagli (numero ospiti, items portati, note)
- * - Confermare o annullare la prenotazione
- * - Creare nuove prenotazioni
+ * - Confermare o annullare la prenotazione tramite azioni rapide
  *
+ * NON permette di creare prenotazioni (si fa da disponibilità).
  * Visualizza solo le prenotazioni dell'utente autenticato.
  *
  * @see DinnerBooking
@@ -44,6 +43,8 @@ class DinnerBookingResource extends Resource
     protected static ?string $pluralModelLabel = 'prenotazioni';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Gestione Cene';
+
+    protected static ?int $navigationSort = 2;
 
     /**
      * Filtra la query per mostrare solo le prenotazioni dell'utente autenticato.
@@ -75,9 +76,9 @@ class DinnerBookingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListDinnerBookings::route('/'),
-            'create' => CreateDinnerBooking::route('/create'),
-            'edit'   => EditDinnerBooking::route('/{record}/edit'),
+            'index' => ListDinnerBookings::route('/'),
+            // 'create' => CreateDinnerBooking::route('/create'),
+            'edit' => EditDinnerBooking::route('/{record}/edit'),
         ];
     }
 }

@@ -121,10 +121,9 @@
 
 
 
-                                            <div class=" {{ $bgClass }} {{ $textClass }} rounded p-2">
-
+                                            <div class=" {{ $bgClass }} {{ $textClass }} rounded px-2 py-1 mb-2">
                                                 {{-- Badge con colore basato su status --}}
-                                                <div class='flex justify-start items-center gap-1 mb-2'>
+                                                <div class='flex justify-start items-center gap-1'>
 
                                                     @if ($canHost)
                                                         <div>
@@ -138,7 +137,7 @@
                                                         <div class="sm:text-xs/tight lg:text-base/tight font-semibold">
                                                             {{ $availability['user_name'] }}
                                                         </div>
-                                                        <div class="text-xs/tight ">
+                                                        <div class="text-xs/tight">
                                                             {{-- Icona status --}}
                                                             {{ \App\Enums\DinnerAvailabilityStatus::tryFrom($statusValue)->getLabel() }}
                                                         </div>
@@ -148,7 +147,7 @@
                                                 {{-- Info posti disponibili (solo per host) --}}
                                                 @if ($canHost && isset($availability['max_guests']))
                                                     <div class="text-xs mb-2 flex items-center gap-1">
-                                                        @svg('tabler-users', 'w-3 h-3')
+                                                        @svg('tabler-armchair', 'w-4 h-4')
                                                         <span>
                                                             Posti:
                                                             {{ $availability['total_booked'] ?? 0 }}/{{ $availability['max_guests'] }}
@@ -166,9 +165,9 @@
 
                                                 {{-- Pulsante prenota --}}
                                                 @if ($availability['can_book'])
-                                                    <x-filament::button size="xs" color="success" class="w-full"
+                                                    <x-filament::button size="xs" color="primary" class="w-full"
                                                         wire:click="openBookingModal({{ $availability['id'] }})">
-                                                        @svg('tabler-circle-plus', 'w-4 h-4 mr-1')
+                                                        @svg('tabler-bowl-chopsticks', 'w-4 h-4 mr-1')
                                                         Prenota
                                                     </x-filament::button>
                                                 @endif
