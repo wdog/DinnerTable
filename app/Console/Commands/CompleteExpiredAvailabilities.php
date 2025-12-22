@@ -65,7 +65,7 @@ class CompleteExpiredAvailabilities extends Command
             $availability->save();
             $count++;
 
-            $this->info("Completata disponibilità ID {$availability->id} per {$availability->user->name} del {$availability->dinnerDate->date->format('d/m/Y')}");
+            $this->info("Completata disponibilità ID {$availability->id} per {$availability->user->name} del {$availability->dinnerDate->dinner_date->format('d/m/Y')}");
         }
 
         $this->info("Totale disponibilità completate: {$count}");
