@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use App\Models\DinnerDate;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
+use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
@@ -410,7 +411,7 @@ class GroupAvailabilities extends Page implements HasActions
                         'guests_count'         => $data['guests_count'] ?? 0,
                         'bringing_items'       => $data['bringing_items'],
                         'notes'                => $data['notes'] ?? null,
-                        'status'               => 'confirmed',
+                        'status'               => DinnerBookingStatus::PENDING,
                     ]);
 
                     // Observer gestirà automaticamente il cambio di stato dell'host e del guest

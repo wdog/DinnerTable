@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Filament\App\Resources\DinnerBookings;
+
+use BackedEnum;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use App\Models\DinnerBooking;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking;
+use App\Filament\App\Resources\DinnerBookings\Pages\ListDinnerBookings;
+use App\Filament\App\Resources\DinnerBookings\Pages\CreateDinnerBooking;
+use App\Filament\App\Resources\DinnerBookings\Schemas\DinnerBookingForm;
+use App\Filament\App\Resources\DinnerBookings\Tables\DinnerBookingsTable;
+
+/**
+ * Risorsa Filament per la gestione delle proprie prenotazioni come guest.
+ *
+ * Permette all'utente di:
+ * - Visualizzare tutte le sue prenotazioni
+ * - Modificare dettagli (numero ospiti, items portati, note)
+ * - Confermare o annullare la prenotazione
+ * - Creare nuove prenotazioni
+ *
+ * Visualizza solo le prenotazioni dell'utente autenticato.
+ *
+ * @see DinnerBooking
+ * @see DinnerBookingForm
+ * @see DinnerBookingsTable
+ */
+class DinnerBookingResource extends Resource
+{
+    protected static ?string $model = DinnerBooking::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
+
+    protected static ?string $navigationLabel = 'Le mie prenotazioni';
+
+    protected static ?string $modelLabel = 'prenotazione';
+
+    protected static ?string $pluralModelLabel = 'prenotazioni';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Gestione Cene';
+
+    /**
+     * Filtra la query per mostrare solo le prenotazioni dell'utente autenticato.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('guest_user_id', Auth::id())
+            ->with(['hostAvailability.user', 'hostAvailability.dinnerDate']);
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return DinnerBookingForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return DinnerBookingsTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index'  => ListDinnerBookings::route('/'),
+            'create' => CreateDinnerBooking::route('/create'),
+            'edit'   => EditDinnerBooking::route('/{record}/edit'),
+        ];
+    }
+}

@@ -51,7 +51,7 @@ class BookingsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('guest.nome')
+                TextColumn::make('guest.name')
                     ->label('Ospite')
                     ->description(fn ($record) => $record->guest->cognome)
                     ->searchable(['nome', 'cognome'])

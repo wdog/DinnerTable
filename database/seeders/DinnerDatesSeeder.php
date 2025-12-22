@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use App\Models\DinnerDate;
 use App\Models\DinnerGroup;
+use App\Models\DinnerBooking;
 use Illuminate\Database\Seeder;
+use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
 
@@ -94,16 +96,22 @@ class DinnerDatesSeeder extends Seeder
                         $maxGuests = null;
                     }
 
-                    DinnerAvailability::create([
-                        'dinner_date_id' => $dinnerDate->id,
-                        'user_id'        => $member->id,
-                        'status'         => $status,
-                        'can_host'       => $canHost,
-                        'max_guests'     => $maxGuests,
-                        'note'           => $canHost ? 'Disponibile ad ospitare!' : null,
-                    ]);
+                    $availability = DinnerAvailability::firstOrCreate(
+                        [
+                            'dinner_date_id' => $dinnerDate->id,
+                            'user_id'        => $member->id,
+                        ],
+                        [
+                            'status'     => $status,
+                            'can_host'   => $canHost,
+                            'max_guests' => $maxGuests,
+                            'note'       => $canHost ? 'Disponibile ad ospitare!' : null,
+                        ]
+                    );
 
-                    $totalAvailabilities++;
+                    if ($availability->wasRecentlyCreated) {
+                        $totalAvailabilities++;
+                    }
                 }
             }
         }
@@ -112,6 +120,12 @@ class DinnerDatesSeeder extends Seeder
         $this->command->info('🎉 Seeding date e disponibilità completato!');
         $this->command->info("   📅 Date create: {$totalDates}");
         $this->command->info("   ✅ Disponibilità create: {$totalAvailabilities}");
+
+        // Crea prenotazioni
+        $this->command->newLine();
+        $this->command->info('🍽️  Inizio creazione prenotazioni...');
+        $totalBookings = $this->createBookings($groups);
+        $this->command->info("   ✅ Prenotazioni create: {$totalBookings}");
 
         // Statistiche per gruppo
         $this->command->newLine();
@@ -158,5 +172,141 @@ class DinnerDatesSeeder extends Seeder
         $this->command->info("    • Disponibili: {$available}");
         $this->command->newLine();
         $this->command->info("  • Totale che possono ospitare: {$canHostCount}");
+
+        // Statistiche prenotazioni
+        $this->command->newLine();
+        $this->command->info('📋 Statistiche prenotazioni:');
+
+        $pending   = DinnerBooking::where('status', DinnerBookingStatus::PENDING)->count();
+        $confirmed = DinnerBooking::where('status', DinnerBookingStatus::CONFIRMED)->count();
+        $cancelled = DinnerBooking::where('status', DinnerBookingStatus::CANCELLED)->count();
+
+        $this->command->info("  • In attesa: {$pending}");
+        $this->command->info("  • Confermate: {$confirmed}");
+        $this->command->info("  • Cancellate: {$cancelled}");
+    }
+
+    /**
+     * Crea prenotazioni realistiche rispettando le regole del sistema.
+     *
+     * Regole rispettate:
+     * - Solo guest possono prenotare (can_host = false)
+     * - Solo presso host disponibili (can_host = true, status = AVAILABLE_TO_HOST)
+     * - Rispetta capacità massima (max_guests)
+     * - Stesso gruppo
+     * - Non puoi prenotare da te stesso
+     * - Stati: 60% confirmed, 30% pending, 10% cancelled
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $groups
+     * @return int Numero di prenotazioni create
+     */
+    protected function createBookings($groups): int
+    {
+        $totalBookings = 0;
+
+        foreach ($groups as $group) {
+            // Ottieni tutti gli host disponibili del gruppo
+            $availableHosts = DinnerAvailability::where('can_host', true)
+                ->where('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST)
+                ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_group_id', $group->id))
+                ->with(['user', 'dinnerDate'])
+                ->get();
+
+            if ($availableHosts->isEmpty()) {
+                continue;
+            }
+
+            // Ottieni tutti i guest del gruppo (utenti con almeno una disponibilità da guest)
+            $potentialGuests = DinnerAvailability::where('can_host', false)
+                ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_group_id', $group->id))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->unique('id');
+
+            if ($potentialGuests->isEmpty()) {
+                continue;
+            }
+
+            // Per ogni host, crea 1-3 prenotazioni random
+            foreach ($availableHosts as $hostAvailability) {
+                $numBookings = rand(1, 3);
+
+                // Calcola posti disponibili
+                $availableSpots = $hostAvailability->max_guests;
+
+                // Seleziona guest random (diversi dall'host)
+                $selectedGuests = $potentialGuests
+                    ->where('id', '!=', $hostAvailability->user_id)
+                    ->shuffle()
+                    ->take(min($numBookings, $availableSpots));
+
+                foreach ($selectedGuests as $guest) {
+                    // Verifica che il guest non abbia già prenotato per questa data
+                    $alreadyBooked = DinnerBooking::where('guest_user_id', $guest->id)
+                        ->whereHas('hostAvailability.dinnerDate', function ($q) use ($hostAvailability) {
+                            $q->where('id', $hostAvailability->dinner_date_id);
+                        })
+                        ->exists();
+
+                    if ($alreadyBooked) {
+                        continue;
+                    }
+
+                    // Calcola posti ancora disponibili
+                    $currentBookings = $hostAvailability->total_booked_guests;
+                    if ($currentBookings >= $hostAvailability->max_guests) {
+                        break; // Host pieno
+                    }
+
+                    // Numero di ospiti random (1-2 per prenotazione)
+                    $guestsCount = rand(1, min(2, $hostAvailability->max_guests - $currentBookings));
+
+                    // Determina lo stato (60% confirmed, 30% pending, 10% cancelled)
+                    $statusRand = rand(1, 100);
+                    if ($statusRand <= 60) {
+                        $status = DinnerBookingStatus::CONFIRMED;
+                    } elseif ($statusRand <= 90) {
+                        $status = DinnerBookingStatus::PENDING;
+                    } else {
+                        $status = DinnerBookingStatus::CANCELLED;
+                    }
+
+                    // Items random che il guest porta
+                    $possibleItems = ['Vino', 'Dolce', 'Antipasto', 'Frutta', 'Pane', 'Acqua'];
+                    $numItems      = rand(0, 2);
+                    $bringingItems = $numItems > 0
+                        ? collect($possibleItems)->random($numItems)->values()->toArray()
+                        : [];
+
+                    // Note random (50% probabilità)
+                    $notes = rand(1, 100) <= 50
+                        ? collect([
+                            'Non vedo l\'ora!',
+                            'Grazie per l\'ospitalità',
+                            'Arriverò verso le 20:00',
+                            'Ho alcune intolleranze alimentari',
+                            null,
+                        ])->random()
+                        : null;
+
+                    DinnerBooking::create([
+                        'host_availability_id' => $hostAvailability->id,
+                        'guest_user_id'        => $guest->id,
+                        'guests_count'         => $guestsCount,
+                        'bringing_items'       => $bringingItems,
+                        'notes'                => $notes,
+                        'status'               => $status,
+                    ]);
+
+                    $totalBookings++;
+
+                    // Ricarica per aggiornare il conteggio
+                    $hostAvailability->refresh();
+                }
+            }
+        }
+
+        return $totalBookings;
     }
 }
