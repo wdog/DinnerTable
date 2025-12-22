@@ -8,6 +8,7 @@ use BackedEnum;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use App\Models\DinnerDate;
+use Livewire\Attributes\On;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
 use App\Enums\DinnerBookingStatus;
@@ -191,6 +192,7 @@ class GroupAvailabilities extends Page implements HasActions
      * Recupera tutte le date e disponibilità del gruppo per il mese corrente.
      * Costruisce una griglia di 7 colonne partendo da lunedì.
      */
+    #[On('data-updated')]
     public function loadCalendarData(): void
     {
         if ( ! $this->selectedMonth) {
@@ -255,8 +257,6 @@ class GroupAvailabilities extends Page implements HasActions
                     'date'                 => $dinnerDate->dinner_date,
                     'day'                  => $day,
                     'day_name'             => Carbon::parse($dinnerDate->dinner_date)->isoFormat('ddd'),
-                    'is_closed'            => $dinnerDate->is_closed,
-                    'notes'                => $dinnerDate->notes,
                     'total_availabilities' => $filteredAvailabilities->count(),
                     'can_host_count'       => $filteredAvailabilities->where('can_host', true)->count(),
                     'availabilities'       => $filteredAvailabilities->map(function ($availability) {
@@ -283,8 +283,6 @@ class GroupAvailabilities extends Page implements HasActions
                     'date'                 => $currentDate,
                     'day'                  => $day,
                     'day_name'             => $currentDate->isoFormat('ddd'),
-                    'is_closed'            => false,
-                    'notes'                => null,
                     'total_availabilities' => 0,
                     'available_count'      => 0,
                     'maybe_count'          => 0,

@@ -85,8 +85,13 @@
                         <div class="aspect-square"></div>
                     @else
                         {{-- Cella giorno --}}
-                        <div
-                            class="border border-gray-200 dark:border-gray-700 rounded-lg px-2 hover:shadow-lg transition-shadow duration-200 bg-gray-50 dark:bg-gray-900/50 min-h-30 flex flex-col {{ $dateInfo['is_closed'] ? 'opacity-60' : '' }}">
+                        <div @class([
+                            'border dark:border-gray-500 dark:bg-white/10 border-lime-500 bg-lime-500/20' => $dateInfo[
+                                'date'
+                            ]->isSameDay(\Carbon\Carbon::now()),
+                            'dark:shadow-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2
+                                                    hover:shadow-lg transition-shadow duration-200 bg-gray-50 dark:bg-slate-900/50 min-h-30 flex flex-col ',
+                        ])>
 
                             {{-- Header giorno --}}
                             <div class="flex items-center justify-between mb-2">
@@ -96,32 +101,37 @@
                                         {{ Carbon\Carbon::parse($dateInfo['date'])->isoFormat('dddd') }}
                                     </span>
                                 </span>
-                                @if ($dateInfo['is_closed'])
-                                    <span class="text-xs text-red-600">✗</span>
-                                @endif
+
                             </div>
 
                             {{-- Contenuto --}}
                             <div class="flex-1 space-y-1">
                                 @if ($dateInfo['total_availabilities'] > 0)
-                                    <div class="space-y-0.5 mt-2">
+                                    <div class="space-y-0.5">
                                         @foreach ($dateInfo['availabilities'] as $availability)
                                             @php
                                                 $statusValue = $availability['status']->value;
                                                 $canHost = $availability['can_host'];
                                                 // COLOR
                                                 if ($canHost) {
-                                                    $bgClass = 'bg-lime-300';
-                                                    $textClass = 'text-lime-800';
+                                                    $bgClass = 'border bg-lime-300';
+                                                    $textClass = ' text-lime-800 ';
                                                 } else {
-                                                    $bgClass = 'bg-pink-400';
-                                                    $textClass = 'text-pink-950';
+                                                    $bgClass = 'bg-pink-400 border border-pink-700';
+                                                    $textClass = 'text-pink-950 ';
+                                                }
+
+                                                $extraClass = null;
+                                                if ($dateInfo['date'] <= Carbon\Carbon::now()) {
+                                                    $extraClass = 'opacity-50 line-through';
                                                 }
                                             @endphp
 
 
 
-                                            <div class=" {{ $bgClass }} {{ $textClass }} rounded px-2 py-1 mb-2">
+
+                                            <div
+                                                class=" {{ $bgClass }} {{ $textClass }} {{ $extraClass ?? '' }} rounded px-2 py-1 mb-2">
                                                 {{-- Badge con colore basato su status --}}
                                                 <div class='flex justify-start items-center gap-1'>
 
@@ -176,8 +186,8 @@
 
                                     </div>
                                 @else
-                                    <div class="text-xs text-gray-400 dark:text-gray-500 text-center py-2">
-                                        Nessuna disponibilità
+                                    <div class="flex items-center justify-center text-sm text-gray-400 dark:text-slate-700 text-center py-2">
+                                        @svg('tabler-chef-hat-off', 'w-5 h-5')
                                     </div>
                                 @endif
                             </div>

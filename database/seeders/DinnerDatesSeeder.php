@@ -36,9 +36,8 @@ class DinnerDatesSeeder extends Seeder
         foreach ($groups as $group) {
             $this->command->info("📅 Creazione date per gruppo: {$group->name}");
 
-            // Crea date per tutto dicembre 2025
             $startDate = Carbon::create(2025, 12, 1);
-            $endDate   = Carbon::create(2025, 12, 31);
+            $endDate   = Carbon::create(2026, 3, 31);
 
             $dates = [];
 
@@ -50,8 +49,6 @@ class DinnerDatesSeeder extends Seeder
                         'dinner_date'     => $date->toDateString(),
                     ],
                     [
-                        'is_closed' => false,
-                        'notes'     => null,
                     ]
                 );
 
@@ -66,7 +63,7 @@ class DinnerDatesSeeder extends Seeder
             // Per ogni membro del gruppo, crea disponibilità random (0-4 date)
             foreach ($group->members as $member) {
                 // Numero random di disponibilità (0-4)
-                $numAvailabilities = rand(0, 4);
+                $numAvailabilities = rand(0, 20);
 
                 if ($numAvailabilities === 0) {
                     continue;

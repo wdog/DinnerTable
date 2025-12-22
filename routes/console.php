@@ -15,7 +15,8 @@ Artisan::command('inspire', function () {
  * per tutte le disponibilità il cui giorno della cena è passato.
  */
 Schedule::command('availabilities:complete-expired')
-    ->dailyAt('02:00')
+    // ->dailyAt('02:00')
+    ->everyMinute()
     ->timezone('Europe/Rome')
     ->name('Complete Expired Availabilities')
     ->description('Completa le disponibilità il cui giorno della cena è passato');
