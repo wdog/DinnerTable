@@ -45,6 +45,13 @@ Additional features and associations will be specified in future iterations. Thi
 
 ## Development Commands
 
+### Docker Setup
+This project runs in Docker. All artisan commands must be executed through docker-compose:
+
+```bash
+docker-compose exec --user $(id -u):$(id -g) app php artisan [command]
+```
+
 ### Setup
 ```bash
 composer setup

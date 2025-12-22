@@ -6,6 +6,7 @@ use Closure;
 use Carbon\Carbon;
 use App\Models\DinnerDate;
 use Filament\Schemas\Schema;
+use App\Enums\CancellationReason;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -144,6 +145,19 @@ class DinnerAvailabilityForm
                             ->required(fn (Get $get) => $get('can_host') === true)
                             ->dehydrated() // IMPORTANTE: assicura che il campo venga sempre processato anche quando nascosto
                             ->hint('Valore di default dal tuo profilo'),
+
+                        // Campo cancellation_reason visibile solo quando status è HOST_CANCELLED
+                        Select::make('cancellation_reason')
+                            ->label('Motivo della cancellazione')
+                            ->options(CancellationReason::class)
+                            ->visible(fn (Get $get) => $get('can_host') === true &&
+                                $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
+                            )
+                            ->required(fn (Get $get) => $get('can_host') === true &&
+                                $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
+                            )
+                            ->helperText('Specifica il motivo per cui stai cancellando la cena')
+                            ->columnSpan(2),
 
                         Textarea::make('note')
                             ->columnSpanFull(),

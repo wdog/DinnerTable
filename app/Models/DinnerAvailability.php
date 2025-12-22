@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\DinnerAvailabilityObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([DinnerAvailabilityObserver::class])]
 class DinnerAvailability extends Model
 {
     //
@@ -17,12 +20,14 @@ class DinnerAvailability extends Model
         'can_host',
         'max_guests',
         'note',
+        'cancellation_reason',
     ];
 
     protected $casts = [
-        'status'     => DinnerAvailabilityStatus::class,
-        'can_host'   => 'boolean',
-        'max_guests' => 'integer',
+        'status'              => DinnerAvailabilityStatus::class,
+        'can_host'            => 'boolean',
+        'max_guests'          => 'integer',
+        'cancellation_reason' => \App\Enums\CancellationReason::class,
     ];
 
     protected static function booted()
