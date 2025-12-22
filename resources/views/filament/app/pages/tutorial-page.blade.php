@@ -123,6 +123,18 @@
                             </span>
                             <span class="text-gray-700 dark:text-gray-300">Tutto prenotato</span>
                         </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-4 py-2 rounded-lg font-medium bg-blue-500 text-white shadow-sm min-w-32 text-center">
+                                Completato
+                            </span>
+                            <span class="text-gray-700 dark:text-gray-300">Cena terminata (automatico)</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <p class="text-sm text-blue-800 dark:text-blue-200 flex items-start gap-2">
+                            <span class="text-lg">ℹ️</span>
+                            <span>Il giorno dopo la cena, lo stato passa automaticamente a <strong>Completato</strong></span>
+                        </p>
                     </div>
                 </div>
             </div>

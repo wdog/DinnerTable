@@ -13,6 +13,7 @@ use Filament\Support\Contracts\HasLabel;
  * - PENDING: Prenotazione in attesa di conferma dall'host
  * - CONFIRMED: Prenotazione confermata dall'host
  * - CANCELLED: Prenotazione cancellata (dall'host o dal guest)
+ * - COMPLETED: Prenotazione completata (cena terminata)
  */
 enum DinnerBookingStatus: string implements HasColor, HasIcon, HasLabel
 {
