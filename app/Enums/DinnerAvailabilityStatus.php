@@ -16,8 +16,6 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
 
     // Stati per GUEST (can_host = false)
     case AVAILABLE = 'available';
-    case BOOKED = 'booked';
-    case UNAVAILABLE = 'unavailable';
 
     public function getLabel(): string
     {
@@ -27,10 +25,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::ALMOST_FULL       => 'Quasi pieno',
             self::FULL              => 'Pieno',
             self::HOST_CANCELLED    => 'Annullato',
-            // Guest states
-            self::AVAILABLE   => 'Vorrebbe Mangiare',
-            self::BOOKED      => 'Ha Prenotato',
-            self::UNAVAILABLE => 'Non è disponibile',
+            // Guest state
+            self::AVAILABLE   => 'Disponibile',
         };
     }
 
@@ -42,10 +38,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::ALMOST_FULL       => 'warning',
             self::FULL              => 'danger',
             self::HOST_CANCELLED    => 'danger',
-            // Guest states
-            self::AVAILABLE   => 'purple',
-            self::BOOKED      => 'purple',
-            self::UNAVAILABLE => 'danger',
+            // Guest state
+            self::AVAILABLE   => 'info',
         };
     }
 
@@ -57,10 +51,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::ALMOST_FULL       => 'tabler-users',
             self::FULL              => 'tabler-door-off',
             self::HOST_CANCELLED    => 'tabler-ban',
-            // Guest states
+            // Guest state
             self::AVAILABLE   => 'tabler-tools-kitchen-3',
-            self::BOOKED      => 'tabler-tools-kitchen-3',
-            self::UNAVAILABLE => 'tabler-circle-x',
         };
     }
 
@@ -82,11 +74,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
      */
     public function isGuestStatus(): bool
     {
-        return in_array($this, [
-            self::AVAILABLE,
-            self::BOOKED,
-            self::UNAVAILABLE,
-        ]);
+        return $this === self::AVAILABLE;
     }
 
     /**

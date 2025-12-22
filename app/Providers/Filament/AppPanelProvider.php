@@ -6,6 +6,7 @@ use Filament\Panel;
 use App\Models\User;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
+use Filament\Support\Enums\Width;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,9 @@ class AppPanelProvider extends PanelProvider
             ->profile(\App\Filament\App\Auth\Pages\EditProfile::class)
             ->registration()
             ->emailVerification()
-            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->sidebarWidth('15rem')
+            ->maxContentWidth(Width::Full)
             ->colors([
                 'primary' => Color::Lime,
                 'danger'  => Color::Rose,

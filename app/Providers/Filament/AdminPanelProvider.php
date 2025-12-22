@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
+use Filament\Support\Enums\Width;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Http\Middleware\Authenticate;
@@ -28,7 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile(EditProfile::class)
-            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->sidebarWidth('15rem')
+            ->maxContentWidth(Width::Full)
             ->colors([
                 'primary' => Color::Lime,
             ])
@@ -44,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::user-menu.before',
-                fn (): string => view('filament.panels.app-link')->render()
+                fn(): string => view('filament.panels.app-link')->render()
             )
             ->middleware([
                 EncryptCookies::class,

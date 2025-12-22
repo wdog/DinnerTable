@@ -238,10 +238,6 @@ class GroupAvailabilities extends Page implements HasActions
                 // ! Applica i filtri alle disponibilità
                 $filteredAvailabilities = $availabilities->filter(function ($availability) {
 
-                    if ($availability->status === DinnerAvailabilityStatus::UNAVAILABLE) {
-                        return false;
-                    }
-
                     // Filtro per status
                     if ($this->filterStatus && $availability->status->value !== $this->filterStatus) {
                         return false;

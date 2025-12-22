@@ -89,16 +89,8 @@ class DinnerDatesSeeder extends Seeder
                         // Max guests random tra 4 e 10
                         $maxGuests = rand(4, 10);
                     } else {
-                        // GUEST: usa stati iniziali validi
-                        // 85% AVAILABLE, 15% UNAVAILABLE
-                        // BOOKED viene impostato automaticamente dall'Observer quando prenota
-                        $statusRand = rand(1, 100);
-                        if ($statusRand <= 85) {
-                            $status = DinnerAvailabilityStatus::AVAILABLE;
-                        } else {
-                            $status = DinnerAvailabilityStatus::UNAVAILABLE;
-                        }
-
+                        // GUEST: usa sempre AVAILABLE (unico stato per guest)
+                        $status = DinnerAvailabilityStatus::AVAILABLE;
                         $maxGuests = null;
                     }
 
@@ -153,8 +145,6 @@ class DinnerDatesSeeder extends Seeder
 
         // Stati GUEST
         $available = DinnerAvailability::where('status', DinnerAvailabilityStatus::AVAILABLE)->count();
-        $booked = DinnerAvailability::where('status', DinnerAvailabilityStatus::BOOKED)->count();
-        $unavailable = DinnerAvailability::where('status', DinnerAvailabilityStatus::UNAVAILABLE)->count();
 
         $canHostCount = DinnerAvailability::where('can_host', true)->count();
 
@@ -166,8 +156,6 @@ class DinnerDatesSeeder extends Seeder
         $this->command->newLine();
         $this->command->info('  Guest stati:');
         $this->command->info("    • Disponibili: {$available}");
-        $this->command->info("    • Prenotati: {$booked}");
-        $this->command->info("    • Non disponibili: {$unavailable}");
         $this->command->newLine();
         $this->command->info("  • Totale che possono ospitare: {$canHostCount}");
     }

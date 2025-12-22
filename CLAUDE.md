@@ -307,3 +307,98 @@ When adding new features, follow this order:
 5. Add policies for authorization
 6. Update seeders for testing data
 - non chiedere mai il permesso per usare il comando docker-compose dentro il progetto laravel
+
+## Code Documentation Standards
+
+### PHP DocBlocks
+All classes, methods, and complex functions should have comprehensive PHPDoc comments following these guidelines:
+
+#### Class-Level Documentation
+Every class should have a DocBlock that includes:
+- A one-line summary of the class purpose
+- A detailed description explaining functionality and responsibilities
+- Key features listed with bullet points
+- `@see` tags linking to related classes/files
+- Example:
+```php
+/**
+ * Risorsa Filament per la gestione delle disponibilità degli utenti.
+ *
+ * Questa risorsa permette agli utenti di dichiarare la propria disponibilità
+ * per una data specifica, indicando se possono ospitare (host) oppure se
+ * vogliono partecipare come ospiti (guest).
+ *
+ * Funzionalità principali:
+ * - Visualizza solo le disponibilità dell'utente autenticato
+ * - Filtra le disponibilità per il gruppo dell'utente
+ * - Gestisce stati automatici basati su prenotazioni (solo per host)
+ *
+ * @see DinnerAvailability Model principale
+ * @see DinnerAvailabilityForm Form per creare/modificare disponibilità
+ * @see DinnerAvailabilitiesTable Tabella con lista disponibilità
+ */
+class DinnerAvailabilityResource extends Resource
+```
+
+#### Method-Level Documentation
+Every public and protected method should have a DocBlock that includes:
+- A one-line summary of what the method does
+- A detailed description of behavior and business logic
+- `@param` tags for all parameters with type and description
+- `@return` tag with return type and description
+- `@throws` tags for exceptions (if applicable)
+- `@see` tags for related methods or classes (if applicable)
+- Example:
+```php
+/**
+ * Configura la query Eloquent per questa risorsa.
+ *
+ * Filtra i record per mostrare solo:
+ * - Le disponibilità dell'utente autenticato
+ * - Le disponibilità del gruppo a cui appartiene l'utente
+ *
+ * Questo garantisce che ogni utente veda solo le proprie disponibilità
+ * e non quelle di altri membri del gruppo.
+ *
+ * @return Builder Query Eloquent filtrata
+ */
+public static function getEloquentQuery(): Builder
+```
+
+#### Property Documentation
+Class properties should have inline comments:
+```php
+/**
+ * Modello Eloquent associato a questa risorsa.
+ */
+protected static ?string $model = DinnerAvailability::class;
+
+/**
+ * Label mostrata nel menu di navigazione.
+ */
+protected static ?string $navigationLabel = 'Disponibilità';
+```
+
+### Comment Language
+- **Italian**: Use Italian for user-facing descriptions, business logic explanations
+- **English**: Technical terms and framework-specific concepts can remain in English
+- Be consistent within the same file/module
+
+### When to Add Comments
+1. **Always document**:
+   - Public classes and interfaces
+   - Public and protected methods
+   - Complex algorithms or business logic
+   - Non-obvious behavior or side effects
+   - Configuration properties
+
+2. **Don't over-document**:
+   - Obvious getters/setters (unless they have side effects)
+   - Self-explanatory code
+   - Implementation details that are clear from the code itself
+
+### Keeping Documentation Updated
+- When modifying a method, **always update its DocBlock**
+- When adding new functionality, add corresponding documentation
+- Remove outdated comments during refactoring
+- Claude Code should proactively suggest documentation updates when code changes

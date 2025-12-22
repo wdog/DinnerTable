@@ -53,8 +53,6 @@
                                 </optgroup>
                                 <optgroup label="Guest (chi mangia)">
                                     <option value="available">Disponibile</option>
-                                    <option value="booked">Ha prenotato</option>
-                                    <option value="unavailable">Non disponibile</option>
                                 </optgroup>
                             </x-filament::input.select>
                         </x-filament::input.wrapper>
