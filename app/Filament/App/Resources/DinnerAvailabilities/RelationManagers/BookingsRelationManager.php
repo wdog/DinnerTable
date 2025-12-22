@@ -3,27 +3,27 @@
 namespace App\Filament\App\Resources\DinnerAvailabilities\RelationManagers;
 
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use App\Enums\DinnerBookingStatus;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 
 /**
- * Relation Manager per gestire le prenotazioni ricevute da un host.
+ * Relation Manager per visualizzare le prenotazioni ricevute da un host.
+ *
+ * L'host può solo VISUALIZZARE le prenotazioni ricevute.
+ * I guest gestiscono autonomamente le loro prenotazioni
+ * (conferma/annulla dalla loro area).
  *
  * Permette all'host di:
  * - Visualizzare tutte le prenotazioni per la sua disponibilità
  * - Vedere chi ha prenotato, quanti ospiti porta, cosa porta
- * - Confermare o annullare prenotazioni
- * - Filtrare per stato (in attesa, confermato, cancellato)
+ * - Vedere lo stato della prenotazione (pending/confirmed/cancelled)
+ * - Filtrare per stato
  *
  * Visibile solo quando:
  * - L'utente è host (can_host = true)
- * - Ci sono prenotazioni da mostrare
  *
  * @see DinnerAvailabilityResource
  * @see DinnerBooking
@@ -96,50 +96,10 @@ class BookingsRelationManager extends RelationManager
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([
-                // Non permettiamo di creare prenotazioni da qui
+                // L'host non può creare prenotazioni
             ])
             ->recordActions([
-                // Azione per confermare la prenotazione
-                Action::make('confirm')
-                    ->label('Conferma')
-                    ->icon('tabler-check')
-                    ->color('success')
-                    ->visible(fn ($record) => $record->status === DinnerBookingStatus::PENDING)
-                    ->requiresConfirmation()
-                    ->modalHeading('Conferma prenotazione')
-                    ->modalDescription(fn ($record) => "Confermare la prenotazione di {$record->guest->nome} {$record->guest->cognome}?")
-                    ->action(function ($record) {
-                        $record->status = DinnerBookingStatus::CONFIRMED;
-                        $record->save();
-
-                        Notification::make()
-                            ->success()
-                            ->title('Prenotazione confermata')
-                            ->body("La prenotazione di {$record->guest->nome} è stata confermata.")
-                            ->send();
-                    }),
-
-                // Azione per annullare la prenotazione
-                Action::make('cancel')
-                    ->label('Annulla')
-                    ->icon('tabler-x')
-                    ->color('danger')
-                    ->visible(fn ($record) => $record->status !== DinnerBookingStatus::CANCELLED)
-                    ->requiresConfirmation()
-                    ->modalHeading('Annulla prenotazione')
-                    ->modalDescription(fn ($record) => "Sei sicuro di voler annullare la prenotazione di {$record->guest->nome} {$record->guest->cognome}?")
-                    ->action(function ($record) {
-                        $record->status = DinnerBookingStatus::CANCELLED;
-                        $record->save();
-
-                        Notification::make()
-                            ->warning()
-                            ->title('Prenotazione annullata')
-                            ->body("La prenotazione di {$record->guest->nome} è stata annullata.")
-                            ->send();
-                    }),
-
-                // Azione per visualizzare i dettagli
+                // Solo azione per visualizzare i dettagli
                 Action::make('view')
                     ->label('Dettagli')
                     ->icon('tabler-eye')
@@ -149,33 +109,7 @@ class BookingsRelationManager extends RelationManager
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Chiudi'),
             ])
-            ->actions([
-                // Azione bulk per confermare più prenotazioni
-                BulkAction::make('confirm_all')
-                    ->label('Conferma selezionate')
-                    ->icon('tabler-check')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->action(function ($records) {
-                        $count = 0;
-                        foreach ($records as $record) {
-                            if ($record->status === DinnerBookingStatus::PENDING) {
-                                $record->status = DinnerBookingStatus::CONFIRMED;
-                                $record->save();
-                                $count++;
-                            }
-                        }
 
-                        Notification::make()
-                            ->success()
-                            ->title('Prenotazioni confermate')
-                            ->body("{$count} prenotazioni sono state confermate.")
-                            ->send();
-                    }),
-
-                DeleteBulkAction::make()
-                    ->label('Elimina selezionate'),
-            ])
             ->emptyStateHeading('Nessuna prenotazione')
             ->emptyStateDescription('Non ci sono ancora prenotazioni per questa disponibilità.')
             ->emptyStateIcon('tabler-calendar-off');
