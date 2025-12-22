@@ -24,7 +24,7 @@ test('profile is created when user is created', function () {
 });
 
 test('profile belongs to user', function () {
-    $user = User::factory()->create();
+    $user    = User::factory()->create();
     $profile = $user->profile;
 
     expect($profile->user)->not->toBeNull()
@@ -174,7 +174,7 @@ test('profile avatar url is nullable', function () {
 });
 
 test('profile is deleted when user is deleted', function () {
-    $user = User::factory()->create();
+    $user      = User::factory()->create();
     $profileId = $user->profile->id;
 
     $user->delete();

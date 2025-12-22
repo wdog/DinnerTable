@@ -77,28 +77,28 @@ class DinnerGroupSeeder extends Seeder
 
         // Distribuisci 100 utenti tra le 4 città (25 per città)
         $usersPerCity = 25;
-        $userIndex = 1;
+        $userIndex    = 1;
 
         foreach ($this->cities as $cityName => $cityData) {
             $this->command->info("📍 Creazione utenti per {$cityName}...");
 
             // Distribuisci gli utenti tra i CAP della città
-            $postalCodes = $cityData['postal_codes'];
+            $postalCodes        = $cityData['postal_codes'];
             $usersPerPostalCode = (int) ceil($usersPerCity / count($postalCodes));
 
             foreach ($postalCodes as $postalCode) {
                 $count = min($usersPerPostalCode, 100 - $userIndex + 1);
 
                 for ($i = 0; $i < $count && $userIndex <= 100; $i++) {
-                    $firstName = $this->getRandomItalianFirstName();
-                    $lastName = $this->getRandomItalianLastName();
-                    $street = $cityData['streets'][array_rand($cityData['streets'])];
+                    $firstName   = $this->getRandomItalianFirstName();
+                    $lastName    = $this->getRandomItalianLastName();
+                    $street      = $cityData['streets'][array_rand($cityData['streets'])];
                     $houseNumber = rand(1, 150);
 
                     // Crea l'utente
                     $user = User::create([
                         'name'              => "{$firstName} {$lastName}",
-                        'email'             => strtolower(Str::slug($firstName.'.'.$lastName.$userIndex)).'@example.com',
+                        'email'             => strtolower(Str::slug($firstName . '.' . $lastName . $userIndex)) . '@example.com',
                         'password'          => bcrypt('password'),
                         'email_verified_at' => now(),
                     ]);
@@ -130,7 +130,7 @@ class DinnerGroupSeeder extends Seeder
         // Crea gruppi cena per ogni combinazione città/CAP
         $this->command->info('🍽️  Creazione gruppi cena...');
 
-        $groupsCreated = 0;
+        $groupsCreated  = 0;
         $usedGroupNames = [];
 
         foreach ($usersByLocation as $locationKey => $users) {
@@ -146,7 +146,7 @@ class DinnerGroupSeeder extends Seeder
 
                 // Scegli un nome gruppo univoco
                 do {
-                    $groupName = $this->groupNames[array_rand($this->groupNames)];
+                    $groupName     = $this->groupNames[array_rand($this->groupNames)];
                     $fullGroupName = "{$groupName} - {$city}";
                 } while (in_array($fullGroupName, $usedGroupNames));
 
@@ -188,10 +188,10 @@ class DinnerGroupSeeder extends Seeder
         $this->command->info('🎉 Seeding completato!');
         $this->command->info('   📊 Utenti creati: 100');
         $this->command->info("   👥 Gruppi creati: {$groupsCreated}");
-        $this->command->info('   🏙️  Città: '.count($this->cities));
+        $this->command->info('   🏙️  Città: ' . count($this->cities));
 
         // Statistiche finali
-        $usersInGroups = User::whereNotNull('dinner_group_id')->count();
+        $usersInGroups      = User::whereNotNull('dinner_group_id')->count();
         $usersWithoutGroups = User::whereNull('dinner_group_id')->count();
 
         $this->command->newLine();

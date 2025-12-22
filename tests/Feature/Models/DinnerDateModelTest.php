@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('dinner date can be created', function () {
-    $group = DinnerGroup::factory()->create();
+    $group      = DinnerGroup::factory()->create();
     $dinnerDate = DinnerDate::create([
         'dinner_group_id' => $group->id,
         'dinner_date'     => '2025-12-25',

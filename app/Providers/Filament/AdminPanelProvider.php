@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile(EditProfile::class)
-            ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->colors([
@@ -47,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::user-menu.before',
-                fn(): string => view('filament.panels.app-link')->render()
+                fn (): string => view('filament.panels.app-link')->render()
             )
             ->middleware([
                 EncryptCookies::class,

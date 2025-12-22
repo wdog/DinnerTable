@@ -17,6 +17,5 @@ class UserSeeder extends Seeder
             'is_admin'          => true,
             'email_verified_at' => now(),
         ]);
-
     }
 }

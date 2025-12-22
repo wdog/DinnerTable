@@ -50,7 +50,7 @@ class ValidateBookingCapacity implements ValidationRule
 
         // Calcola il totale con questa nuova prenotazione
         // $value è guests_count
-        $requestedGuests = ((int) $value);
+        $requestedGuests     = ((int) $value);
         $totalWithNewBooking = $totalBookedGuests + $requestedGuests;
 
         if ($totalWithNewBooking > $hostAvailability->max_guests) {

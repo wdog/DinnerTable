@@ -82,7 +82,7 @@ class DinnerBookingPolicy
         }
 
         // 8. Non deve avere altre prenotazioni confermate nello stesso giorno
-        $dinnerDate = $availability->dinnerDate->dinner_date;
+        $dinnerDate                = $availability->dinnerDate->dinner_date;
         $hasOtherBookingsOnSameDay = DinnerBooking::where('guest_user_id', $user->id)
             ->where('status', 'confirmed')
             ->whereHas('hostAvailability.dinnerDate', function ($query) use ($dinnerDate) {

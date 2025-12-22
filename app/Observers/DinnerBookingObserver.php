@@ -56,7 +56,7 @@ class DinnerBookingObserver
         }
 
         $totalBookedGuests = $hostAvailability->total_booked_guests;
-        $maxGuests = $hostAvailability->max_guests ?? 0;
+        $maxGuests         = $hostAvailability->max_guests ?? 0;
 
         $newStatus = match (true) {
             $totalBookedGuests >= $maxGuests => DinnerAvailabilityStatus::FULL,
@@ -70,5 +70,4 @@ class DinnerBookingObserver
             $hostAvailability->saveQuietly();
         }
     }
-
 }

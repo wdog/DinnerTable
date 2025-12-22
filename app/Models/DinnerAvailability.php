@@ -88,7 +88,7 @@ class DinnerAvailability extends Model
      */
     public function hasAvailableSpots(): bool
     {
-        if (! $this->can_host || ! $this->max_guests) {
+        if ( ! $this->can_host || ! $this->max_guests) {
             return false;
         }
 
@@ -100,7 +100,7 @@ class DinnerAvailability extends Model
      */
     public function getAvailableSpotsAttribute(): int
     {
-        if (! $this->can_host || ! $this->max_guests) {
+        if ( ! $this->can_host || ! $this->max_guests) {
             return 0;
         }
 

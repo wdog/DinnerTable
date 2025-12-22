@@ -21,7 +21,7 @@ class DinnerAvailabilitiesTable
                     ->titlePrefixedWithLabel(false)
                     ->collapsible()
                     ->getTitleFromRecordUsing(
-                        fn (Model $record): string => 'Dinner del '.$record->dinnerDate->dinner_date->format('d/m/Y')
+                        fn (Model $record): string => 'Dinner del ' . $record->dinnerDate->dinner_date->format('d/m/Y')
                     ),
             ])
             ->defaultSort('dinnerDate.dinner_date', 'desc')

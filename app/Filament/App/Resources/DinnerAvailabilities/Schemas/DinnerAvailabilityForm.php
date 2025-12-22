@@ -39,7 +39,6 @@ class DinnerAvailabilityForm
                                 if ($context == 'create') {
                                     return Carbon::now()->format('Y-m-d');
                                 }
-
                             })
 
                             ->formatStateUsing(function ($record) {

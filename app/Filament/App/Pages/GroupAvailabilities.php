@@ -15,7 +15,6 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use App\Policies\DinnerBookingPolicy;
 use App\Rules\ValidateBookingCapacity;
-use App\Enums\DinnerAvailabilityStatus;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -109,8 +108,8 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function previousMonth(): void
     {
-        [$year, $month] = explode('-', $this->selectedMonth);
-        $date = Carbon::create($year, $month, 1)->subMonth();
+        [$year, $month]      = explode('-', $this->selectedMonth);
+        $date                = Carbon::create($year, $month, 1)->subMonth();
         $this->selectedMonth = $date->format('Y-m');
         $this->loadCalendarData();
     }
@@ -120,8 +119,8 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function nextMonth(): void
     {
-        [$year, $month] = explode('-', $this->selectedMonth);
-        $date = Carbon::create($year, $month, 1)->addMonth();
+        [$year, $month]      = explode('-', $this->selectedMonth);
+        $date                = Carbon::create($year, $month, 1)->addMonth();
         $this->selectedMonth = $date->format('Y-m');
         $this->loadCalendarData();
     }
@@ -174,11 +173,11 @@ class GroupAvailabilities extends Page implements HasActions
     public function getMonthOptions(): array
     {
         $options = [];
-        $start = Carbon::now()->subMonths(2);
-        $end = Carbon::now()->addMonths(12);
+        $start   = Carbon::now()->subMonths(2);
+        $end     = Carbon::now()->addMonths(12);
 
         for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
-            $key = $date->format('Y-m');
+            $key           = $date->format('Y-m');
             $options[$key] = $date->isoFormat('MMMM YYYY');
         }
 
@@ -214,11 +213,11 @@ class GroupAvailabilities extends Page implements HasActions
 
         // Calcola il primo giorno del mese e quanti giorni ha il mese
         $firstDayOfMonth = Carbon::create($year, $month, 1);
-        $daysInMonth = $firstDayOfMonth->daysInMonth;
+        $daysInMonth     = $firstDayOfMonth->daysInMonth;
 
         // Calcola l'offset per iniziare da lunedì (1 = lunedì, 7 = domenica)
         $dayOfWeek = $firstDayOfMonth->dayOfWeekIso; // 1 (lunedì) a 7 (domenica)
-        $offset = $dayOfWeek - 1; // 0 per lunedì, 6 per domenica
+        $offset    = $dayOfWeek - 1; // 0 per lunedì, 6 per domenica
 
         // Costruisce l'array del calendario con celle vuote all'inizio
         $calendar = [];
@@ -237,7 +236,6 @@ class GroupAvailabilities extends Page implements HasActions
 
                 // ! Applica i filtri alle disponibilità
                 $filteredAvailabilities = $availabilities->filter(function ($availability) {
-
                     // Filtro per status
                     if ($this->filterStatus && $availability->status->value !== $this->filterStatus) {
                         return false;
@@ -261,7 +259,6 @@ class GroupAvailabilities extends Page implements HasActions
                     'total_availabilities' => $filteredAvailabilities->count(),
                     'can_host_count'       => $filteredAvailabilities->where('can_host', true)->count(),
                     'availabilities'       => $filteredAvailabilities->map(function ($availability) {
-
                         $canBook = $this->canBook($availability->id);
 
                         return [
@@ -280,7 +277,7 @@ class GroupAvailabilities extends Page implements HasActions
             } else {
                 // Giorno senza dati nel database
                 $currentDate = Carbon::create($year, $month, $day);
-                $calendar[] = [
+                $calendar[]  = [
                     'empty'                => false,
                     'date'                 => $currentDate,
                     'day'                  => $day,
@@ -350,8 +347,8 @@ class GroupAvailabilities extends Page implements HasActions
                     return 'Nuova Prenotazione';
                 }
 
-                $date = Carbon::parse($availability->dinnerDate->dinner_date)->isoFormat('dddd D MMMM YYYY');
-                $hostName = $availability->user->name;
+                $date           = Carbon::parse($availability->dinnerDate->dinner_date)->isoFormat('dddd D MMMM YYYY');
+                $hostName       = $availability->user->name;
                 $availableSpots = $availability->available_spots;
 
                 return "Prenota da {$hostName} - {$date} (Posti disponibili: {$availableSpots})";
@@ -391,7 +388,7 @@ class GroupAvailabilities extends Page implements HasActions
             ->action(function (array $data) {
                 try {
                     $availability = DinnerAvailability::findOrFail($this->bookingAvailabilityId);
-                    $user = Auth::user();
+                    $user         = Auth::user();
 
                     // Verifica autorizzazione tramite policy
                     $policy = app(DinnerBookingPolicy::class);
@@ -432,7 +429,7 @@ class GroupAvailabilities extends Page implements HasActions
                 } catch (Exception $e) {
                     Notification::make()
                         ->title('Errore')
-                        ->body('Si è verificato un errore durante la prenotazione: '.$e->getMessage())
+                        ->body('Si è verificato un errore durante la prenotazione: ' . $e->getMessage())
                         ->danger()
                         ->send();
                 }

@@ -35,7 +35,7 @@ class AppPanelProvider extends PanelProvider
             ->profile(\App\Filament\App\Auth\Pages\EditProfile::class)
             ->registration()
             ->emailVerification()
-            ->renderHook('panels::body.end', fn(): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->colors([

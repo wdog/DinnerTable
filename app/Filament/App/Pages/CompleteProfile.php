@@ -142,9 +142,7 @@ class CompleteProfile extends Page implements HasForms
      */
     public function save(): void
     {
-
         try {
-
             $data = $this->form->getState();
 
             /** @var User $user */

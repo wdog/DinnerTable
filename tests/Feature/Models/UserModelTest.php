@@ -101,7 +101,7 @@ test('user password is hashed', function () {
 
 test('user can have admin flag', function () {
     $admin = User::factory()->create(['is_admin' => true]);
-    $user = User::factory()->create(['is_admin' => false]);
+    $user  = User::factory()->create(['is_admin' => false]);
 
     expect($admin->is_admin)->toBeTrue()
         ->and($user->is_admin)->toBeFalse();
@@ -142,7 +142,7 @@ test('can update user name', function () {
 });
 
 test('can delete user', function () {
-    $user = User::factory()->create();
+    $user   = User::factory()->create();
     $userId = $user->id;
 
     $user->delete();

@@ -5,23 +5,52 @@
         "braces": false,
         "array_indentation": true,
         "not_operator_with_space": true,
-        "concat_space": true,
+        "single_line_after_imports": true,
+        "function_declaration": true,
+        "no_blank_lines_after_class_opening": true,
         "new_with_braces": {
             "anonymous_class": false,
             "named_class": false
         },
+        "class_attributes_separation": {
+            "elements": {
+                "const": "one",
+                "method": "one",
+                "property": "one",
+                "trait_import": "none",
+                "case": "none"
+            }
+        },
+        "ordered_class_elements": {
+            "order": [
+                "use_trait"
+            ]
+        },
+        "no_extra_blank_lines": {
+            "tokens": [
+                "extra",
+                "throw",
+                "use",
+                "curly_brace_block"
+            ]
+        },
+        "no_multiple_statements_per_line": true,
         "array_syntax": {
             "syntax": "short"
         },
         "binary_operator_spaces": {
             "default": "single_space",
             "operators": {
-                "=>": "align"
+                "=>": "align_single_space_minimal",
+                "=": "align_single_space_minimal"
             }
         },
         "no_unused_imports": true,
         "ordered_imports": {
             "sort_algorithm": "length"
+        },
+        "concat_space": {
+            "spacing": "one"
         }
     }
 }

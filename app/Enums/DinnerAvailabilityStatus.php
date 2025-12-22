@@ -10,9 +10,9 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
 {
     // Stati per HOST (can_host = true)
     case AVAILABLE_TO_HOST = 'available_to_host';
-    case ALMOST_FULL = 'almost_full';
-    case FULL = 'full';
-    case HOST_CANCELLED = 'host_cancelled';
+    case ALMOST_FULL       = 'almost_full';
+    case FULL              = 'full';
+    case HOST_CANCELLED    = 'host_cancelled';
 
     // Stati per GUEST (can_host = false)
     case AVAILABLE = 'available';
@@ -26,7 +26,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::FULL              => 'Pieno',
             self::HOST_CANCELLED    => 'Annullato',
             // Guest state
-            self::AVAILABLE   => 'Disponibile',
+            self::AVAILABLE => 'Disponibile',
         };
     }
 
@@ -39,7 +39,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::FULL              => 'danger',
             self::HOST_CANCELLED    => 'danger',
             // Guest state
-            self::AVAILABLE   => 'info',
+            self::AVAILABLE => 'info',
         };
     }
 
@@ -52,7 +52,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::FULL              => 'tabler-door-off',
             self::HOST_CANCELLED    => 'tabler-ban',
             // Guest state
-            self::AVAILABLE   => 'tabler-tools-kitchen-3',
+            self::AVAILABLE => 'tabler-tools-kitchen-3',
         };
     }
 

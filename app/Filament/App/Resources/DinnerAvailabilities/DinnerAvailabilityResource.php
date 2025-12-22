@@ -55,9 +55,10 @@ class DinnerAvailabilityResource extends Resource
      */
     protected static ?string $navigationLabel = 'Disponibilità';
 
-
     protected static ?string $modelLabel = 'La mia disponibilità';
+
     protected static ?string $pluralModelLabel = 'Le mie disponibilità';
+
     /**
      * Gruppo di navigazione in cui viene mostrata la risorsa.
      */
@@ -79,7 +80,7 @@ class DinnerAvailabilityResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('user_id', Auth::user()->id)
-            ->whereHas('dinnerDate', fn($q) => $q->where('dinner_group_id', Auth::user()->dinner_group_id));
+            ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_group_id', Auth::user()->dinner_group_id));
     }
 
     /**
@@ -92,7 +93,7 @@ class DinnerAvailabilityResource extends Resource
      * - Numero massimo ospiti (solo per host)
      * - Note opzionali
      *
-     * @param Schema $schema Schema Filament da configurare
+     * @param  Schema  $schema  Schema Filament da configurare
      * @return Schema Schema configurato con i campi del form
      *
      * @see DinnerAvailabilityForm::configure()
@@ -110,7 +111,7 @@ class DinnerAvailabilityResource extends Resource
      * - Filtri per stato e data
      * - Azioni per modificare/eliminare disponibilità
      *
-     * @param Table $table Tabella Filament da configurare
+     * @param  Table  $table  Tabella Filament da configurare
      * @return Table Tabella configurata con colonne e azioni
      *
      * @see DinnerAvailabilitiesTable::configure()

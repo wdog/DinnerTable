@@ -27,7 +27,7 @@ class DinnerDatesSeeder extends Seeder
             return;
         }
 
-        $totalDates = 0;
+        $totalDates          = 0;
         $totalAvailabilities = 0;
 
         // Per ogni gruppo, crea le date di dicembre
@@ -36,7 +36,7 @@ class DinnerDatesSeeder extends Seeder
 
             // Crea date per tutto dicembre 2025
             $startDate = Carbon::create(2025, 12, 1);
-            $endDate = Carbon::create(2025, 12, 31);
+            $endDate   = Carbon::create(2025, 12, 31);
 
             $dates = [];
 
@@ -59,7 +59,7 @@ class DinnerDatesSeeder extends Seeder
                 }
             }
 
-            $this->command->info('  ✓ Create '.count($dates).' date per il gruppo');
+            $this->command->info('  ✓ Create ' . count($dates) . ' date per il gruppo');
 
             // Per ogni membro del gruppo, crea disponibilità random (0-4 date)
             foreach ($group->members as $member) {
@@ -90,7 +90,7 @@ class DinnerDatesSeeder extends Seeder
                         $maxGuests = rand(4, 10);
                     } else {
                         // GUEST: usa sempre AVAILABLE (unico stato per guest)
-                        $status = DinnerAvailabilityStatus::AVAILABLE;
+                        $status    = DinnerAvailabilityStatus::AVAILABLE;
                         $maxGuests = null;
                     }
 
@@ -118,7 +118,7 @@ class DinnerDatesSeeder extends Seeder
         $this->command->info('📊 Statistiche per gruppo:');
 
         foreach ($groups as $group) {
-            $datesCount = DinnerDate::where('dinner_group_id', $group->id)->count();
+            $datesCount  = DinnerDate::where('dinner_group_id', $group->id)->count();
             $availsCount = DinnerAvailability::whereHas('dinnerDate', function ($q) use ($group) {
                 $q->where('dinner_group_id', $group->id);
             })->count();
@@ -139,9 +139,9 @@ class DinnerDatesSeeder extends Seeder
 
         // Stati HOST
         $availableToHost = DinnerAvailability::where('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST)->count();
-        $almostFull = DinnerAvailability::where('status', DinnerAvailabilityStatus::ALMOST_FULL)->count();
-        $full = DinnerAvailability::where('status', DinnerAvailabilityStatus::FULL)->count();
-        $hostCancelled = DinnerAvailability::where('status', DinnerAvailabilityStatus::HOST_CANCELLED)->count();
+        $almostFull      = DinnerAvailability::where('status', DinnerAvailabilityStatus::ALMOST_FULL)->count();
+        $full            = DinnerAvailability::where('status', DinnerAvailabilityStatus::FULL)->count();
+        $hostCancelled   = DinnerAvailability::where('status', DinnerAvailabilityStatus::HOST_CANCELLED)->count();
 
         // Stati GUEST
         $available = DinnerAvailability::where('status', DinnerAvailabilityStatus::AVAILABLE)->count();
