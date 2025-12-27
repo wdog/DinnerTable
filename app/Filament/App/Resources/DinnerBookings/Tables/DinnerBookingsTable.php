@@ -74,6 +74,7 @@ class DinnerBookingsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->filtersFormColumns(2)
             ->filters([
                 SelectFilter::make('status')
                     ->label('Stato')
@@ -81,6 +82,7 @@ class DinnerBookingsTable
                     ->native(false),
 
                 Filter::make('dinner_date')
+                ->columns(2)
                     ->schema([
                         DatePicker::make('from')
                             ->label('Da')
