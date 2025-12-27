@@ -1,0 +1,124 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sfondo sfumato -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FDE68A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tableGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97706;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#92400E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#bgGradient)"/>
+
+  <!-- Tavolo circolare grande al centro -->
+  <circle cx="200" cy="220" r="100" fill="url(#tableGradient)"/>
+  <circle cx="200" cy="220" r="90" fill="#B45309" opacity="0.3"/>
+
+  <!-- Piatti intorno al tavolo -->
+  <!-- Piatto in alto -->
+  <g transform="translate(200, 140)">
+    <circle r="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+    <circle r="14" fill="#F3F4F6"/>
+  </g>
+
+  <!-- Piatto a destra -->
+  <g transform="translate(280, 220)">
+    <circle r="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+    <circle r="14" fill="#F3F4F6"/>
+  </g>
+
+  <!-- Piatto in basso -->
+  <g transform="translate(200, 300)">
+    <circle r="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+    <circle r="14" fill="#F3F4F6"/>
+  </g>
+
+  <!-- Piatto a sinistra -->
+  <g transform="translate(120, 220)">
+    <circle r="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+    <circle r="14" fill="#F3F4F6"/>
+  </g>
+
+  <!-- Bicchieri accanto ai piatti -->
+  <!-- Bicchiere in alto -->
+  <g transform="translate(225, 135)">
+    <path d="M 0 12 L 3 0 L 12 0 L 15 12 Z" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <ellipse cx="7.5" cy="12" rx="7.5" ry="2" fill="#3B82F6" opacity="0.3"/>
+  </g>
+
+  <!-- Bicchiere a destra -->
+  <g transform="translate(305, 215)">
+    <path d="M 0 12 L 3 0 L 12 0 L 15 12 Z" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <ellipse cx="7.5" cy="12" rx="7.5" ry="2" fill="#3B82F6" opacity="0.3"/>
+  </g>
+
+  <!-- Bicchiere in basso -->
+  <g transform="translate(175, 295)">
+    <path d="M 0 12 L 3 0 L 12 0 L 15 12 Z" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <ellipse cx="7.5" cy="12" rx="7.5" ry="2" fill="#3B82F6" opacity="0.3"/>
+  </g>
+
+  <!-- Bicchiere a sinistra -->
+  <g transform="translate(95, 215)">
+    <path d="M 0 12 L 3 0 L 12 0 L 15 12 Z" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <ellipse cx="7.5" cy="12" rx="7.5" ry="2" fill="#3B82F6" opacity="0.3"/>
+  </g>
+
+  <!-- Posate accanto ai piatti -->
+  <!-- Forchetta e coltello in alto -->
+  <g transform="translate(175, 130)">
+    <rect x="0" y="0" width="2" height="20" fill="#6B7280"/>
+    <rect x="-2.5" y="0" width="1.5" height="6" fill="#6B7280"/>
+    <rect x="1" y="0" width="1.5" height="6" fill="#6B7280"/>
+    <rect x="4.5" y="0" width="1.5" height="6" fill="#6B7280"/>
+  </g>
+
+  <!-- Coltello -->
+  <g transform="translate(222, 130)">
+    <rect x="0" y="0" width="2" height="20" fill="#6B7280"/>
+    <path d="M -1 0 L 3 0 L 2 -4 L 0 -4 Z" fill="#6B7280"/>
+  </g>
+
+  <!-- Centro tavolo decorativo -->
+  <g transform="translate(200, 220)">
+    <!-- Vaso/centrotavola -->
+    <ellipse cy="-5" rx="15" ry="3" fill="#DC2626"/>
+    <rect x="-12" y="-5" width="24" height="15" fill="#DC2626"/>
+    <ellipse cy="10" rx="12" ry="3" fill="#991B1B"/>
+
+    <!-- Fiori/decorazione -->
+    <circle cx="-8" cy="-15" r="4" fill="#F59E0B"/>
+    <circle cx="0" cy="-18" r="5" fill="#EF4444"/>
+    <circle cx="8" cy="-15" r="4" fill="#F59E0B"/>
+    <circle cx="-4" cy="-12" r="3.5" fill="#FBBF24"/>
+    <circle cx="4" cy="-12" r="3.5" fill="#FBBF24"/>
+  </g>
+
+  <!-- Persone sedute intorno al tavolo -->
+  <!-- Persona in alto -->
+  <g transform="translate(200, 85)">
+    <circle cy="10" r="12" fill="#3B82F6"/>
+    <path d="M 0 22 Q -12 22 -12 40 L 12 40 Q 12 22 0 22 Z" fill="#3B82F6"/>
+  </g>
+
+  <!-- Persona a destra -->
+  <g transform="translate(325, 220)">
+    <circle cy="0" r="12" fill="#10B981"/>
+    <path d="M 0 12 Q -12 12 -12 30 L 12 30 Q 12 12 0 12 Z" fill="#10B981"/>
+  </g>
+
+  <!-- Persona in basso -->
+  <g transform="translate(200, 345)">
+    <circle cy="0" r="12" fill="#F59E0B"/>
+    <path d="M 0 12 Q -12 12 -12 30 L 12 30 Q 12 12 0 12 Z" fill="#F59E0B"/>
+  </g>
+
+  <!-- Persona a sinistra -->
+  <g transform="translate(75, 220)">
+    <circle cy="0" r="12" fill="#EF4444"/>
+    <path d="M 0 12 Q -12 12 -12 30 L 12 30 Q 12 12 0 12 Z" fill="#EF4444"/>
+  </g>
+</svg>
