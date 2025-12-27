@@ -675,7 +675,7 @@
             // Observe cards with stagger effect
             document.querySelectorAll('.group').forEach((el, index) => {
                 el.classList.add('fade-in');
-                el.style.transitionDelay = `${(index % 3) * 0.2}s`;
+                el.style.transitionDelay = `${(index % 3) * 0.3}s`;
                 observer.observe(el);
             });
 
@@ -699,7 +699,7 @@
                     const startPosition = window.pageYOffset;
                     const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
                     const distance = targetPosition - startPosition;
-                    const duration = 2000; // 2 seconds for very slow smooth scroll
+                    const duration = 3500; // 3.5 seconds for ultra slow cinematic scroll
                     let start = null;
 
                     function animation(currentTime) {
@@ -733,14 +733,14 @@
 
         /* Heavy fade-in/out animation for sections */
         section {
-            transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 2.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                        transform 2.8s cubic-bezier(0.25, 0.1, 0.25, 1);
             will-change: opacity, transform;
         }
 
         .fade-in {
             opacity: 0;
-            transform: translateY(80px) scale(0.95);
+            transform: translateY(100px) scale(0.92);
         }
 
         .fade-in-visible {
@@ -749,14 +749,14 @@
         }
 
         .fade-out-visible {
-            opacity: 0.3 !important;
-            transform: translateY(-30px) scale(0.98);
+            opacity: 0.2 !important;
+            transform: translateY(-50px) scale(0.96);
         }
 
         /* Cards stagger animation */
         .group {
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 2.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+                        transform 2.2s cubic-bezier(0.25, 0.1, 0.25, 1);
             will-change: opacity, transform;
         }
 
