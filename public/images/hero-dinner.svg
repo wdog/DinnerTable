@@ -1,0 +1,87 @@
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tableGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#654321;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F7FEE7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ECFCCB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bgGrad)"/>
+
+  <!-- Tavolo rotondo grande al centro -->
+  <ellipse cx="300" cy="250" rx="180" ry="40" fill="#5D4037" opacity="0.3"/>
+  <ellipse cx="300" cy="220" rx="180" ry="30" fill="url(#tableGrad)"/>
+
+  <!-- Piatti intorno al tavolo -->
+  <g id="plate">
+    <!-- Piatto superiore -->
+    <circle cx="300" cy="150" r="25" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="3"/>
+    <circle cx="300" cy="150" r="20" fill="#F3F4F6"/>
+
+    <!-- Piatto destra -->
+    <circle cx="420" cy="220" r="25" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="3"/>
+    <circle cx="420" cy="220" r="20" fill="#F3F4F6"/>
+
+    <!-- Piatto sinistra -->
+    <circle cx="180" cy="220" r="25" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="3"/>
+    <circle cx="180" cy="220" r="20" fill="#F3F4F6"/>
+
+    <!-- Piatto in basso destra -->
+    <circle cx="380" cy="290" r="25" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="3"/>
+    <circle cx="380" cy="290" r="20" fill="#F3F4F6"/>
+
+    <!-- Piatto in basso sinistra -->
+    <circle cx="220" cy="290" r="25" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="3"/>
+    <circle cx="220" cy="290" r="20" fill="#F3F4F6"/>
+  </g>
+
+  <!-- Persone sedute - stilizzate -->
+  <!-- Persona in alto -->
+  <g transform="translate(300, 100)">
+    <circle r="18" fill="#84CC16"/>
+    <ellipse cy="35" rx="22" ry="18" fill="#84CC16"/>
+  </g>
+
+  <!-- Persona destra -->
+  <g transform="translate(470, 220)">
+    <circle r="18" fill="#65A30D"/>
+    <ellipse cy="35" rx="22" ry="18" fill="#65A30D"/>
+  </g>
+
+  <!-- Persona sinistra -->
+  <g transform="translate(130, 220)">
+    <circle r="18" fill="#4D7C0F"/>
+    <ellipse cy="35" rx="22" ry="18" fill="#4D7C0F"/>
+  </g>
+
+  <!-- Persona basso destra -->
+  <g transform="translate(430, 320)">
+    <circle r="18" fill="#10B981"/>
+    <ellipse cy="35" rx="22" ry="18" fill="#10B981"/>
+  </g>
+
+  <!-- Persona basso sinistra -->
+  <g transform="translate(170, 320)">
+    <circle r="18" fill="#059669"/>
+    <ellipse cy="35" rx="22" ry="18" fill="#059669"/>
+  </g>
+
+  <!-- Decorazione centrale - vaso fiori -->
+  <g transform="translate(300, 220)">
+    <ellipse cy="-10" rx="20" ry="5" fill="#DC2626"/>
+    <rect x="-15" y="-10" width="30" height="20" fill="#DC2626"/>
+    <ellipse cy="10" rx="15" ry="5" fill="#991B1B"/>
+
+    <!-- Fiori -->
+    <circle cx="-10" cy="-25" r="6" fill="#F59E0B"/>
+    <circle cx="0" cy="-30" r="7" fill="#EF4444"/>
+    <circle cx="10" cy="-25" r="6" fill="#F59E0B"/>
+    <circle cx="-5" cy="-20" r="5" fill="#FBBF24"/>
+    <circle cx="5" cy="-20" r="5" fill="#FBBF24"/>
+  </g>
+</svg>
