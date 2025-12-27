@@ -178,22 +178,34 @@ class DinnerBookingPolicy
      * - Numero di ospiti (guests_count)
      * - Note della prenotazione
      *
-     * L'host non può modificare le prenotazioni dei guest, può solo
-     * visualizzarle o cancellarle.
+     * Restrizioni:
+     * - Solo il GUEST può modificare
+     * - Non può modificare prenotazioni CANCELLED (concluse)
+     * - L'host non può modificare le prenotazioni dei guest, può solo
+     *   visualizzarle o cancellarle
      *
      * La modificabilità è anche controllata dallo stato della disponibilità
      * tramite canUpdateBookings() nel form.
      *
      * @param  User  $user  Utente autenticato
      * @param  DinnerBooking  $booking  Prenotazione da modificare
-     * @return bool True se l'utente è il guest della prenotazione
+     * @return bool True se l'utente è il guest e la prenotazione non è cancellata
      *
      * @see \App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking
      */
     public function update(User $user, DinnerBooking $booking): bool
     {
         // Solo il guest può modificare la propria prenotazione
-        return $booking->guest_user_id === $user->id;
+        if ($booking->guest_user_id !== $user->id) {
+            return false;
+        }
+
+        // Non può modificare prenotazioni cancellate
+        if ($booking->status->value === 'cancelled') {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -203,6 +215,10 @@ class DinnerBookingPolicy
      *
      * - GUEST: può cancellare la propria prenotazione (rinuncia)
      * - HOST: può cancellare prenotazioni dei guest (es. per problemi organizzativi)
+     *
+     * Restrizioni:
+     * - Non può cancellare prenotazioni già CANCELLED (già concluse)
+     * - Solo PENDING o CONFIRMED possono essere cancellate
      *
      * Quando una prenotazione viene cancellata:
      * - Lo stato passa a 'cancelled'
@@ -214,12 +230,17 @@ class DinnerBookingPolicy
      *
      * @param  User  $user  Utente autenticato
      * @param  DinnerBooking  $booking  Prenotazione da cancellare
-     * @return bool True se è guest o host della prenotazione
+     * @return bool True se è guest/host e la prenotazione non è già cancellata
      *
      * @see \App\Observers\DinnerBookingObserver
      */
     public function delete(User $user, DinnerBooking $booking): bool
     {
+        // Non può cancellare prenotazioni già cancellate
+        if ($booking->status->value === 'cancelled') {
+            return false;
+        }
+
         // Sia il guest che l'host possono cancellare la prenotazione
         return $booking->guest_user_id === $user->id
             || $booking->hostAvailability->user_id === $user->id;
