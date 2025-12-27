@@ -47,7 +47,17 @@ class DinnerBookingResource extends Resource
     protected static ?int $navigationSort = 2;
 
     /**
-     * Filtra la query per mostrare solo le prenotazioni dell'utente autenticato.
+     * Configura la query Eloquent per questa risorsa.
+     *
+     * Filtra le prenotazioni per mostrare solo quelle effettuate
+     * dall'utente autenticato come guest, con eager loading delle
+     * relazioni necessarie per ottimizzare le performance.
+     *
+     * Relazioni caricate:
+     * - hostAvailability.user: Dati dell'host che ospita
+     * - hostAvailability.dinnerDate: Data e gruppo della cena
+     *
+     * @return Builder Query Eloquent filtrata e ottimizzata
      */
     public static function getEloquentQuery(): Builder
     {
@@ -57,31 +67,39 @@ class DinnerBookingResource extends Resource
     }
 
     /**
-     * Configura il form per modificare prenotazioni.
+     * Configura lo schema del form per modificare prenotazioni.
      *
-     * Form disabilitato automaticamente se:
-     * - Prenotazione in stato CANCELLED
-     * - Disponibilità host COMPLETED o HOST_CANCELLED
-     * - Data nel passato
+     * Delega la configurazione del form a DinnerBookingForm che gestisce:
+     * - Numero di ospiti (guests_count)
+     * - Oggetti/bevande portate (bringing_items)
+     * - Note aggiuntive
      *
-     * @param Schema $schema
-     * @return Schema
+     * Il form viene automaticamente disabilitato (read-only) quando:
+     * - Lo stato della disponibilità host non permette modifiche
+     *   (es. COMPLETED, HOST_CANCELLED)
+     * - La data della cena è nel passato
+     *
+     * Form di creazione:
+     * La creazione di nuove prenotazioni non è disponibile da questa
+     * risorsa. Le prenotazioni si creano dalla pagina GroupAvailabilities
+     * o dalla disponibilità dell'host.
+     *
+     * @param  Schema  $schema  Schema Filament da configurare
+     * @return Schema Schema configurato con logica di disabilitazione
+     *
+     * @see DinnerBookingForm::configure()
+     * @see DinnerAvailabilityStatus::canUpdateBookings()
      */
     public static function form(Schema $schema): Schema
     {
         return DinnerBookingForm::configure($schema)
             ->disabled(function ($record) {
-                if (!$record) {
+                if ( ! $record) {
                     return false;
                 }
 
-                // Prenotazione cancellata = read-only
-                if ($record->status->value === 'cancelled') {
-                    return true;
-                }
-
                 // Disponibilità host non permette modifiche
-                if (!$record->hostAvailability->status->canUpdateBookings()) {
+                if ( ! $record->hostAvailability->status->canUpdateBookings()) {
                     return true;
                 }
 
@@ -95,11 +113,33 @@ class DinnerBookingResource extends Resource
             });
     }
 
+    /**
+     * Configura la tabella per visualizzare la lista delle prenotazioni.
+     *
+     * Delega la configurazione a DinnerBookingsTable che gestisce:
+     * - Colonne per data, host, numero ospiti, stato
+     * - Badge colorati per gli stati
+     * - Filtri per stato e data
+     * - Azioni per modificare/cancellare prenotazioni
+     *
+     * @param  Table  $table  Tabella Filament da configurare
+     * @return Table Tabella configurata con colonne, filtri e azioni
+     *
+     * @see DinnerBookingsTable::configure()
+     */
     public static function table(Table $table): Table
     {
         return DinnerBookingsTable::configure($table);
     }
 
+    /**
+     * Definisce le relazioni Filament disponibili per questa risorsa.
+     *
+     * Attualmente nessun relation manager è configurato per le prenotazioni.
+     * Le relazioni sono visualizzate direttamente nella tabella principale.
+     *
+     * @return array Array vuoto di relation managers
+     */
     public static function getRelations(): array
     {
         return [
@@ -107,6 +147,20 @@ class DinnerBookingResource extends Resource
         ];
     }
 
+    /**
+     * Definisce le pagine disponibili per questa risorsa.
+     *
+     * Pagine configurate:
+     * - index: Lista di tutte le prenotazioni del guest
+     * - edit: Form per modificare una prenotazione esistente
+     *
+     * Pagine NON disponibili:
+     * - create: La creazione avviene dalla pagina GroupAvailabilities
+     *   o dall'action "Prenota" su una disponibilità host
+     * - view: Non necessaria, si usa direttamente edit in sola lettura
+     *
+     * @return array Array associativo di route per le pagine
+     */
     public static function getPages(): array
     {
         return [
