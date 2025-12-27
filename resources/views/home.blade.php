@@ -7,8 +7,10 @@
 
     <!-- SEO Meta Tags -->
     <title>DinnerTable - Organizza Cene di Gruppo | Gestione Turni e Prenotazioni Online</title>
-    <meta name="description" content="DinnerTable semplifica l'organizzazione delle cene di gruppo. Coordina turni, gestisci disponibilità e prenota il tuo posto a tavola. Gratis e facile da usare per team e amici.">
-    <meta name="keywords" content="organizzare cene gruppo, gestione turni cena, prenotazione cena online, calendario cene, coordinare cene team, app cene gruppo, pianificazione cene settimanali">
+    <meta name="description"
+        content="DinnerTable semplifica l'organizzazione delle cene di gruppo. Coordina turni, gestisci disponibilità e prenota il tuo posto a tavola. Gratis e facile da usare per team e amici.">
+    <meta name="keywords"
+        content="organizzare cene gruppo, gestione turni cena, prenotazione cena online, calendario cene, coordinare cene team, app cene gruppo, pianificazione cene settimanali">
     <meta name="author" content="DinnerTable">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
@@ -16,7 +18,8 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="DinnerTable - Organizza Cene di Gruppo Facilmente">
-    <meta property="og:description" content="Coordina le cene del tuo gruppo senza stress. Gestisci turni, disponibilità e prenotazioni in un'unica piattaforma gratuita.">
+    <meta property="og:description"
+        content="Coordina le cene del tuo gruppo senza stress. Gestisci turni, disponibilità e prenotazioni in un'unica piattaforma gratuita.">
     <meta property="og:image" content="{{ asset('images/logo.png') }}">
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:site_name" content="DinnerTable">
@@ -25,7 +28,8 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="DinnerTable - Organizza Cene di Gruppo">
-    <meta name="twitter:description" content="Semplifica l'organizzazione delle cene di gruppo con DinnerTable. Gratis per sempre!">
+    <meta name="twitter:description"
+        content="Semplifica l'organizzazione delle cene di gruppo con DinnerTable. Gratis per sempre!">
     <meta name="twitter:image" content="{{ asset('images/logo.png') }}">
 
     <!-- Favicon -->
@@ -68,7 +72,7 @@
                 <div class="flex items-center gap-4">
                     <a href="/dinner" class="text-gray-700 hover:text-lime-600 transition font-medium">Accedi</a>
                     <a href="/dinner/register"
-                        class="bg-lime-50 text-white px-6 py-2.5 rounded-lg hover:from-lime-700 hover:to-green-700 transition font-semibold shadow-md">
+                        class="bg-lime-600 text-white px-6 py-2.5 rounded-lg hover:bg-lime-700 transition font-semibold shadow-md">
                         Registrati Gratis
                     </a>
                 </div>
@@ -81,16 +85,18 @@
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="text-center">
                 <div class="flex justify-center mb-10">
-                    <img src="{{ asset('images/logo-small.png') }}" alt="DinnerTable - Organizza Cene di Gruppo" class="h-48 w-auto drop-shadow-lg">
+                    <img src="{{ asset('images/logo-small.png') }}" alt="DinnerTable - Organizza Cene di Gruppo"
+                        class="h-48 w-auto drop-shadow-lg">
                 </div>
                 <h2 class="text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
                     Trasforma le Cene di Gruppo<br>
-                    <span class="text-transparent bg-clip-text bg-lime-600">
+                    <span class="text-lime-600">
                         in Momenti Indimenticabili
                     </span>
                 </h2>
                 <p class="text-2xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
-                    DinnerTable è la piattaforma che semplifica l'organizzazione delle cene settimanali con il tuo gruppo.
+                    DinnerTable è la piattaforma che semplifica l'organizzazione delle cene settimanali con il tuo
+                    gruppo.
                 </p>
                 <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
                     Dimentica i messaggi infiniti su WhatsApp per decidere chi ospita la cena. Con DinnerTable,
@@ -107,7 +113,8 @@
                         Scopri Come Funziona
                     </a>
                 </div>
-                <p class="text-sm text-gray-500 mt-6">✓ Nessuna carta di credito richiesta · ✓ Setup in 2 minuti · ✓ Gratuito per sempre</p>
+                <p class="text-sm text-gray-500 mt-6">✓ Nessuna carta di credito richiesta · ✓ Setup in 2 minuti · ✓
+                    Gratuito per sempre</p>
             </div>
         </section>
 
@@ -124,31 +131,38 @@
                     <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
                         <div class="bg-lime-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                         <h4 class="text-2xl font-bold mb-3 text-gray-900">Risparmia Tempo Prezioso</h4>
                         <p class="text-gray-700 leading-relaxed">
-                            Basta perdere ore a cercare di capire chi può ospitare e quando. Visualizza tutte le disponibilità
+                            Basta perdere ore a cercare di capire chi può ospitare e quando. Visualizza tutte le
+                            disponibilità
                             in un unico calendario intelligente e prenota il tuo posto in un attimo.
                         </p>
                     </div>
                     <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
                         <div class="bg-lime-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                         <h4 class="text-2xl font-bold mb-3 text-gray-900">Zero Stress Organizzativo</h4>
                         <p class="text-gray-700 leading-relaxed">
-                            DinnerTable gestisce automaticamente le prenotazioni, previene doppie assegnazioni e ti notifica
+                            DinnerTable gestisce automaticamente le prenotazioni, previene doppie assegnazioni e ti
+                            notifica
                             quando è il tuo turno. Tu pensa solo a cosa cucinare di buono!
                         </p>
                     </div>
                     <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
                         <div class="bg-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
                             </svg>
                         </div>
                         <h4 class="text-2xl font-bold mb-3 text-gray-900">Rafforza i Legami del Gruppo</h4>
@@ -173,12 +187,15 @@
                 <div class="grid md:grid-cols-3 gap-12">
                     <!-- Step 1 -->
                     <div class="relative">
-                        <div class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                        <div
+                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             1
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
-                            <div class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div
+                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                                     </path>
@@ -197,12 +214,15 @@
 
                     <!-- Step 2 -->
                     <div class="relative">
-                        <div class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                        <div
+                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             2
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
-                            <div class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div
+                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                     </path>
@@ -221,12 +241,15 @@
 
                     <!-- Step 3 -->
                     <div class="relative">
-                        <div class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                        <div
+                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             3
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
-                            <div class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div
+                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                                     </path>
@@ -238,7 +261,8 @@
                                 con un semplice click. Ricevi notifiche e promemoria automatici.
                             </p>
                             <p class="text-sm text-gray-600 italic">
-                                Tutto sincronizzato in tempo reale: vedi subito chi ha prenotato e quanti posti rimangono
+                                Tutto sincronizzato in tempo reale: vedi subito chi ha prenotato e quanti posti
+                                rimangono
                             </p>
                         </div>
                     </div>
@@ -264,7 +288,8 @@
                         class="bg-white text-green-700 px-12 py-5 rounded-xl text-2xl font-bold hover:bg-gray-100 transition shadow-2xl hover:shadow-3xl transform hover:scale-105 inline-flex items-center gap-3">
                         <span>Crea il Tuo Gruppo Gratis</span>
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                         </svg>
                     </a>
                 </div>
@@ -293,27 +318,32 @@
                 <div>
                     <h4 class="text-lg font-bold mb-4 text-lime-400">Navigazione</h4>
                     <ul class="space-y-3">
-                        <li><a href="#features" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
-                            <span>→</span> Come Funziona
-                        </a></li>
-                        <li><a href="/dinner/register" class="text-lime-300 hover:text-lime-400 transition flex items-center gap-2">
-                            <span>→</span> Registrati Gratis
-                        </a></li>
-                        <li><a href="/dinner" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
-                            <span>→</span> Accedi
-                        </a></li>
+                        <li><a href="#features"
+                                class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
+                                <span>→</span> Come Funziona
+                            </a></li>
+                        <li><a href="/dinner/register"
+                                class="text-lime-300 hover:text-lime-400 transition flex items-center gap-2">
+                                <span>→</span> Registrati Gratis
+                            </a></li>
+                        <li><a href="/dinner"
+                                class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
+                                <span>→</span> Accedi
+                            </a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="text-lg font-bold mb-4 text-lime-400">Supporto</h4>
                     <ul class="space-y-3">
-                        <li><a href="/dinner" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
-                            <span>→</span> Pannello Utente
-                        </a></li>
-                        <li><a href="/admin" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
-                            <span>→</span> Pannello Admin
-                        </a></li>
+                        <li><a href="/dinner"
+                                class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
+                                <span>→</span> Pannello Utente
+                            </a></li>
+                        <li><a href="/admin"
+                                class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
+                                <span>→</span> Pannello Admin
+                            </a></li>
                     </ul>
                 </div>
             </div>
