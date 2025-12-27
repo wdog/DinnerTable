@@ -67,7 +67,7 @@
 
     <main>
         <!-- Hero Section -->
-        <section id="hero" class="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-50 via-white to-emerald-50 overflow-hidden">
+        <section id="hero" class="relative min-h-screen flex flex-col justify-center pt-32 pb-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50 overflow-hidden">
             <!-- Decorative Elements -->
             <div class="absolute top-0 left-0 w-96 h-96 bg-lime-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
             <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -85,7 +85,7 @@
                     <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
                         Organizza Cene di Gruppo
                         <br>
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-lime-600 to-emerald-600">
+                        <span class="bg-clip-text text-transparent bg-linear-to-r from-lime-600 to-emerald-600">
                             Senza Stress
                         </span>
                     </h1>
@@ -138,8 +138,8 @@
 
                 <!-- Hero Image/Illustration -->
                 <div class="mt-16 relative">
-                    <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10"></div>
-                    <img src="{{ asset('images/hero-dinner.svg') }}" alt="DinnerTable Interface"
+                    <div class="absolute inset-0 bg-linear-to-tl from-white/40 via-transparent to-transparent z-10"></div>
+                    <img src="{{ asset('images/banner_dinner.png') }}" alt="DinnerTable Interface"
                          class="mx-auto max-w-4xl w-full rounded-2xl shadow-2xl">
                 </div>
             </div>
@@ -154,7 +154,7 @@
         </section>
 
         <!-- Benefits Section -->
-        <section id="benefits" class="relative py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <section id="benefits" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Vantaggi</span>
@@ -168,7 +168,7 @@
 
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Benefit 1 -->
-                    <div class="group relative bg-gradient-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
+                    <div class="group relative bg-linear-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
                         <div class="absolute top-4 right-4 w-12 h-12 bg-lime-200 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative">
                             <div class="bg-lime-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -190,7 +190,7 @@
                     </div>
 
                     <!-- Benefit 2 -->
-                    <div class="group relative bg-gradient-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
+                    <div class="group relative bg-linear-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
                         <div class="absolute top-4 right-4 w-12 h-12 bg-emerald-200 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative">
                             <div class="bg-emerald-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -212,7 +212,7 @@
                     </div>
 
                     <!-- Benefit 3 -->
-                    <div class="group relative bg-gradient-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
+                    <div class="group relative bg-linear-to-br from-lime-50 to-emerald-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-lime-100 hover:border-lime-300">
                         <div class="absolute top-4 right-4 w-12 h-12 bg-lime-200 rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500"></div>
                         <div class="relative">
                             <div class="bg-lime-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -236,16 +236,16 @@
             </div>
 
             <!-- Next Section Button -->
-            <a href="#features" class="mx-auto mt-16 flex w-fit items-center gap-2 text-gray-500 hover:text-lime-600 transition-colors group">
-                <span class="text-sm font-medium">Prossima sezione</span>
-                <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            <a href="#features" class="mx-auto mt-16 flex w-fit items-center gap-3 bg-lime-100 text-lime-700 px-6 py-3 rounded-full hover:bg-lime-200 transition-all duration-300 group shadow-md hover:shadow-lg">
+                <span class="font-semibold">Prossima sezione</span>
+                <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                 </svg>
             </a>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-50 via-white to-emerald-50">
+        <section id="features" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Come Funziona</span>
@@ -264,7 +264,7 @@
                             1
                         </div>
                         <div class="relative bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full border-2 border-transparent hover:border-lime-200">
-                            <div class="bg-gradient-to-br from-lime-100 to-emerald-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <div class="bg-linear-to-br from-lime-100 to-emerald-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                 </svg>
@@ -290,7 +290,7 @@
                             2
                         </div>
                         <div class="relative bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full border-2 border-transparent hover:border-emerald-200">
-                            <div class="bg-gradient-to-br from-emerald-100 to-lime-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <div class="bg-linear-to-br from-emerald-100 to-lime-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <svg class="w-10 h-10 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
@@ -316,7 +316,7 @@
                             3
                         </div>
                         <div class="relative bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full border-2 border-transparent hover:border-lime-200">
-                            <div class="bg-gradient-to-br from-lime-100 to-emerald-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <div class="bg-linear-to-br from-lime-100 to-emerald-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
                                 </svg>
@@ -340,23 +340,23 @@
 
             <!-- Navigation Buttons -->
             <div class="flex justify-center items-center gap-8 mt-16">
-                <a href="#benefits" class="flex items-center gap-2 text-gray-500 hover:text-lime-600 transition-colors group">
-                    <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                <a href="#benefits" class="flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 group shadow-md hover:shadow-lg border border-gray-200">
+                    <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
                     </svg>
-                    <span class="text-sm font-medium">Torna su</span>
+                    <span class="font-semibold">Sezione precedente</span>
                 </a>
-                <a href="#testimonials" class="flex items-center gap-2 text-gray-500 hover:text-lime-600 transition-colors group">
-                    <span class="text-sm font-medium">Prossima sezione</span>
-                    <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                <a href="#testimonials" class="flex items-center gap-3 bg-lime-100 text-lime-700 px-6 py-3 rounded-full hover:bg-lime-200 transition-all duration-300 group shadow-md hover:shadow-lg">
+                    <span class="font-semibold">Prossima sezione</span>
+                    <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                     </svg>
                 </a>
             </div>
         </section>
 
         <!-- Testimonials Section -->
-        <section id="testimonials" class="relative py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <section id="testimonials" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Testimonianze</span>
@@ -370,7 +370,7 @@
 
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Testimonial 1 -->
-                    <div class="bg-gradient-to-br from-lime-50 to-white p-8 rounded-3xl shadow-lg border border-lime-100">
+                    <div class="bg-linear-to-br from-lime-50 to-white p-8 rounded-3xl shadow-lg border border-lime-100">
                         <div class="flex gap-1 mb-4">
                             <svg class="w-5 h-5 text-lime-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -392,7 +392,7 @@
                             "Finalmente niente più caos su WhatsApp! Con DinnerTable organizziamo le nostre cene settimanali in 5 minuti. Fantastico!"
                         </p>
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-400 to-emerald-400 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-12 h-12 rounded-full bg-linear-to-br from-lime-400 to-emerald-400 flex items-center justify-center text-white font-bold text-lg">
                                 MC
                             </div>
                             <div>
@@ -403,7 +403,7 @@
                     </div>
 
                     <!-- Testimonial 2 -->
-                    <div class="bg-gradient-to-br from-emerald-50 to-white p-8 rounded-3xl shadow-lg border border-emerald-100">
+                    <div class="bg-linear-to-br from-emerald-50 to-white p-8 rounded-3xl shadow-lg border border-emerald-100">
                         <div class="flex gap-1 mb-4">
                             <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -425,7 +425,7 @@
                             "Semplicissimo da usare! Il nostro gruppo di 8 amici non può più farne a meno. Le notifiche automatiche sono comodissime."
                         </p>
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-lime-400 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-12 h-12 rounded-full bg-linear-to-br from-emerald-400 to-lime-400 flex items-center justify-center text-white font-bold text-lg">
                                 GR
                             </div>
                             <div>
@@ -436,7 +436,7 @@
                     </div>
 
                     <!-- Testimonial 3 -->
-                    <div class="bg-gradient-to-br from-lime-50 to-white p-8 rounded-3xl shadow-lg border border-lime-100">
+                    <div class="bg-linear-to-br from-lime-50 to-white p-8 rounded-3xl shadow-lg border border-lime-100">
                         <div class="flex gap-1 mb-4">
                             <svg class="w-5 h-5 text-lime-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -458,7 +458,7 @@
                             "Perfetto per il nostro team aziendale! Ora le cene mensali sono sempre ben organizzate e tutti partecipano volentieri."
                         </p>
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-400 to-emerald-400 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-12 h-12 rounded-full bg-linear-to-br from-lime-400 to-emerald-400 flex items-center justify-center text-white font-bold text-lg">
                                 AF
                             </div>
                             <div>
@@ -472,23 +472,23 @@
 
             <!-- Navigation Buttons -->
             <div class="flex justify-center items-center gap-8 mt-16">
-                <a href="#features" class="flex items-center gap-2 text-gray-500 hover:text-lime-600 transition-colors group">
-                    <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                <a href="#features" class="flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 group shadow-md hover:shadow-lg border border-gray-200">
+                    <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
                     </svg>
-                    <span class="text-sm font-medium">Sezione precedente</span>
+                    <span class="font-semibold">Sezione precedente</span>
                 </a>
-                <a href="#cta" class="flex items-center gap-2 text-gray-500 hover:text-lime-600 transition-colors group">
-                    <span class="text-sm font-medium">Inizia ora</span>
-                    <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                <a href="#cta" class="flex items-center gap-3 bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition-all duration-300 group shadow-lg hover:shadow-xl">
+                    <span class="font-semibold">Inizia ora</span>
+                    <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                     </svg>
                 </a>
             </div>
         </section>
 
         <!-- CTA Section -->
-        <section id="cta" class="relative py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-500 via-lime-400 to-emerald-400 overflow-hidden">
+        <section id="cta" class="relative min-h-screen flex flex-col justify-center py-32 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-500 via-lime-400 to-emerald-400 overflow-hidden">
             <!-- Decorative Elements -->
             <div class="absolute top-0 left-0 w-full h-full opacity-10">
                 <div class="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
