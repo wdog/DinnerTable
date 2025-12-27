@@ -9,18 +9,18 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-linear-to-br from-amber-50 via-orange-50 to-lime-50 min-h-screen">
+<body class="bg-linear-to-br from-lime-50 via-green-50 to-emerald-50 min-h-screen">
     <nav class="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('images/logo-small.png') }}" alt="DinnerTable Logo" class="h-12 w-auto">
-                    <h1 class="text-2xl font-bold text-amber-700">DinnerTable</h1>
+                    <h1 class="text-2xl font-bold text-lime-700">DinnerTable</h1>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="/dinner" class="text-gray-700 hover:text-amber-600 transition font-medium">Accedi</a>
+                    <a href="/dinner" class="text-gray-700 hover:text-lime-600 transition font-medium">Accedi</a>
                     <a href="/dinner/register"
-                        class="bg-linear-to-r from-amber-600 to-orange-600 text-white px-6 py-2.5 rounded-lg hover:from-amber-700 hover:to-orange-700 transition font-semibold shadow-md">
+                        class="bg-linear-to-r from-lime-600 to-green-600 text-white px-6 py-2.5 rounded-lg hover:from-lime-700 hover:to-green-700 transition font-semibold shadow-md">
                         Registrati Gratis
                     </a>
                 </div>
@@ -37,7 +37,7 @@
                 </div>
                 <h2 class="text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
                     Trasforma le Cene di Gruppo<br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-green-600">
                         in Momenti Indimenticabili
                     </span>
                 </h2>
@@ -51,11 +51,11 @@
                 </p>
                 <div class="flex gap-6 justify-center flex-wrap">
                     <a href="/dinner/register"
-                        class="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-10 py-4 rounded-xl text-xl font-bold hover:from-amber-700 hover:to-orange-700 transition shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        class="bg-gradient-to-r from-lime-600 to-green-600 text-white px-10 py-4 rounded-xl text-xl font-bold hover:from-lime-700 hover:to-green-700 transition shadow-xl hover:shadow-2xl transform hover:scale-105">
                         Inizia Subito - È Gratis!
                     </a>
                     <a href="#features"
-                        class="bg-white text-amber-700 px-10 py-4 rounded-xl text-xl font-bold border-3 border-amber-600 hover:bg-amber-50 transition shadow-lg">
+                        class="bg-white text-lime-700 px-10 py-4 rounded-xl text-xl font-bold border-3 border-lime-600 hover:bg-lime-50 transition shadow-lg">
                         Scopri Come Funziona
                     </a>
                 </div>
@@ -73,8 +73,8 @@
                     </p>
                 </div>
                 <div class="grid md:grid-cols-3 gap-10">
-                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-                        <div class="bg-amber-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                    <div class="bg-gradient-to-br from-lime-50 to-green-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                        <div class="bg-lime-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -97,8 +97,8 @@
                             quando è il tuo turno. Tu pensa solo a cosa cucinare di buono!
                         </p>
                     </div>
-                    <div class="bg-gradient-to-br from-orange-50 to-red-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-                        <div class="bg-orange-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                    <div class="bg-gradient-to-br from-green-50 to-red-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                        <div class="bg-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -125,12 +125,12 @@
                 <div class="grid md:grid-cols-3 gap-12">
                     <!-- Step 1 -->
                     <div class="relative">
-                        <div class="absolute -top-4 -left-4 bg-gradient-to-br from-amber-500 to-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                        <div class="absolute -top-4 -left-4 bg-gradient-to-br from-lime-500 to-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             1
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
-                            <div class="bg-gradient-to-br from-amber-100 to-orange-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="bg-gradient-to-br from-lime-100 to-green-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                                     </path>
@@ -173,12 +173,12 @@
 
                     <!-- Step 3 -->
                     <div class="relative">
-                        <div class="absolute -top-4 -left-4 bg-gradient-to-br from-orange-500 to-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                        <div class="absolute -top-4 -left-4 bg-gradient-to-br from-green-500 to-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             3
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
-                            <div class="bg-gradient-to-br from-orange-100 to-red-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="bg-gradient-to-br from-green-100 to-red-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                                     </path>
@@ -199,28 +199,28 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 py-24">
+        <section class="bg-gradient-to-r from-lime-600 via-green-600 to-red-600 py-24">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h3 class="text-5xl font-extrabold text-white mb-6 leading-tight">
                     Smetti di Organizzare,<br>Inizia a Cucinare!
                 </h3>
-                <p class="text-2xl text-amber-50 mb-4 max-w-3xl mx-auto">
+                <p class="text-2xl text-lime-50 mb-4 max-w-3xl mx-auto">
                     Unisciti alle centinaia di gruppi che hanno già scelto DinnerTable
                 </p>
-                <p class="text-lg text-amber-100 mb-10 max-w-2xl mx-auto">
+                <p class="text-lg text-lime-100 mb-10 max-w-2xl mx-auto">
                     La registrazione è completamente gratuita e non richiede carta di credito.
                     Inizia a organizzare le tue cene in meno di 2 minuti!
                 </p>
                 <div class="flex gap-6 justify-center flex-wrap">
                     <a href="/dinner/register"
-                        class="bg-white text-orange-700 px-12 py-5 rounded-xl text-2xl font-bold hover:bg-gray-100 transition shadow-2xl hover:shadow-3xl transform hover:scale-105 inline-flex items-center gap-3">
+                        class="bg-white text-green-700 px-12 py-5 rounded-xl text-2xl font-bold hover:bg-gray-100 transition shadow-2xl hover:shadow-3xl transform hover:scale-105 inline-flex items-center gap-3">
                         <span>Crea il Tuo Gruppo Gratis</span>
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                         </svg>
                     </a>
                 </div>
-                <p class="text-sm text-amber-100 mt-8">
+                <p class="text-sm text-lime-100 mt-8">
                     ✓ Nessun impegno · ✓ Cancella quando vuoi · ✓ Supporto via email incluso
                 </p>
             </div>
@@ -233,7 +233,7 @@
                 <div class="md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
                         <img src="{{ asset('images/logo-small.png') }}" alt="DinnerTable" class="h-12 w-auto">
-                        <h3 class="text-2xl font-bold text-amber-400">DinnerTable</h3>
+                        <h3 class="text-2xl font-bold text-lime-400">DinnerTable</h3>
                     </div>
                     <p class="text-gray-300 mb-6 leading-relaxed">
                         La piattaforma intelligente per organizzare le cene di gruppo.
@@ -243,27 +243,27 @@
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-bold mb-4 text-amber-400">Navigazione</h4>
+                    <h4 class="text-lg font-bold mb-4 text-lime-400">Navigazione</h4>
                     <ul class="space-y-3">
-                        <li><a href="#features" class="text-gray-300 hover:text-amber-400 transition flex items-center gap-2">
+                        <li><a href="#features" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
                             <span>→</span> Come Funziona
                         </a></li>
-                        <li><a href="/dinner/register" class="text-gray-300 hover:text-amber-400 transition flex items-center gap-2">
+                        <li><a href="/dinner/register" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
                             <span>→</span> Registrati Gratis
                         </a></li>
-                        <li><a href="/dinner" class="text-gray-300 hover:text-amber-400 transition flex items-center gap-2">
+                        <li><a href="/dinner" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
                             <span>→</span> Accedi
                         </a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-bold mb-4 text-amber-400">Supporto</h4>
+                    <h4 class="text-lg font-bold mb-4 text-lime-400">Supporto</h4>
                     <ul class="space-y-3">
-                        <li><a href="/dinner" class="text-gray-300 hover:text-amber-400 transition flex items-center gap-2">
+                        <li><a href="/dinner" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
                             <span>→</span> Pannello Utente
                         </a></li>
-                        <li><a href="/admin" class="text-gray-300 hover:text-amber-400 transition flex items-center gap-2">
+                        <li><a href="/admin" class="text-gray-300 hover:text-lime-400 transition flex items-center gap-2">
                             <span>→</span> Pannello Admin
                         </a></li>
                     </ul>
@@ -277,8 +277,8 @@
                         Fatto con ❤️ in Italia
                     </p>
                     <div class="flex gap-6 text-sm text-gray-400">
-                        <a href="#" class="hover:text-amber-400 transition">Privacy Policy</a>
-                        <a href="#" class="hover:text-amber-400 transition">Termini di Servizio</a>
+                        <a href="#" class="hover:text-lime-400 transition">Privacy Policy</a>
+                        <a href="#" class="hover:text-lime-400 transition">Termini di Servizio</a>
                     </div>
                 </div>
             </div>
