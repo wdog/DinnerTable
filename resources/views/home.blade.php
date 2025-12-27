@@ -637,33 +637,45 @@
             }
         });
 
-        // Smooth fade-in on scroll with stagger
+        // Smooth fade-in/out on scroll with heavy transitions
         const observerOptions = {
-            threshold: 0.05,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+            rootMargin: '0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                const section = entry.target;
+
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-visible');
+                    // Fade in when entering
+                    section.classList.add('fade-in-visible');
+                    section.classList.remove('fade-out-visible');
+
+                    // Calculate opacity based on intersection ratio for smooth transition
+                    const opacity = Math.min(entry.intersectionRatio * 1.5, 1);
+                    section.style.opacity = opacity;
+                } else {
+                    // Fade out when leaving
+                    section.classList.remove('fade-in-visible');
+                    section.classList.add('fade-out-visible');
+                    section.style.opacity = 0.3;
                 }
             });
         }, observerOptions);
 
         // Observe all sections and cards
         document.addEventListener('DOMContentLoaded', () => {
-            // Observe sections
+            // Observe sections with heavy fade
             document.querySelectorAll('section').forEach((section, index) => {
                 section.classList.add('fade-in');
-                section.style.transitionDelay = `${index * 0.1}s`;
                 observer.observe(section);
             });
 
             // Observe cards with stagger effect
             document.querySelectorAll('.group').forEach((el, index) => {
                 el.classList.add('fade-in');
-                el.style.transitionDelay = `${(index % 3) * 0.15}s`;
+                el.style.transitionDelay = `${(index % 3) * 0.2}s`;
                 observer.observe(el);
             });
 
@@ -675,37 +687,87 @@
                 }
             });
         });
+
+        // Slow down scroll speed with smooth animation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    const startPosition = window.pageYOffset;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
+                    const distance = targetPosition - startPosition;
+                    const duration = 2000; // 2 seconds for very slow smooth scroll
+                    let start = null;
+
+                    function animation(currentTime) {
+                        if (start === null) start = currentTime;
+                        const timeElapsed = currentTime - start;
+                        const progress = Math.min(timeElapsed / duration, 1);
+
+                        // Cubic easing for ultra smooth movement
+                        const easing = progress < 0.5
+                            ? 4 * progress * progress * progress
+                            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+                        window.scrollTo(0, startPosition + (distance * easing));
+
+                        if (timeElapsed < duration) {
+                            requestAnimationFrame(animation);
+                        }
+                    }
+
+                    requestAnimationFrame(animation);
+                }
+            });
+        });
     </script>
 
     <style>
         /* Smooth scroll with offset for fixed navbar */
         html {
             scroll-padding-top: 80px;
-            scroll-behavior: smooth;
         }
 
-        /* Enhanced smooth scrolling */
-        * {
-            scroll-behavior: smooth;
-        }
-
-        /* Fade-in animation - more smooth and gradual */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Heavy fade-in/out animation for sections */
+        section {
+            transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: opacity, transform;
         }
 
+        .fade-in {
+            opacity: 0;
+            transform: translateY(80px) scale(0.95);
+        }
+
         .fade-in-visible {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1 !important;
+            transform: translateY(0) scale(1);
+        }
+
+        .fade-out-visible {
+            opacity: 0.3 !important;
+            transform: translateY(-30px) scale(0.98);
+        }
+
+        /* Cards stagger animation */
+        .group {
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
         }
 
         /* Smoother transitions for all interactive elements */
         a, button {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Disable default smooth scroll behavior - we handle it manually */
+        html, * {
+            scroll-behavior: auto;
         }
 
         /* Blob animations */
