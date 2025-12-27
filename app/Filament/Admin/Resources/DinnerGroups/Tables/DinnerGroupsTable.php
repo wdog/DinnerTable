@@ -17,7 +17,7 @@ class DinnerGroupsTable
             ->columns([
                 ImageColumn::make('group_image')
                     ->disk('public')
-                    ->default('dinner-group.png')
+                    ->default('images/default-group.svg')
                     ->circular(),
                 TextColumn::make('name')
                     ->label('Nome')
