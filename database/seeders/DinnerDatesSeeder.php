@@ -60,23 +60,19 @@ class DinnerDatesSeeder extends Seeder
 
             $this->command->info('  ✓ Create ' . count($dates) . ' date per il gruppo');
 
-            // Per ogni membro del gruppo, crea disponibilità random (0-4 date)
+            // Per ogni membro del gruppo, crea molte più disponibilità
             foreach ($group->members as $member) {
-                // Numero random di disponibilità (0-4)
-                $numAvailabilities = rand(0, 20);
+                // Numero più alto di disponibilità (60-90 date per avere più eventi)
+                $numAvailabilities = rand(60, 90);
 
-                if ($numAvailabilities === 0) {
-                    continue;
-                }
-
-                // Seleziona date random dal mese
+                // Seleziona date random dal periodo
                 $selectedDates = collect($dates)
                     ->random(min($numAvailabilities, count($dates)))
                     ->values();
 
                 foreach ($selectedDates as $dinnerDate) {
-                    // Decidi prima se può ospitare (30% probabilità)
-                    $canHost = rand(1, 100) <= 30;
+                    // Aumenta probabilità di poter ospitare (50% invece di 30%)
+                    $canHost = rand(1, 100) <= 50;
 
                     if ($canHost) {
                         // HOST: usa solo stati iniziali validi
@@ -225,9 +221,9 @@ class DinnerDatesSeeder extends Seeder
                 continue;
             }
 
-            // Per ogni host, crea 1-3 prenotazioni random
+            // Per ogni host, crea più prenotazioni (2-5 invece di 1-3)
             foreach ($availableHosts as $hostAvailability) {
-                $numBookings = rand(1, 3);
+                $numBookings = rand(2, 5);
 
                 // Calcola posti disponibili
                 $availableSpots = $hostAvailability->max_guests;
@@ -259,9 +255,10 @@ class DinnerDatesSeeder extends Seeder
                     // Numero di ospiti random (1-2 per prenotazione)
                     $guestsCount = rand(1, min(2, $hostAvailability->max_guests - $currentBookings));
 
-                    // Determina lo stato (60% confirmed, 30% pending, 10% cancelled)
+                    // Determina lo stato (50% confirmed, 40% pending, 10% cancelled)
+                    // Più pending per avere più prenotazioni da confermare
                     $statusRand = rand(1, 100);
-                    if ($statusRand <= 60) {
+                    if ($statusRand <= 50) {
                         $status = DinnerBookingStatus::CONFIRMED;
                     } elseif ($statusRand <= 90) {
                         $status = DinnerBookingStatus::PENDING;

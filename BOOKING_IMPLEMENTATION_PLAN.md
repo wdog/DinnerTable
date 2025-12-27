@@ -195,7 +195,8 @@ AVAILABLE
    - Verifica tutte le condizioni: stesso gruppo, non propria disponibilità, can_host=true
    - Controlla status (AVAILABLE_TO_HOST o ALMOST_FULL)
    - Verifica posti disponibili e prenotazioni duplicate
-   - Impedisce prenotazioni multiple nello stesso giorno
+   - **AGGIORNATO (27/12/2025)**: Impedisce prenotazioni multiple nello stesso giorno includendo ANCHE prenotazioni CANCELLED
+   - Blocca prenotazioni se esiste già una prenotazione per lo stesso giorno (stati: confirmed, pending, cancelled)
 3. ✅ `app/Policies/DinnerAvailabilityPolicy.php` - aggiornato metodo `delete()` per impedire cancellazione con prenotazioni confermate
 
 **Cosa fa:**
@@ -206,8 +207,8 @@ AVAILABLE
   - can_host = true
   - status = `AVAILABLE_TO_HOST` o `ALMOST_FULL` (non FULL o HOST_CANCELLED)
   - Ci sono posti disponibili (`available_spots > 0`)
-  - Non ha già prenotato questa disponibilità
-  - **Non ha altre prenotazioni confermate nello stesso giorno**
+  - Non ha già prenotato questa disponibilità (qualsiasi stato: confirmed/pending/cancelled)
+  - **Non ha altre prenotazioni nello stesso giorno (incluse quelle cancellate)**
 - Impedisce cancellazione disponibilità con prenotazioni attive
 
 ### ✅ STEP 4: Interfaccia Calendario e Form Prenotazione (COMPLETATO)
@@ -222,8 +223,11 @@ AVAILABLE
      - Campo `bringing_items` come TagsInput
      - Campo `notes` per allergie e note
    - ✅ Aggiornato `loadCalendarData()` per includere info prenotazioni (max_guests, available_spots, total_booked, can_book)
+   - ✅ **AGGIORNATO (27/12/2025)**: Aggiunto recupero `user_booking` per ogni giorno con id, status e host_name
+   - ✅ **Documentazione PHPDoc completa** per classe e tutti i metodi
    - ✅ Gestione creazione prenotazione con notifiche success/error
    - ✅ Ricaricamento automatico calendario dopo prenotazione
+   - ✅ Semplificati controlli duplicati (gestiti dalla Policy)
 
 2. ✅ `resources/views/filament/app/pages/group-availabilities.blade.php`:
    - ✅ Aggiunto pulsante "Prenota" visibile solo se `can_book = true`
@@ -231,12 +235,21 @@ AVAILABLE
    - ✅ Badge colorati per host (verde) e guest (rosa)
    - ✅ Modal gestito tramite Filament Action
    - ✅ Aggiornati filtri con nuovi stati (optgroup per Host e Guest)
+   - ✅ **AGGIORNATO (27/12/2025)**: Aggiunto badge cliccabile per prenotazioni esistenti dell'utente
+     - Badge verde per prenotazioni confermate
+     - Badge arancione per prenotazioni pending
+     - Badge rosso per prenotazioni cancellate
+     - Link diretto alla pagina modifica prenotazione
+     - Mostra nome host e status
+   - ✅ Fix: giorni passati usano `<` invece di `<=` per styling
 
 **Risultato:**
 - ✅ Form prenotazione completamente funzionante
 - ✅ Validazione in tempo reale della capacità
 - ✅ UI migliorata con info posti e stati colorati
 - ✅ Observer gestisce automaticamente i cambi di stato
+- ✅ **Visualizzazione chiara prenotazioni esistenti nel calendario**
+- ✅ **Prevenzione prenotazioni duplicate con feedback visivo**
 
 ## Stato Attuale
 
@@ -250,25 +263,108 @@ AVAILABLE
 - ✅ UI calendario migliorata con posti disponibili e pulsante prenota
 - ✅ Filtri aggiornati con nuovi stati
 
-### ⏳ Prossimi Step (Opzionali)
+### ⏳ Prossimi Step
 
-### STEP 5: Risorsa Filament (Opzionale ma Consigliato)
-**File da creare:**
-14. `app/Filament/App/Resources/DinnerBookings/DinnerBookingResource.php`
-15. `app/Filament/App/Resources/DinnerBookings/Schemas/DinnerBookingForm.php`
-16. `app/Filament/App/Resources/DinnerBookings/Tables/DinnerBookingsTable.php`
-17. `app/Filament/App/Resources/DinnerBookings/Pages/ListDinnerBookings.php`
-18. `app/Filament/App/Resources/DinnerBookings/Pages/CreateDinnerBooking.php`
-19. `app/Filament/App/Resources/DinnerBookings/Pages/EditDinnerBooking.php`
-20. `app/Filament/App/Resources/DinnerBookings/Pages/ViewDinnerBooking.php`
+### STEP 5: Gestione Transizioni di Stato Prenotazioni (IN CORSO)
 
-**Cosa fa:**
-- Permette gestione completa prenotazioni tramite panel Filament
-- Pagina "Le Mie Prenotazioni" nel menu
-- Lista con filtri, create/edit/view
-- Form alternativo al modal del calendario
+**Obiettivo**: Implementare un sistema di transizioni di stato per le prenotazioni che permetta di gestire il ciclo di vita completo di una prenotazione, dalla creazione alla conferma/cancellazione.
 
-### STEP 6: Testing
+#### Stati DinnerBooking (già esistenti)
+- `PENDING` - "In attesa" (arancione) - Prenotazione creata, in attesa di conferma dall'host
+- `CONFIRMED` - "Confermato" (verde) - Prenotazione confermata dall'host
+- `CANCELLED` - "Cancellato" (rosso) - Prenotazione cancellata (dall'host o dal guest)
+
+#### Diagramma Transizioni Stati Prenotazioni
+```
+PENDING (creazione)
+    ↓ (host conferma)
+CONFIRMED
+    ↓ (host/guest cancella)
+CANCELLED
+
+PENDING
+    ↓ (host/guest cancella)
+CANCELLED
+```
+
+#### Regole di Transizione
+**Automatiche (gestite da Observer - già implementato):**
+- Creazione prenotazione → status = `PENDING`
+- Guest crea prenotazione → guest availability status = `BOOKED`
+- Host conferma prenotazione → booking status = `CONFIRMED`
+- Cancellazione prenotazione → booking status = `CANCELLED`
+- Cancellazione prenotazione → guest availability status torna `AVAILABLE`
+
+**Manuali (da implementare):**
+- Host può confermare prenotazioni PENDING → CONFIRMED
+- Host può cancellare prenotazioni PENDING/CONFIRMED → CANCELLED
+- Guest può cancellare proprie prenotazioni PENDING/CONFIRMED → CANCELLED
+- **NON si può riattivare una prenotazione CANCELLED** (deve crearne una nuova)
+
+#### File da Modificare/Creare
+
+**1. Policy (aggiornamento):**
+- ✅ `app/Policies/DinnerBookingPolicy.php` - già esiste, da aggiornare:
+  - Aggiungere metodo `confirm()` - solo host può confermare
+  - Aggiornare `delete()` per gestire sia host che guest
+  - Verificare che cancellazioni aggiornino correttamente gli stati
+
+**2. Observer (aggiornamento):**
+- ✅ `app/Observers/DinnerBookingObserver.php` - già esiste, verificare:
+  - Gestisce correttamente `updated()` quando status cambia
+  - Aggiorna contatori host quando booking passa PENDING → CONFIRMED
+  - Libera posti quando booking passa a CANCELLED
+  - Non modifica host status se status = HOST_CANCELLED
+
+**3. Risorsa Filament (da creare/aggiornare):**
+- `app/Filament/App/Resources/DinnerBookingResource.php`
+- `app/Filament/App/Resources/DinnerBookings/Pages/EditDinnerBooking.php`
+  - Aggiungere **Actions** per conferma/cancellazione
+  - Action "Conferma" visibile solo per host, solo su status PENDING
+  - Action "Cancella" visibile per host e guest, solo su status PENDING/CONFIRMED
+  - Form di modifica bloccato se status = CANCELLED
+
+**4. Notifiche (da implementare):**
+- Notifica al guest quando host conferma prenotazione
+- Notifica all'host quando guest cancella prenotazione
+- Notifica al guest quando host cancella prenotazione
+
+**5. UI Calendario (aggiornamento):**
+- ✅ Badge già mostra status con colori corretti
+- Da valutare: mostrare action rapide nel badge (conferma/cancella)?
+
+#### Validazioni da Implementare
+
+1. **Conferma prenotazione**:
+   - Solo host può confermare
+   - Solo prenotazioni PENDING possono essere confermate
+   - Verificare che ci siano ancora posti disponibili (nel caso siano stati modificati)
+   - Inviare notifica al guest
+
+2. **Cancellazione prenotazione**:
+   - Host e guest possono cancellare
+   - Solo PENDING/CONFIRMED possono essere cancellate
+   - Liberare posti per l'host
+   - Aggiornare status guest availability a AVAILABLE
+   - Aggiornare status host availability se necessario (FULL → ALMOST_FULL)
+   - Inviare notifica alla controparte
+
+3. **Modifica prenotazione**:
+   - Solo guest può modificare
+   - Solo PENDING/CONFIRMED possono essere modificate
+   - Non può modificare `guests_count` se porta il totale oltre `max_guests` dell'host
+   - Se status = CANCELLED → form read-only, mostrare messaggio
+
+#### Test Cases da Creare
+
+- Test conferma prenotazione da parte host
+- Test cancellazione da parte host
+- Test cancellazione da parte guest
+- Test che CANCELLED non può tornare a PENDING/CONFIRMED
+- Test notifiche inviate correttamente
+- Test aggiornamenti contatori posti dopo conferma/cancellazione
+
+### STEP 7: Testing
 **File da creare:**
 21. `tests/Unit/Models/DinnerBookingTest.php`
 22. `tests/Unit/Rules/ValidateBookingCapacityTest.php`
@@ -318,8 +414,16 @@ AVAILABLE
    - GUEST: AVAILABLE → BOOKED (e viceversa)
 5. **Stesso gruppo**: Policy verifica appartenenza al gruppo
 6. **Non propria disponibilità**: Policy impedisce prenotare se stessi
-7. **Una prenotazione al giorno per guest**: Validazione/Policy impedisce che un utente prenoti più cene come ospite nello stesso giorno
+7. **Una prenotazione al giorno per guest**:
+   - Policy impedisce prenotazioni multiple nello stesso giorno
+   - **Include anche prenotazioni CANCELLED** (aggiornato 27/12/2025)
+   - UI mostra badge con stato prenotazione esistente
+   - Link diretto alla prenotazione per gestirla
 8. **Stati validi per prenotazione**: Pulsante "Prenota" visibile solo per AVAILABLE_TO_HOST o ALMOST_FULL (non FULL/HOST_CANCELLED)
+9. **Prenotazioni cancellate**:
+   - Policy blocca nuove prenotazioni se esiste una cancellata per lo stesso giorno
+   - Badge rosso nel calendario indica prenotazione cancellata
+   - Messaggio chiaro all'utente sul motivo del blocco
 
 ## Note Implementative
 

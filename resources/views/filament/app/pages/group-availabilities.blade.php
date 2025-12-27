@@ -49,10 +49,13 @@
                                     <option value="available_to_host">Disponibile ad ospitare</option>
                                     <option value="almost_full">Quasi pieno</option>
                                     <option value="full">Pieno</option>
-                                    <option value="host_cancelled">Cancellato (host)</option>
+                                    <option value="host_cancelled">Cancellato</option>
+                                    <option value="completed">Completato</option>
                                 </optgroup>
                                 <optgroup label="Guest (chi mangia)">
                                     <option value="available">Disponibile</option>
+                                    <option value="booked">Prenotato</option>
+                                    <option value="unavailable">Non disponibile</option>
                                 </optgroup>
                             </x-filament::input.select>
                         </x-filament::input.wrapper>
@@ -104,29 +107,7 @@
 
                             </div>
 
-                            {{-- Icona prenotazione esistente --}}
-                            @if (isset($dateInfo['user_booking']) && $dateInfo['user_booking'])
-                                @php
-                                    $bookingStatus = $dateInfo['user_booking']['status'];
-                                    $hostName = $dateInfo['user_booking']['host_name'];
-                                    $bookingId = $dateInfo['user_booking']['id'];
-                                @endphp
-                                <a href="/dinner/dinner-bookings/{{ $bookingId }}/edit"
-                                   title="{{ $bookingStatus->getLabel() }} con {{ $hostName }}"
-                                   @class([
-                                       'mb-2 px-2 py-1.5 rounded text-xs font-semibold border-2 flex items-center gap-2 hover:shadow-md transition-all',
-                                       'bg-orange-100 border-orange-400 text-orange-800 dark:bg-orange-900/30 dark:border-orange-600 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50' => $bookingStatus->value === 'pending',
-                                       'bg-green-100 border-green-400 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50' => $bookingStatus->value === 'confirmed',
-                                       'bg-red-100 border-red-400 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50' => $bookingStatus->value === 'cancelled',
-                                   ])>
-                                    @svg($bookingStatus->getIcon(), 'w-5 h-5 flex-shrink-0')
-                                    <div class="flex-1">
-                                        <div class="font-bold">{{ $bookingStatus->getLabel() }}</div>
-                                        <div class="text-xs opacity-90">con {{ $hostName }}</div>
-                                    </div>
-                                    @svg('tabler-chevron-right', 'w-4 h-4 flex-shrink-0')
-                                </a>
-                            @endif
+
 
                             {{-- Contenuto --}}
                             <div class="flex-1 space-y-1">
@@ -146,8 +127,8 @@
                                                 }
 
                                                 $extraClass = null;
-                                                if ($dateInfo['date'] < Carbon\Carbon::now()) {
-                                                    $extraClass = 'opacity-50 line-through';
+                                                if ($dateInfo['date'] < Carbon\Carbon::today()) {
+                                                    $extraClass = 'opacity-50';
                                                 }
                                             @endphp
 
@@ -194,6 +175,29 @@
                                                             @endif
                                                         </span>
                                                     </div>
+                                                                   {{-- Icona prenotazione esistente --}}
+                            @if (isset($dateInfo['user_booking']) && $dateInfo['user_booking'])
+                                @php
+                                    $bookingStatus = $dateInfo['user_booking']['status'];
+                                    $hostName = $dateInfo['user_booking']['host_name'];
+                                    $bookingId = $dateInfo['user_booking']['id'];
+                                @endphp
+                                <a href="/dinner/dinner-bookings/{{ $bookingId }}/edit"
+                                   title="{{ $bookingStatus->getLabel() }}"
+                                   @class([
+                                       'mb-2 px-2 py-1.5 rounded text-xs font-semibold border-2 flex items-center gap-2 hover:shadow-md transition-all',
+                                       'bg-orange-100 border-orange-400 text-orange-800 dark:bg-orange-900/30 dark:border-orange-600 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50' => $bookingStatus->value === 'pending',
+                                       'bg-green-100 border-green-400 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50' => $bookingStatus->value === 'confirmed',
+                                       'bg-red-100 border-red-400 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50' => $bookingStatus->value === 'cancelled',
+                                   ])>
+                                    @svg($bookingStatus->getIcon(), 'w-5 h-5 flex-shrink-0')
+                                    <div class="flex-1">
+                                        <div class="font-bold">{{ $bookingStatus->getLabel() }}</div>
+                                        <div class="text-xs opacity-90"></div>
+                                    </div>
+                                    @svg('tabler-chevron-right', 'w-4 h-4 flex-shrink-0')
+                                </a>
+                            @endif
                                                 @endif
 
 

@@ -75,120 +75,110 @@ class DinnerGroupSeeder extends Seeder
         // Array per tenere traccia degli utenti creati per città e CAP
         $usersByLocation = [];
 
-        // Distribuisci 100 utenti tra le 4 città (25 per città)
-        $usersPerCity = 25;
+        // Crea solo 15 utenti (5 gruppi x 3 persone max)
+        $totalUsers   = 15;
+        $usersPerCity = 4; // Distribuiti tra 4 città
         $userIndex    = 1;
 
         foreach ($this->cities as $cityName => $cityData) {
             $this->command->info("📍 Creazione utenti per {$cityName}...");
 
-            // Distribuisci gli utenti tra i CAP della città
-            $postalCodes        = $cityData['postal_codes'];
-            $usersPerPostalCode = (int) ceil($usersPerCity / count($postalCodes));
+            // Usa solo il primo CAP per semplicità
+            $postalCode = $cityData['postal_codes'][0];
 
-            foreach ($postalCodes as $postalCode) {
-                $count = min($usersPerPostalCode, 100 - $userIndex + 1);
+            for ($i = 0; $i < $usersPerCity && $userIndex <= $totalUsers; $i++) {
+                $firstName   = $this->getRandomItalianFirstName();
+                $lastName    = $this->getRandomItalianLastName();
+                $street      = $cityData['streets'][array_rand($cityData['streets'])];
+                $houseNumber = rand(1, 150);
 
-                for ($i = 0; $i < $count && $userIndex <= 100; $i++) {
-                    $firstName   = $this->getRandomItalianFirstName();
-                    $lastName    = $this->getRandomItalianLastName();
-                    $street      = $cityData['streets'][array_rand($cityData['streets'])];
-                    $houseNumber = rand(1, 150);
+                // Crea l'utente
+                $user = User::create([
+                    'name'              => "{$firstName} {$lastName}",
+                    'email'             => strtolower(Str::slug($firstName . '.' . $lastName . $userIndex)) . '@example.com',
+                    'password'          => bcrypt('password'),
+                    'email_verified_at' => now(),
+                ]);
 
-                    // Crea l'utente
-                    $user = User::create([
-                        'name'              => "{$firstName} {$lastName}",
-                        'email'             => strtolower(Str::slug($firstName . '.' . $lastName . $userIndex)) . '@example.com',
-                        'password'          => bcrypt('password'),
-                        'email_verified_at' => now(),
-                    ]);
+                // Completa il profilo
+                $user->profile->update([
+                    'city'                => $cityName,
+                    'address'             => $street,
+                    'house_number'        => (string) $houseNumber,
+                    'postal_code'         => $postalCode,
+                    'max_guests'          => rand(4, 8),
+                    'privacy_accepted_at' => now(),
+                ]);
 
-                    // Completa il profilo
-                    $user->profile->update([
-                        'city'                => $cityName,
-                        'address'             => $street,
-                        'house_number'        => (string) $houseNumber,
-                        'postal_code'         => $postalCode,
-                        'max_guests'          => rand(2, 8),
-                        'privacy_accepted_at' => now(),
-                    ]);
-
-                    // Aggiungi l'utente all'array per città e CAP
-                    $key = "{$cityName}_{$postalCode}";
-                    if ( ! isset($usersByLocation[$key])) {
-                        $usersByLocation[$key] = [];
-                    }
-                    $usersByLocation[$key][] = $user;
-
-                    $userIndex++;
+                // Aggiungi l'utente all'array per città e CAP
+                $key = "{$cityName}_{$postalCode}";
+                if ( ! isset($usersByLocation[$key])) {
+                    $usersByLocation[$key] = [];
                 }
+                $usersByLocation[$key][] = $user;
+
+                $userIndex++;
             }
         }
 
-        $this->command->info('✅ Creati 100 utenti con profili completi');
+        $this->command->info("✅ Creati {$totalUsers} utenti con profili completi");
 
-        // Crea gruppi cena per ogni combinazione città/CAP
-        $this->command->info('🍽️  Creazione gruppi cena...');
+        // Crea esattamente 5 gruppi con 3 persone ciascuno
+        $this->command->info('🍽️  Creazione 5 gruppi con 3 membri ciascuno...');
 
-        $groupsCreated  = 0;
-        $usedGroupNames = [];
+        $allUsers        = collect($usersByLocation)->flatten(1)->shuffle();
+        $groupsCreated   = 0;
+        $targetGroups    = 5;
+        $membersPerGroup = 3;
 
-        foreach ($usersByLocation as $locationKey => $users) {
-            [$city, $postalCode] = explode('_', $locationKey);
+        // Trova l'utente admin
+        $admin = User::where('email', 'admin@example.com')->first();
 
-            // Crea 1-2 gruppi per ogni combinazione città/CAP se ci sono abbastanza utenti
-            $numGroups = count($users) >= 6 ? rand(1, 2) : 1;
-
-            for ($g = 0; $g < $numGroups; $g++) {
-                if (empty($users)) {
+        for ($g = 0; $g < $targetGroups; $g++) {
+            // Per il primo gruppo, includi l'admin
+            if ($g === 0 && $admin) {
+                // Prendi solo 2 utenti normali + admin
+                $groupMembers = $allUsers->splice(0, 2);
+                $groupMembers->prepend($admin);
+                $creator = $admin;
+            } else {
+                if ($allUsers->count() < $membersPerGroup) {
                     break;
                 }
-
-                // Scegli un nome gruppo univoco
-                do {
-                    $groupName     = $this->groupNames[array_rand($this->groupNames)];
-                    $fullGroupName = "{$groupName} - {$city}";
-                } while (in_array($fullGroupName, $usedGroupNames));
-
-                $usedGroupNames[] = $fullGroupName;
-
-                // Numero di membri per questo gruppo (minimo 1, massimo metà degli utenti disponibili)
-                $maxMembers = max(1, (int) floor(count($users) / max(1, $numGroups - $g)));
-                $numMembers = rand(1, min(8, $maxMembers));
-
-                // Seleziona il creatore (primo utente del gruppo)
-                $creator = array_shift($users);
-
-                // Crea il gruppo
-                $group = DinnerGroup::create([
-                    'name'       => $fullGroupName,
-                    'slogan'     => $this->slogans[array_rand($this->slogans)],
-                    'group_code' => strtoupper(Str::random(14)),
-                    'created_by' => $creator->id,
-                ]);
-
-                // Assegna il creatore al gruppo
-                $creator->update(['dinner_group_id' => $group->id]);
-
-                $members = [$creator];
-
-                // Aggiungi altri membri se necessario
-                for ($m = 1; $m < $numMembers && ! empty($users); $m++) {
-                    $member = array_shift($users);
-                    $member->update(['dinner_group_id' => $group->id]);
-                    $members[] = $member;
-                }
-
-                $groupsCreated++;
-                $this->command->info("  ✓ Gruppo '{$group->name}' creato con {$numMembers} membri (CAP: {$postalCode})");
+                // Prendi 3 utenti per il gruppo
+                $groupMembers = $allUsers->splice(0, $membersPerGroup);
+                $creator      = $groupMembers->first();
             }
+
+            $city = $creator->profile->city;
+
+            // Scegli un nome gruppo univoco
+            $groupName     = $this->groupNames[$g % count($this->groupNames)];
+            $fullGroupName = "{$groupName} - {$city}";
+
+            // Crea il gruppo
+            $group = DinnerGroup::create([
+                'name'       => $fullGroupName,
+                'slogan'     => $this->slogans[array_rand($this->slogans)],
+                'group_code' => strtoupper(Str::random(14)),
+                'created_by' => $creator->id,
+            ]);
+
+            // Assegna tutti i membri al gruppo
+            foreach ($groupMembers as $member) {
+                $member->update(['dinner_group_id' => $group->id]);
+            }
+
+            $groupsCreated++;
+            $actualMembers = $groupMembers->count();
+            $this->command->info("  ✓ Gruppo '{$group->name}' creato con {$actualMembers} membri");
         }
 
         $this->command->newLine();
         $this->command->info('🎉 Seeding completato!');
-        $this->command->info('   📊 Utenti creati: 100');
+        $this->command->info("   📊 Utenti creati: {$totalUsers}");
         $this->command->info("   👥 Gruppi creati: {$groupsCreated}");
-        $this->command->info('   🏙️  Città: ' . count($this->cities));
+        $this->command->info("   👤 Membri per gruppo: {$membersPerGroup}");
 
         // Statistiche finali
         $usersInGroups      = User::whereNotNull('dinner_group_id')->count();
