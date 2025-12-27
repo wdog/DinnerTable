@@ -24,6 +24,9 @@
     <main>
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="text-center">
+                <div class="flex justify-center mb-8">
+                    <img src="{{ asset('images/logo.png') }}" alt="DinnerTable" class="h-32 w-auto">
+                </div>
                 <h2 class="text-5xl font-bold text-gray-900 mb-6">
                     Organizza le tue cene di gruppo
                 </h2>
