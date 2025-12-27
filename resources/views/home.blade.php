@@ -637,10 +637,10 @@
             }
         });
 
-        // Smooth fade-in on scroll
+        // Smooth fade-in on scroll with stagger
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
+            threshold: 0.05,
+            rootMargin: '0px 0px -50px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -653,15 +653,26 @@
 
         // Observe all sections and cards
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('section').forEach(section => {
+            // Observe sections
+            document.querySelectorAll('section').forEach((section, index) => {
                 section.classList.add('fade-in');
+                section.style.transitionDelay = `${index * 0.1}s`;
                 observer.observe(section);
             });
 
-            // Observe cards and important elements
-            document.querySelectorAll('.group').forEach(el => {
+            // Observe cards with stagger effect
+            document.querySelectorAll('.group').forEach((el, index) => {
                 el.classList.add('fade-in');
+                el.style.transitionDelay = `${(index % 3) * 0.15}s`;
                 observer.observe(el);
+            });
+
+            // Observe navigation buttons
+            document.querySelectorAll('a[href^="#"]').forEach(el => {
+                if (el.closest('.flex.justify-center')) {
+                    el.classList.add('fade-in');
+                    observer.observe(el);
+                }
             });
         });
     </script>
@@ -670,18 +681,31 @@
         /* Smooth scroll with offset for fixed navbar */
         html {
             scroll-padding-top: 80px;
+            scroll-behavior: smooth;
         }
 
-        /* Fade-in animation */
+        /* Enhanced smooth scrolling */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        /* Fade-in animation - more smooth and gradual */
         .fade-in {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(50px);
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
         }
 
         .fade-in-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Smoother transitions for all interactive elements */
+        a, button {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Blob animations */
