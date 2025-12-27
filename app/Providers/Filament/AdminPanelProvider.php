@@ -29,12 +29,16 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile(EditProfile::class)
+            ->brandName('DinnerTable Admin')
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/logo-small.png'))
             ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->colors([
-                'primary' => Color::Lime,
+                'primary' => Color::Amber,
             ])
             ->darkMode(true)
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
