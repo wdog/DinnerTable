@@ -11,6 +11,9 @@
 - Gestisce le prenotazioni ricevute (conferma/cancella)
 
 **GUEST (chi partecipa/mangia)**:
+- Può creare una **DinnerAvailability** con `can_host = false` per dichiarare la propria disponibilità
+  - Stati disponibilità guest: `AVAILABLE` (disponibile) o `NOT_AVAILABLE` (non disponibile)
+  - Serve per comunicare al gruppo la propria presenza/assenza
 - Crea un **DinnerBooking** prenotando la disponibilità di un host
 - Dichiara: "Voglio partecipare alla cena di [host] il giorno X"
 - La prenotazione ha stati: `PENDING` → `CONFIRMED` → `CANCELLED`
@@ -28,7 +31,9 @@
 
 ### Note Aggiuntive
 
-- Un utente può creare `DinnerAvailability` con `can_host = false` per dichiarare disponibilità generica come guest (senza creare posti)
+- Un utente può creare `DinnerAvailability` con `can_host = false` per dichiarare disponibilità come guest
+  - Stati: `AVAILABLE` (sono disponibile), `NOT_AVAILABLE` (non sono disponibile)
+  - Serve per comunicare al gruppo presenza/assenza senza creare posti
 - Un utente **non può** prenotare la propria disponibilità (non può essere host e guest della stessa cena)
 - Un utente può avere **solo una prenotazione** (confermata/pending/cancellata) per giorno
 - Le prenotazioni `CANCELLED` sono **read-only** (non modificabili né eliminabili)
@@ -559,6 +564,15 @@ AVAILABLE
 - ✅ Aggiunto ViewAction nella tabella disponibilità
 - ✅ Mostra dettagli disponibilità + relation manager prenotazioni
 - ✅ Utilizzabile per disponibilità COMPLETED o passate
+
+**8. Nuovo Stato Guest NOT_AVAILABLE (27/12/2025)**
+- ✅ Aggiunto stato `NOT_AVAILABLE` all'enum `DinnerAvailabilityStatus`
+- ✅ Permette ai guest di dichiarare esplicitamente di non essere disponibili
+- ✅ Serve per comunicare al gruppo la propria assenza per una data
+- ✅ Colore grigio, icona calendario-X
+- ✅ Aggiornato metodo `isGuestStatus()` per includere entrambi gli stati guest
+- ✅ Filtri calendario ora generati dinamicamente dall'enum
+- ✅ Actions tabella prenotazioni rispettano policy (blocco per COMPLETED)
 
 ### ⏳ Prossimi Step
 

@@ -35,11 +35,6 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
     use InteractsWithTable;
 
     /**
-     * Nome della vista Blade da utilizzare.
-     */
-    protected string $view = 'filament.app.pages.manage-dinner-group';
-
-    /**
      * Icona di navigazione della pagina.
      */
     protected static string|BackedEnum|null $navigationIcon = 'tabler-chef-hat';
@@ -72,73 +67,16 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
     public ?array $joinData = [];
 
     /**
+     * Nome della vista Blade da utilizzare.
+     */
+    protected string $view = 'filament.app.pages.manage-dinner-group';
+
+    /**
      * Inizializza il componente e carica i dati iniziali.
      */
     public function mount(): void
     {
         $this->form->fill();
-    }
-
-    /**
-     * Ottiene l'utente correntemente autenticato.
-     *
-     * @return \App\Models\User
-     */
-    protected function getUser()
-    {
-        return Auth::user();
-    }
-
-    /**
-     * Ottiene il gruppo cena dell'utente corrente.
-     *
-     * @return DinnerGroup|null Il gruppo dell'utente o null se non appartiene a nessun gruppo
-     */
-    protected function getUserGroup(): ?DinnerGroup
-    {
-        return $this->getUser()->dinnerGroup;
-    }
-
-    /**
-     * Definisce lo schema del form per creare un nuovo gruppo.
-     *
-     * Raccoglie il nome del gruppo e uno slogan opzionale.
-     *
-     * @return array Schema dei campi del form
-     */
-    protected function getCreateGroupFormSchema(): array
-    {
-        return [
-            TextInput::make('name')
-                ->label('Nome del Gruppo')
-                ->required()
-                ->maxLength(255)
-                ->placeholder('Es: Gli Amici della Cena'),
-
-            TextInput::make('slogan')
-                ->label('Slogan (opzionale)')
-                ->maxLength(255)
-                ->placeholder('Es: Mangiare insieme è meglio!'),
-        ];
-    }
-
-    /**
-     * Definisce lo schema del form per unirsi a un gruppo esistente.
-     *
-     * Richiede l'inserimento di un codice gruppo valido di 14 caratteri.
-     *
-     * @return array Schema dei campi del form
-     */
-    protected function getJoinGroupFormSchema(): array
-    {
-        return [
-            TextInput::make('group_code')
-                ->label('Codice Gruppo')
-                ->required()
-                ->length(14)
-                ->placeholder('XXXXXXXX')
-                ->rule('exists:dinner_groups,group_code'),
-        ];
     }
 
     /**
@@ -313,29 +251,6 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
     }
 
     /**
-     * Ottiene le azioni da visualizzare nell'header della pagina.
-     *
-     * Se l'utente non appartiene a nessun gruppo, non mostra nulla.
-     * Se è già membro, mostra solo l'azione per uscire dal gruppo.
-     *
-     * @return array Lista di azioni disponibili per l'header
-     */
-    protected function getHeaderActions(): array
-    {
-        $user = $this->getUser();
-
-        // Se l'utente non è in un gruppo, nessuna azione nell'header
-        if ( ! $user->dinnerGroup) {
-            return [];
-        }
-
-        // Se l'utente è già in un gruppo, mostra l'azione per uscire
-        return [
-            $this->leaveGroupAction(),
-        ];
-    }
-
-    /**
      * Configura la tabella per visualizzare i membri del gruppo.
      */
     public function table(Table $table): Table
@@ -485,5 +400,90 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
         }
 
         return 'Per iniziare, crea un nuovo gruppo o unisciti a uno esistente.';
+    }
+
+    /**
+     * Ottiene l'utente correntemente autenticato.
+     *
+     * @return \App\Models\User
+     */
+    protected function getUser()
+    {
+        return Auth::user();
+    }
+
+    /**
+     * Ottiene il gruppo cena dell'utente corrente.
+     *
+     * @return DinnerGroup|null Il gruppo dell'utente o null se non appartiene a nessun gruppo
+     */
+    protected function getUserGroup(): ?DinnerGroup
+    {
+        return $this->getUser()->dinnerGroup;
+    }
+
+    /**
+     * Definisce lo schema del form per creare un nuovo gruppo.
+     *
+     * Raccoglie il nome del gruppo e uno slogan opzionale.
+     *
+     * @return array Schema dei campi del form
+     */
+    protected function getCreateGroupFormSchema(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('Nome del Gruppo')
+                ->required()
+                ->maxLength(255)
+                ->placeholder('Es: Gli Amici della Cena'),
+
+            TextInput::make('slogan')
+                ->label('Slogan (opzionale)')
+                ->maxLength(255)
+                ->placeholder('Es: Mangiare insieme è meglio!'),
+        ];
+    }
+
+    /**
+     * Definisce lo schema del form per unirsi a un gruppo esistente.
+     *
+     * Richiede l'inserimento di un codice gruppo valido di 14 caratteri.
+     *
+     * @return array Schema dei campi del form
+     */
+    protected function getJoinGroupFormSchema(): array
+    {
+        return [
+            TextInput::make('group_code')
+                ->label('Codice Gruppo')
+                ->required()
+                ->length(14)
+                ->placeholder('XXXXXXXX')
+                ->rule('exists:dinner_groups,group_code'),
+        ];
+    }
+
+    /**
+     * Ottiene le azioni da visualizzare nell'header della pagina.
+     *
+     * Se l'utente non appartiene a nessun gruppo, non mostra nulla.
+     * Se è già membro, mostra solo l'azione per uscire dal gruppo.
+     *
+     * @return array Lista di azioni disponibili per l'header
+     */
+    protected function getHeaderActions(): array
+    {
+        $user = $this->getUser();
+
+        // Se l'utente non è in un gruppo, nessuna azione nell'header
+        if ( ! $user->dinnerGroup) {
+            return [];
+        }
+
+        // Se l'utente è già in un gruppo, mostra l'azione per uscire
+        return [
+            $this->leaveGroupAction(),
+        ];
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Filament\App\Resources\DinnerAvailabilities\Pages;
 
 use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
 use App\Enums\DinnerAvailabilityStatus;
+use Filament\Resources\Pages\EditRecord;
 use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 /**
@@ -20,12 +20,18 @@ class EditDinnerAvailability extends EditRecord
     protected static string $resource = DinnerAvailabilityResource::class;
 
     /**
+     * Carica sempre la relazione dinnerDate per verificare lo stato read-only.
+     */
+    protected function resolveRecord($key): \Illuminate\Database\Eloquent\Model
+    {
+        return parent::resolveRecord($key)->load('dinnerDate');
+    }
+
+    /**
      * Azioni header disponibili.
      *
      * Disponibilità completate o passate non hanno azioni
      * (nessun pulsante elimina o altro).
-     *
-     * @return array
      */
     protected function getHeaderActions(): array
     {
@@ -43,8 +49,6 @@ class EditDinnerAvailability extends EditRecord
      * Azioni del form.
      *
      * Se la disponibilità è read-only, nasconde i pulsanti Salva/Annulla.
-     *
-     * @return array
      */
     protected function getFormActions(): array
     {
@@ -61,12 +65,10 @@ class EditDinnerAvailability extends EditRecord
      * Condizioni per read-only:
      * - Stato COMPLETED
      * - Data nel passato
-     *
-     * @return bool
      */
     protected function isReadOnly(): bool
     {
-        if (!$this->record) {
+        if ( ! $this->record) {
             return false;
         }
 

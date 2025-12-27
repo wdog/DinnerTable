@@ -5,8 +5,10 @@ namespace App\Filament\App\Resources\DinnerBookings\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Support\Enums\Size;
 use App\Enums\DinnerBookingStatus;
 use Filament\Actions\DeleteAction;
+use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
@@ -82,17 +84,33 @@ class DinnerBookingsTable
             ])
             ->defaultSort('hostAvailability.dinnerDate.dinner_date', 'desc')
             ->recordActions([
+
                 // ! Azione per confermare la prenotazione
                 Action::make('confirm')
                     ->label('Conferma')
-
                     ->icon('tabler-check')
                     ->color('success')
-                    ->visible(fn ($record) => $record->status === DinnerBookingStatus::PENDING)
+                    ->button()
+                    ->size(Size::ExtraSmall)
+                    ->visible(
+                        fn ($record) => $record->status !== DinnerBookingStatus::CONFIRMED &&
+                            Auth::user()->can('update', $record)
+                    )
                     ->requiresConfirmation()
                     ->modalHeading('Conferma la tua prenotazione')
                     ->modalDescription('Confermi la tua presenza?')
                     ->action(function ($record) {
+                        // Verifica autorizzazione tramite policy prima di salvare
+                        if ( ! Auth::user()->can('update', $record)) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Azione non permessa')
+                                ->body('Non puoi modificare questa prenotazione (cena completata o cancellata).')
+                                ->send();
+
+                            return;
+                        }
+
                         $record->status = DinnerBookingStatus::CONFIRMED;
                         $record->save();
 
@@ -108,11 +126,27 @@ class DinnerBookingsTable
                     ->label('Annulla')
                     ->icon('tabler-x')
                     ->color('danger')
-                    ->visible(fn ($record) => $record->status !== DinnerBookingStatus::CANCELLED)
+                    ->button()
+                    ->size(Size::ExtraSmall)
+                    ->visible(
+                        fn ($record) => $record->status !== DinnerBookingStatus::CANCELLED &&
+                            Auth::user()->can('update', $record)
+                    )
                     ->requiresConfirmation()
                     ->modalHeading('Annulla prenotazione')
                     ->modalDescription('Sei sicuro di voler annullare questa prenotazione?')
                     ->action(function ($record) {
+                        // Verifica autorizzazione tramite policy prima di salvare
+                        if ( ! auth()->user()->can('update', $record)) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Azione non permessa')
+                                ->body('Non puoi modificare questa prenotazione (cena completata o cancellata).')
+                                ->send();
+
+                            return;
+                        }
+
                         $record->status = DinnerBookingStatus::CANCELLED;
                         $record->save();
 

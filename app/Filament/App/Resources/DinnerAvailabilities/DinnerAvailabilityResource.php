@@ -111,7 +111,7 @@ class DinnerAvailabilityResource extends Resource
 
         // Disabilita il form se è read-only (completato o passato)
         $schema->disabled(function ($record) {
-            if (!$record) {
+            if ( ! $record) {
                 return false; // Form di creazione sempre abilitato
             }
 

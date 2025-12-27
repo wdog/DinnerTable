@@ -14,11 +14,11 @@ class TutorialPage extends Page
 
     protected static ?string $title = 'Guida all\'uso di DinnerTable';
 
-    protected string $view = 'filament.app.pages.tutorial-page';
-
     protected static ?int $navigationSort = 99;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestione Cene';
+
+    protected string $view = 'filament.app.pages.tutorial-page';
 
     public static function canAccess(): bool
     {

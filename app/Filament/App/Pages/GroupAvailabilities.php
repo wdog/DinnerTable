@@ -263,6 +263,33 @@ class GroupAvailabilities extends Page implements HasActions
     }
 
     /**
+     * Genera le opzioni per il filtro status.
+     *
+     * Crea un array raggruppato con tutti gli stati disponibili dall'enum
+     * DinnerAvailabilityStatus, separando gli stati HOST da quelli GUEST.
+     *
+     * @return array Array associativo con optgroups ['Host' => [...], 'Guest' => [...]]
+     */
+    public function getStatusFilterOptions(): array
+    {
+        $hostStates  = [];
+        $guestStates = [];
+
+        foreach (\App\Enums\DinnerAvailabilityStatus::cases() as $status) {
+            if ($status->isHostStatus()) {
+                $hostStates[$status->value] = $status->getLabel();
+            } elseif ($status->isGuestStatus()) {
+                $guestStates[$status->value] = $status->getLabel();
+            }
+        }
+
+        return [
+            'Host (chi cucina)'     => $hostStates,
+            'Guest (chi partecipa)' => $guestStates,
+        ];
+    }
+
+    /**
      * Carica i dati del calendario per il mese selezionato.
      *
      * Recupera tutte le DinnerDate e disponibilità del gruppo per il mese corrente,

@@ -66,22 +66,17 @@
 
                     {{-- Filtri --}}
                     <div class="flex items-center gap-3">
-                        {{-- Filtro Status --}}
+                        {{-- Filtro Status (generato dinamicamente dall'enum) --}}
                         <x-filament::input.wrapper class="w-auto">
                             <x-filament::input.select wire:model.live="filterStatus">
                                 <option value="">Tutti gli status</option>
-                                <optgroup label="Host (chi cucina)">
-                                    <option value="available_to_host">Disponibile ad ospitare</option>
-                                    <option value="almost_full">Quasi pieno</option>
-                                    <option value="full">Pieno</option>
-                                    <option value="host_cancelled">Cancellato</option>
-                                    <option value="completed">Completato</option>
-                                </optgroup>
-                                <optgroup label="Guest (chi mangia)">
-                                    <option value="available">Disponibile</option>
-                                    <option value="booked">Prenotato</option>
-                                    <option value="unavailable">Non disponibile</option>
-                                </optgroup>
+                                @foreach ($this->getStatusFilterOptions() as $groupLabel => $statuses)
+                                    <optgroup label="{{ $groupLabel }}">
+                                        @foreach ($statuses as $value => $label)
+                                            <option value="{{ $value }}">{{ $label }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
                             </x-filament::input.select>
                         </x-filament::input.wrapper>
 
@@ -128,7 +123,7 @@
                                 'date'
                             ]->isSameDay(\Carbon\Carbon::now()),
                             'dark:shadow-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2
-                                                                                                    hover:shadow-lg transition-shadow duration-200 bg-gray-50 dark:bg-slate-900/50 min-h-30 flex flex-col ',
+                                                                                                                            hover:shadow-lg transition-shadow duration-200 bg-gray-50 dark:bg-slate-900/50 min-h-30 flex flex-col ',
                         ])>
 
                             {{-- Header giorno --}}
@@ -205,7 +200,7 @@
                                                      Mostra: prenotati/totale (liberi)
                                                      ============================================ --}}
                                                 @if ($canHost && isset($availability['max_guests']))
-                                                    <div class="text-xs mb-2 flex items-center gap-1">
+                                                    <div class="text-xs flex items-center gap-1">
                                                         @svg('tabler-armchair', 'w-4 h-4')
                                                         <span>
                                                             Posti:
@@ -219,6 +214,7 @@
                                                             @endif
                                                         </span>
                                                     </div>
+                                                    <div class="text-xs font-semibold ml-5 mb-2">{{ $availability['status']->getLabel() }}</div>
 
                                                     {{-- ============================================
                                                          INDICATORE PRENOTAZIONE ESISTENTE
@@ -237,11 +233,11 @@
                                                             title="{{ $bookingStatus->getLabel() }}"
                                                             @class([
                                                                 'mb-2 px-2 py-1.5 rounded text-xs font-semibold border-2 flex items-center gap-2 hover:shadow-md transition-all',
-                                                                'bg-orange-100 border-orange-400 text-orange-800 dark:bg-orange-900/30 dark:border-orange-600 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50' =>
+                                                                'bg-orange-100 border-orange-400 text-orange-800 dark:bg-orange-200 dark:border-orange-600 dark:text-orange-600 hover:bg-orange-200 dark:hover:bg-orange-300' =>
                                                                     $bookingStatus->value === 'pending',
-                                                                'bg-green-100 border-green-400 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50' =>
+                                                                'bg-green-100 border-green-400 text-green-800 dark:bg-green-200 dark:border-green-600 dark:text-green-600 hover:bg-green-200 dark:hover:bg-green-300' =>
                                                                     $bookingStatus->value === 'confirmed',
-                                                                'bg-red-100 border-red-400 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50' =>
+                                                                'bg-red-100 border-red-400 text-red-800 dark:bg-red-200 dark:border-red-600 dark:text-red-600 hover:bg-red-200 dark:hover:bg-red-300' =>
                                                                     $bookingStatus->value === 'cancelled',
                                                             ])>
                                                             @svg($bookingStatus->getIcon(), 'w-5 h-5 flex-shrink-0')

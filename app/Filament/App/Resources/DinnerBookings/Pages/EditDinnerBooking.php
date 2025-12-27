@@ -44,8 +44,6 @@ class EditDinnerBooking extends EditRecord
 {
     /**
      * Risorsa Filament associata a questa pagina.
-     *
-     * @var string
      */
     protected static string $resource = DinnerBookingResource::class;
 
@@ -80,6 +78,7 @@ class EditDinnerBooking extends EditRecord
      * - Altrimenti -> mostra i pulsanti standard del parent (Salva, Annulla)
      *
      * @return array<\Filament\Actions\Action> Array di azioni form (vuoto o standard)
+     *
      * @see \App\Enums\DinnerAvailabilityStatus::canUpdateBookings()
      */
     protected function getFormActions(): array
@@ -98,28 +97,28 @@ class EditDinnerBooking extends EditRecord
      * - Stato disponibilità host non permette modifiche (COMPLETED, HOST_CANCELLED)
      * - Prenotazione in stato CANCELLED
      * - Data nel passato
-     *
-     * @return bool
      */
     protected function isReadOnly(): bool
     {
-        if (!$this->record) {
+        if ( ! $this->record) {
             return false;
         }
 
         // Prenotazione cancellata = read-only
         if ($this->record->status->value === 'cancelled') {
-            return true;
+            return false;
         }
 
         // Disponibilità host non permette modifiche
-        if (!$this->record->hostAvailability->status->canUpdateBookings()) {
+        if ( ! $this->record->hostAvailability->status->canUpdateBookings()) {
             return true;
         }
 
         // Data passata = read-only
-        if ($this->record->hostAvailability->dinnerDate &&
-            $this->record->hostAvailability->dinnerDate->dinner_date < today()) {
+        if (
+            $this->record->hostAvailability->dinnerDate &&
+            $this->record->hostAvailability->dinnerDate->dinner_date < today()
+        ) {
             return true;
         }
 

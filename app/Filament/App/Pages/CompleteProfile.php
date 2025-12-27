@@ -36,14 +36,14 @@ class CompleteProfile extends Page implements HasForms
     protected static bool $shouldRegisterNavigation = false;
 
     /**
-     * Nome della vista Blade da utilizzare.
-     */
-    protected string $view = 'filament.app.pages.complete-profile';
-
-    /**
      * Dati del form.
      */
     public ?array $data = [];
+
+    /**
+     * Nome della vista Blade da utilizzare.
+     */
+    protected string $view = 'filament.app.pages.complete-profile';
 
     /**
      * Inizializza la pagina e carica i dati del profilo utente.

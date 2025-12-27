@@ -17,8 +17,9 @@ use Filament\Support\Contracts\HasLabel;
  *    - Gestisce la capacità massima di ospiti (max_guests)
  *
  * 2. **Stati GUEST** (can_host = false):
- *    - L'utente si dichiara disponibile a partecipare come ospite
- *    - Stato semplice, indica solo la disponibilità a essere invitato
+ *    - L'utente dichiara la propria disponibilità a partecipare come ospite
+ *    - AVAILABLE: disponibile a essere ospitato
+ *    - NOT_AVAILABLE: non disponibile per quella data (comunica assenza al gruppo)
  *
  * Ciclo di vita per HOST:
  * - AVAILABLE_TO_HOST: appena creata, può ricevere prenotazioni
@@ -75,10 +76,20 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
     /**
      * Guest disponibile a partecipare.
      *
-     * Unico stato per disponibilità guest (can_host = false).
+     * Stato per disponibilità guest (can_host = false).
      * Indica che l'utente è disponibile a essere ospitato.
      */
     case AVAILABLE = 'available';
+
+    /**
+     * Guest non disponibile a partecipare.
+     *
+     * Stato per disponibilità guest (can_host = false).
+     * Indica che l'utente ha dichiarato di non essere disponibile
+     * per quella data specifica (es. impegni, vacanza, ecc.).
+     * Serve per comunicare al gruppo la propria assenza.
+     */
+    case NOT_AVAILABLE = 'not_available';
 
     /**
      * Restituisce l'etichetta tradotta dello stato.
@@ -98,7 +109,8 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::HOST_CANCELLED    => 'Annullato',
             self::COMPLETED         => 'Completato',
             // Guest state
-            self::AVAILABLE => 'Disponibile',
+            self::AVAILABLE     => 'Disponibile',
+            self::NOT_AVAILABLE => 'Non piu\' disponibile',
         };
     }
 
@@ -123,8 +135,9 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::FULL              => 'danger',   // Rosso: pieno
             self::HOST_CANCELLED    => 'danger',   // Rosso: cancellato
             self::COMPLETED         => 'info',     // Blu: completato
-            // Guest state
-            self::AVAILABLE => 'info',             // Blu: disponibile
+            // Guest states
+            self::AVAILABLE     => 'warning',      // Verde: disponibile
+            self::NOT_AVAILABLE => 'gray',         // Grigio: non disponibile
         };
     }
 
@@ -145,8 +158,9 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             self::FULL              => 'tabler-door-off',         // Porta chiusa
             self::HOST_CANCELLED    => 'tabler-ban',              // Simbolo divieto
             self::COMPLETED         => 'tabler-thumb-up',         // Pollice su
-            // Guest state
-            self::AVAILABLE => 'tabler-tools-kitchen-3',          // Utensili cucina
+            // Guest states
+            self::AVAILABLE     => 'tabler-tools-kitchen-3',      // Utensili cucina
+            self::NOT_AVAILABLE => 'tabler-calendar-x',           // Calendario con X
         };
     }
 
@@ -178,13 +192,16 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
      * Controlla se lo stato corrente appartiene al flusso GUEST,
      * ovvero se la disponibilità è per partecipare (can_host = false).
      *
-     * Stato GUEST: solo AVAILABLE
+     * Stati GUEST: AVAILABLE, NOT_AVAILABLE
      *
      * @return bool True se è uno stato per guest
      */
     public function isGuestStatus(): bool
     {
-        return $this === self::AVAILABLE;
+        return in_array($this, [
+            self::AVAILABLE,
+            self::NOT_AVAILABLE,
+        ]);
     }
 
     /**
@@ -207,6 +224,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
      * - UI per mostrare/nascondere pulsante "Prenota"
      *
      * @return bool True se può accettare prenotazioni
+     *
      * @see \App\Policies\DinnerBookingPolicy::book()
      */
     public function canAcceptBookings(): bool
@@ -237,6 +255,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
      * - Form prenotazioni per disabilitare campi
      *
      * @return bool True se le prenotazioni possono essere modificate
+     *
      * @see \App\Models\DinnerBooking::canBeModified()
      */
     public function canUpdateBookings(): bool
