@@ -56,8 +56,8 @@ class DinnerAvailabilityObserver
      * Se tutte le condizioni sono soddisfatte, chiama handleHostCancellation()
      * che gestisce la cancellazione delle prenotazioni e notifiche.
      *
-     * @param DinnerAvailability $dinnerAvailability Disponibilità aggiornata
-     * @return void
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità aggiornata
+     *
      * @see handleHostCancellation()
      */
     public function updated(DinnerAvailability $dinnerAvailability): void
@@ -100,8 +100,7 @@ class DinnerAvailabilityObserver
      * loop infiniti. Altrimenti DinnerBookingObserver verrebbe triggerato
      * e tentereb be di aggiornare nuovamente lo stato della disponibilità.
      *
-     * @param DinnerAvailability $dinnerAvailability Disponibilità cancellata dall'host
-     * @return void
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità cancellata dall'host
      */
     protected function handleHostCancellation(DinnerAvailability $dinnerAvailability): void
     {

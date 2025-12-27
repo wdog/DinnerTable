@@ -34,7 +34,7 @@ class DinnerAvailabilityPolicy
      * Il filtro per gruppo viene applicato a livello di query nella risorsa
      * Filament tramite getEloquentQuery().
      *
-     * @param User $user Utente autenticato
+     * @param  User  $user  Utente autenticato
      * @return bool True per tutti gli utenti autenticati
      */
     public function viewAny(User $user): bool
@@ -53,8 +53,8 @@ class DinnerAvailabilityPolicy
      * - Verifica che dinner_group_id dell'utente corrisponda al gruppo
      *   della data (dinnerDate) associata alla disponibilità
      *
-     * @param User $user Utente autenticato
-     * @param DinnerAvailability $dinnerAvailability Disponibilità da visualizzare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da visualizzare
      * @return bool True se l'utente appartiene allo stesso gruppo
      */
     public function view(User $user, DinnerAvailability $dinnerAvailability): bool
@@ -69,7 +69,7 @@ class DinnerAvailabilityPolicy
      * La validazione che l'utente appartenga a un gruppo viene gestita
      * a livello di form/risorsa Filament.
      *
-     * @param User $user Utente autenticato
+     * @param  User  $user  Utente autenticato
      * @return bool True per tutti gli utenti autenticati
      */
     public function create(User $user): bool
@@ -96,8 +96,8 @@ class DinnerAvailabilityPolicy
      * Stati NON modificabili:
      * - COMPLETED: cena già avvenuta, dato storico
      *
-     * @param User $user Utente autenticato
-     * @param DinnerAvailability $dinnerAvailability Disponibilità da modificare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da modificare
      * @return bool True se proprietario e non completato
      */
     public function update(User $user, DinnerAvailability $dinnerAvailability): bool
@@ -138,8 +138,8 @@ class DinnerAvailabilityPolicy
      * - Notifica i guest della cancellazione
      * - Non elimina i dati ma li marca come cancellati
      *
-     * @param User $user Utente autenticato
-     * @param DinnerAvailability $dinnerAvailability Disponibilità da eliminare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da eliminare
      * @return bool True se proprietario, non completata e senza prenotazioni
      */
     public function delete(User $user, DinnerAvailability $dinnerAvailability): bool
@@ -167,8 +167,8 @@ class DinnerAvailabilityPolicy
      * Funzionalità disabilitata: le disponibilità non usano soft delete,
      * quindi non c'è possibilità di ripristino.
      *
-     * @param User $user Utente autenticato
-     * @param DinnerAvailability $dinnerAvailability Disponibilità da ripristinare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da ripristinare
      * @return bool Sempre false (funzionalità disabilitata)
      */
     public function restore(User $user, DinnerAvailability $dinnerAvailability): bool
@@ -182,8 +182,8 @@ class DinnerAvailabilityPolicy
      * Funzionalità disabilitata: le disponibilità non usano soft delete,
      * quindi non esiste eliminazione "permanente" separata da delete().
      *
-     * @param User $user Utente autenticato
-     * @param DinnerAvailability $dinnerAvailability Disponibilità da eliminare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da eliminare
      * @return bool Sempre false (funzionalità disabilitata)
      */
     public function forceDelete(User $user, DinnerAvailability $dinnerAvailability): bool

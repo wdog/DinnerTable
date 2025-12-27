@@ -55,8 +55,7 @@ class DinnerBookingObserver
      * 3. Observer calcola nuovo total_booked_guests
      * 4. Aggiorna stato host (es. AVAILABLE_TO_HOST -> ALMOST_FULL)
      *
-     * @param DinnerBooking $dinnerBooking Prenotazione appena creata
-     * @return void
+     * @param  DinnerBooking  $dinnerBooking  Prenotazione appena creata
      */
     public function created(DinnerBooking $dinnerBooking): void
     {
@@ -78,8 +77,7 @@ class DinnerBookingObserver
      * - Prenotazione cancellata (status='cancelled') -> posti liberati
      * - Guest riduce da 3 a 1 ospiti -> possibile ritorno a AVAILABLE_TO_HOST
      *
-     * @param DinnerBooking $dinnerBooking Prenotazione modificata
-     * @return void
+     * @param  DinnerBooking  $dinnerBooking  Prenotazione modificata
      */
     public function updated(DinnerBooking $dinnerBooking): void
     {
@@ -100,8 +98,7 @@ class DinnerBookingObserver
      * - Guest elimina prenotazione di 2 posti
      * - Observer aggiorna a 2/4 (ALMOST_FULL)
      *
-     * @param DinnerBooking $dinnerBooking Prenotazione eliminata
-     * @return void
+     * @param  DinnerBooking  $dinnerBooking  Prenotazione eliminata
      */
     public function deleted(DinnerBooking $dinnerBooking): void
     {
@@ -136,8 +133,7 @@ class DinnerBookingObserver
      * - HOST_CANCELLED: non viene mai sovrascritto automaticamente
      * - COMPLETED: non viene mai sovrascritto automaticamente (impostato da cron)
      *
-     * @param DinnerAvailability $hostAvailability Disponibilità host da aggiornare
-     * @return void
+     * @param  DinnerAvailability  $hostAvailability  Disponibilità host da aggiornare
      */
     protected function updateHostStatus(DinnerAvailability $hostAvailability): void
     {

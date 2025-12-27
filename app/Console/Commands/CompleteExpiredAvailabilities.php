@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
-use App\Enums\DinnerBookingStatus;
 
 /**
  * Comando per completare automaticamente le disponibilità scadute.
@@ -36,7 +36,38 @@ class CompleteExpiredAvailabilities extends Command
     protected $description = 'Completa automaticamente le disponibilità il cui giorno della cena è passato';
 
     /**
-     * Execute the console command.
+     * Esegue il comando per completare le disponibilità scadute.
+     *
+     * Il comando esegue le seguenti operazioni:
+     *
+     * 1. **Identificazione disponibilità scadute**:
+     *    - Trova tutte le disponibilità con dinner_date < oggi (00:00)
+     *    - Filtra solo quelle di tipo host (can_host = true)
+     *    - Considera solo stati attivi: AVAILABLE_TO_HOST, ALMOST_FULL, FULL
+     *
+     * 2. **Aggiornamento stato disponibilità**:
+     *    - Imposta status a COMPLETED per marcarle come concluse
+     *    - Rende immutabile lo storico (non più modificabili via Policy)
+     *
+     * 3. **Gestione prenotazioni non confermate**:
+     *    - Cancella tutte le prenotazioni pending/non confermate
+     *    - Mantiene le prenotazioni confirmed nello stato originale
+     *    - Preserva lo storico di chi ha partecipato
+     *
+     * 4. **Output e logging**:
+     *    - Mostra messaggio per ogni disponibilità completata
+     *    - Conta e mostra il totale delle operazioni
+     *
+     * Scheduling:
+     * Questo comando dovrebbe essere schedulato per eseguire quotidianamente,
+     * tipicamente dopo la mezzanotte (es. 00:30).
+     *
+     * Esempio scheduling in routes/console.php:
+     * ```php
+     * Schedule::command('availabilities:complete-expired')->dailyAt('00:30');
+     * ```
+     *
+     * @return int Exit code (SUCCESS o FAILURE)
      */
     public function handle(): int
     {

@@ -203,11 +203,6 @@ class DinnerBookingPolicy
             return false;
         }
 
-        // Non può modificare prenotazioni cancellate
-        if ($booking->status->value === 'cancelled') {
-            return false;
-        }
-
         // Non può modificare prenotazioni per disponibilità completate (cena conclusa)
         if ($booking->hostAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
             return false;
