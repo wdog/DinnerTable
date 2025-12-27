@@ -33,7 +33,7 @@ class DinnerBookingPolicy
      * Solo utenti che appartengono a un gruppo dinner possono vedere
      * le prenotazioni. Utenti senza gruppo non hanno accesso.
      *
-     * @param User $user Utente autenticato
+     * @param  User  $user  Utente autenticato
      * @return bool True se l'utente appartiene a un gruppo
      */
     public function viewAny(User $user): bool
@@ -51,8 +51,8 @@ class DinnerBookingPolicy
      * Questo permette a entrambe le parti di vedere i dettagli della prenotazione
      * mantenendo la privacy per utenti non coinvolti.
      *
-     * @param User $user Utente autenticato
-     * @param DinnerBooking $booking Prenotazione da visualizzare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da visualizzare
      * @return bool True se è guest o host della prenotazione
      */
     public function view(User $user, DinnerBooking $booking): bool
@@ -69,7 +69,7 @@ class DinnerBookingPolicy
      * La validazione specifica per ogni disponibilità viene gestita
      * dal metodo book().
      *
-     * @param User $user Utente autenticato
+     * @param  User  $user  Utente autenticato
      * @return bool True se l'utente appartiene a un gruppo
      */
     public function create(User $user): bool
@@ -102,9 +102,10 @@ class DinnerBookingPolicy
      * - Form creazione nuova prenotazione
      * - Validazione lato server
      *
-     * @param User $user Utente che vuole prenotare (guest)
-     * @param DinnerAvailability $availability Disponibilità da prenotare
+     * @param  User  $user  Utente che vuole prenotare (guest)
+     * @param  DinnerAvailability  $availability  Disponibilità da prenotare
      * @return bool True se tutte le condizioni sono soddisfatte
+     *
      * @see \App\Enums\DinnerAvailabilityStatus::canAcceptBookings()
      * @see \App\Models\DinnerAvailability::hasAvailableSpots()
      */
@@ -141,20 +142,22 @@ class DinnerBookingPolicy
         }
 
         // 7. Non deve aver già prenotato questa disponibilità (prenotazione duplicata)
+        // Include sia prenotazioni confermate che cancellate
         $hasAlreadyBooked = DinnerBooking::where('host_availability_id', $availability->id)
             ->where('guest_user_id', $user->id)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'pending', 'cancelled'])
             ->exists();
 
         if ($hasAlreadyBooked) {
             return false;
         }
 
-        // 8. Non deve avere altre prenotazioni confermate nello stesso giorno
+        // 8. Non deve avere altre prenotazioni nello stesso giorno
         // Regola: un utente può partecipare solo a una cena per giorno
+        // Include confirmed, pending e cancelled per evitare confusione
         $dinnerDate                = $availability->dinnerDate->dinner_date;
         $hasOtherBookingsOnSameDay = DinnerBooking::where('guest_user_id', $user->id)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'pending', 'cancelled'])
             ->whereHas('hostAvailability.dinnerDate', function ($query) use ($dinnerDate) {
                 $query->where('dinner_date', $dinnerDate);
             })
@@ -181,9 +184,10 @@ class DinnerBookingPolicy
      * La modificabilità è anche controllata dallo stato della disponibilità
      * tramite canUpdateBookings() nel form.
      *
-     * @param User $user Utente autenticato
-     * @param DinnerBooking $booking Prenotazione da modificare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da modificare
      * @return bool True se l'utente è il guest della prenotazione
+     *
      * @see \App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking
      */
     public function update(User $user, DinnerBooking $booking): bool
@@ -208,9 +212,10 @@ class DinnerBookingPolicy
      * Nota: questo è diverso da cancellare l'intera disponibilità
      * (che cambierebbe lo stato a HOST_CANCELLED).
      *
-     * @param User $user Utente autenticato
-     * @param DinnerBooking $booking Prenotazione da cancellare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da cancellare
      * @return bool True se è guest o host della prenotazione
+     *
      * @see \App\Observers\DinnerBookingObserver
      */
     public function delete(User $user, DinnerBooking $booking): bool
@@ -226,8 +231,8 @@ class DinnerBookingPolicy
      * Solo il guest può ripristinare la propria prenotazione eliminata.
      * Funzionalità limitata, da valutare se mantenere nel flusso applicativo.
      *
-     * @param User $user Utente autenticato
-     * @param DinnerBooking $booking Prenotazione da ripristinare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da ripristinare
      * @return bool True se l'utente è il guest della prenotazione
      */
     public function restore(User $user, DinnerBooking $booking): bool
@@ -245,8 +250,8 @@ class DinnerBookingPolicy
      * L'eliminazione permanente rimuove completamente il record dal database
      * (non soft delete).
      *
-     * @param User $user Utente autenticato
-     * @param DinnerBooking $booking Prenotazione da eliminare
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da eliminare
      * @return bool True se è super_admin o guest proprietario
      */
     public function forceDelete(User $user, DinnerBooking $booking): bool
