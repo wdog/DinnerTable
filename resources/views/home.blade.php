@@ -297,7 +297,7 @@
                             </div>
                             <h3 class="text-2xl font-bold mb-4 text-gray-900 text-center">Dichiara Disponibilità</h3>
                             <p class="text-gray-600 leading-relaxed mb-4 text-center">
-                                Visualizza il calendario settimanale e indica quando puoi ospitare. Scegli data, orario e numero di ospiti.
+                                Visualizza il calendario e indica quando puoi ospitare. Scegli data, orario e numero di ospiti.
                             </p>
                             <div class="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
                                 <p class="text-sm text-gray-700 italic text-center">
