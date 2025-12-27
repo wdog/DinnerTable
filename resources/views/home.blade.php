@@ -105,7 +105,7 @@
                 </p>
                 <div class="flex gap-6 justify-center flex-wrap">
                     <a href="/dinner/register"
-                        class="bg-lime-600 text-white px-10 py-4 rounded-xl text-xl font-bold hover:from-lime-700 hover:to-green-700 transition shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        class="bg-lime-600 text-white px-10 py-4 rounded-xl text-xl font-bold hover:bg-lime-700 transition shadow-xl hover:shadow-2xl transform hover:scale-105">
                         Inizia Subito - È Gratis!
                     </a>
                     <a href="#features"
@@ -300,7 +300,7 @@
         </section>
     </main>
 
-    <footer class="bg-lime-50 text-white py-16">
+    <footer class="bg-gray-900 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-10 mb-12">
                 <div class="md:col-span-2">
@@ -363,7 +363,6 @@
         </div>
     </footer>
 
-    @vite('resources/js/app.js')
 </body>
 
 </html>
