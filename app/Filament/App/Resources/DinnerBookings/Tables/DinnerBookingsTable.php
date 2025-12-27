@@ -82,7 +82,7 @@ class DinnerBookingsTable
                     ->native(false),
 
                 Filter::make('dinner_date')
-                ->columns(2)
+                    ->columns(2)
                     ->schema([
                         DatePicker::make('from')
                             ->label('Da')
