@@ -176,22 +176,25 @@ class DinnerBookingPolicy
      * Solo il guest (chi ha effettuato la prenotazione) può modificarla.
      * Può modificare:
      * - Numero di ospiti (guests_count)
+     * - Stato (per cancellare la prenotazione)
      * - Note della prenotazione
      *
      * Restrizioni:
      * - Solo il GUEST può modificare
      * - Non può modificare prenotazioni CANCELLED (concluse)
+     * - Non può modificare prenotazioni per disponibilità COMPLETED (cena conclusa)
      * - L'host non può modificare le prenotazioni dei guest, può solo
-     *   visualizzarle o cancellarle
+     *   visualizzarle
      *
      * La modificabilità è anche controllata dallo stato della disponibilità
      * tramite canUpdateBookings() nel form.
      *
      * @param  User  $user  Utente autenticato
      * @param  DinnerBooking  $booking  Prenotazione da modificare
-     * @return bool True se l'utente è il guest e la prenotazione non è cancellata
+     * @return bool True se guest, prenotazione attiva, e disponibilità non completata
      *
      * @see \App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking
+     * @see \App\Enums\DinnerAvailabilityStatus::COMPLETED
      */
     public function update(User $user, DinnerBooking $booking): bool
     {
@@ -205,45 +208,53 @@ class DinnerBookingPolicy
             return false;
         }
 
+        // Non può modificare prenotazioni per disponibilità completate (cena conclusa)
+        if ($booking->hostAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+            return false;
+        }
+
         return true;
     }
 
     /**
-     * Determina se l'utente può cancellare una prenotazione.
+     * Determina se l'utente può eliminare fisicamente una prenotazione.
      *
-     * Sia il GUEST che l'HOST possono cancellare una prenotazione:
+     * **IMPORTANTE**: Le prenotazioni NON possono essere eliminate fisicamente (hard delete).
+     * Questo metodo restituisce sempre `false` per mantenere lo storico completo
+     * di tutte le prenotazioni nel database.
      *
-     * - GUEST: può cancellare la propria prenotazione (rinuncia)
-     * - HOST: può cancellare prenotazioni dei guest (es. per problemi organizzativi)
+     * Perché bloccare l'eliminazione fisica:
+     * - Mantiene lo storico completo per audit e statistiche
+     * - Previene perdita di dati importanti
+     * - Permette analisi future (chi ha prenotato, quando, cancellazioni, ecc.)
+     * - Garantisce integrità referenziale con altre tabelle
      *
-     * Restrizioni:
-     * - Non può cancellare prenotazioni già CANCELLED (già concluse)
-     * - Solo PENDING o CONFIRMED possono essere cancellate
+     * **Come cancellare una prenotazione**:
+     * - Guest/Host devono cambiare lo stato a `CANCELLED` tramite update
+     * - Questo è gestito tramite Action personalizzate o form di modifica
+     * - NON usare il pulsante "Elimina" standard di Filament
      *
-     * Quando una prenotazione viene cancellata:
-     * - Lo stato passa a 'cancelled'
-     * - L'observer aggiorna lo stato della disponibilità host
-     * - I posti liberati tornano disponibili
-     *
-     * Nota: questo è diverso da cancellare l'intera disponibilità
-     * (che cambierebbe lo stato a HOST_CANCELLED).
+     * Flusso corretto per cancellazione:
+     * 1. Guest/Host clicca "Cancella prenotazione"
+     * 2. Action aggiorna `status` a CANCELLED (non elimina il record)
+     * 3. Observer gestisce automaticamente:
+     *    - Libera i posti per l'host
+     *    - Aggiorna stato guest availability a AVAILABLE
+     *    - Aggiorna stato host availability se necessario
+     * 4. Prenotazione rimane nel database per storico
      *
      * @param  User  $user  Utente autenticato
-     * @param  DinnerBooking  $booking  Prenotazione da cancellare
-     * @return bool True se è guest/host e la prenotazione non è già cancellata
+     * @param  DinnerBooking  $booking  Prenotazione da eliminare
+     * @return bool Sempre false - eliminazione fisica non permessa
      *
      * @see \App\Observers\DinnerBookingObserver
+     * @see \App\Enums\DinnerBookingStatus
      */
     public function delete(User $user, DinnerBooking $booking): bool
     {
-        // Non può cancellare prenotazioni già cancellate
-        if ($booking->status->value === 'cancelled') {
-            return false;
-        }
-
-        // Sia il guest che l'host possono cancellare la prenotazione
-        return $booking->guest_user_id === $user->id
-            || $booking->hostAvailability->user_id === $user->id;
+        // Le prenotazioni NON possono essere eliminate fisicamente
+        // Solo il cambio stato a CANCELLED è permesso
+        return false;
     }
 
     /**

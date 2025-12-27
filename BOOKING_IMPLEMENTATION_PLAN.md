@@ -1,5 +1,253 @@
 # Piano Implementazione Sistema Prenotazioni Cene
 
+## Concetti Chiave
+
+### Ruoli e Responsabilità
+
+**HOST (chi cucina/ospita)**:
+- Crea una **DinnerAvailability** con `can_host = true`
+- Dichiara: "Sono disponibile ad ospitare il giorno X, posso ospitare Y persone"
+- La disponibilità ha stati: `AVAILABLE_TO_HOST` → `ALMOST_FULL` → `FULL` → `HOST_CANCELLED`
+- Gestisce le prenotazioni ricevute (conferma/cancella)
+
+**GUEST (chi partecipa/mangia)**:
+- Crea un **DinnerBooking** prenotando la disponibilità di un host
+- Dichiara: "Voglio partecipare alla cena di [host] il giorno X"
+- La prenotazione ha stati: `PENDING` → `CONFIRMED` → `CANCELLED`
+- Può modificare o cancellare la propria prenotazione
+
+### Flusso Principale
+
+1. **Host dichiara disponibilità**: Crea `DinnerAvailability` con `can_host=true` per una data specifica
+2. **Guest vede nel calendario**: La disponibilità dell'host appare nel calendario del gruppo
+3. **Guest prenota**: Crea `DinnerBooking` collegato alla `DinnerAvailability` dell'host
+4. **Observer aggiorna automaticamente**:
+   - La `DinnerAvailability` del guest passa a `BOOKED` (non può prenotare altre cene quel giorno)
+   - La `DinnerAvailability` dell'host incrementa `total_booked_guests`
+   - Lo stato dell'host si aggiorna automaticamente: `AVAILABLE_TO_HOST` → `ALMOST_FULL` → `FULL`
+
+### Note Aggiuntive
+
+- Un utente può creare `DinnerAvailability` con `can_host = false` per dichiarare disponibilità generica come guest (senza creare posti)
+- Un utente **non può** prenotare la propria disponibilità (non può essere host e guest della stessa cena)
+- Un utente può avere **solo una prenotazione** (confermata/pending/cancellata) per giorno
+- Le prenotazioni `CANCELLED` sono **read-only** (non modificabili né eliminabili)
+
+### Gestione Cancellazione
+
+**Cancellazione Disponibilità (HOST)**:
+- **Senza prenotazioni**: L'host può **eliminare completamente** la propria `DinnerAvailability`
+- **Con prenotazioni**: L'host **non può eliminare** ma solo cambiare lo stato a `HOST_CANCELLED`
+  - Le prenotazioni esistenti rimangono visibili
+  - I guest vengono notificati della cancellazione
+  - La disponibilità non accetta più nuove prenotazioni
+
+**Cancellazione Prenotazione (GUEST)**:
+- Il guest **non può eliminare** la prenotazione (no hard delete)
+- Può solo cambiare lo stato a `CANCELLED` (soft cancellation)
+  - La prenotazione rimane nel database per storico
+  - L'host viene notificato della cancellazione
+  - I posti vengono liberati e tornano disponibili
+  - La prenotazione diventa **read-only** (non più modificabile)
+
+---
+
+## Schema Database - Tabelle e Relazioni
+
+```mermaid
+erDiagram
+    users ||--o{ user_profiles : "has"
+    users }o--|| dinner_groups : "belongs_to"
+    users ||--o{ dinner_availabilities : "declares"
+    users ||--o{ dinner_bookings : "books_as_guest"
+
+    dinner_groups ||--o{ users : "has_members"
+    dinner_groups ||--o{ dinner_dates : "has"
+
+    dinner_dates ||--o{ dinner_availabilities : "has"
+    dinner_dates }o--|| dinner_groups : "belongs_to"
+
+    dinner_availabilities ||--o{ dinner_bookings : "receives"
+    dinner_availabilities }o--|| users : "declared_by"
+    dinner_availabilities }o--|| dinner_dates : "for_date"
+
+    dinner_bookings }o--|| users : "guest_user"
+    dinner_bookings }o--|| dinner_availabilities : "host_availability"
+
+    users {
+        bigint id PK
+        string name
+        string email UK
+        timestamp email_verified_at
+        boolean is_admin
+        bigint dinner_group_id FK
+    }
+
+    user_profiles {
+        bigint id PK
+        bigint user_id FK
+        string city
+        string address
+        string house_number
+        string postal_code
+        int max_guests
+        timestamp privacy_accepted_at
+    }
+
+    dinner_groups {
+        bigint id PK
+        string name
+        text slogan
+        string group_code UK
+        bigint created_by FK
+    }
+
+    dinner_dates {
+        bigint id PK
+        bigint dinner_group_id FK
+        date dinner_date UK
+    }
+
+    dinner_availabilities {
+        bigint id PK
+        bigint user_id FK
+        bigint dinner_date_id FK
+        boolean can_host
+        int max_guests
+        int total_booked_guests
+        enum status
+    }
+
+    dinner_bookings {
+        bigint id PK
+        bigint guest_user_id FK
+        bigint host_availability_id FK
+        int guests_count
+        text notes
+        enum status
+    }
+```
+
+## Diagramma UML - Casi d'Uso Sistema Prenotazioni
+
+```mermaid
+graph LR
+    Guest[Guest/Utente]
+    Host[Host/Ospitante]
+    System[Sistema/Observer]
+
+    UC1[Visualizza Calendario]
+    UC2[Prenota Cena]
+    UC3[Modifica Prenotazione]
+    UC4[Cancella Prenotazione]
+    UC5[Dichiara Disponibilità]
+    UC6[Dichiara Disponibilità Ospitare]
+    UC7[Visualizza Prenotazioni]
+    UC8[Conferma Prenotazione]
+    UC9[Cancella Prenotazione Guest]
+    UC10[Cancella Disponibilità]
+    UC11[Aggiorna Stati]
+    UC12[Valida Capacità]
+    UC13[Previeni Duplicate]
+    UC14[Invia Notifiche]
+
+    Guest --> UC1
+    Guest --> UC2
+    Guest --> UC3
+    Guest --> UC4
+    Guest --> UC5
+
+    Host --> UC6
+    Host --> UC7
+    Host --> UC8
+    Host --> UC9
+    Host --> UC10
+
+    UC2 --> UC11
+    UC2 --> UC12
+    UC2 --> UC13
+    UC3 --> UC12
+    UC4 --> UC11
+    UC8 --> UC11
+    UC8 --> UC14
+    UC9 --> UC11
+    UC9 --> UC14
+    UC10 --> UC11
+    UC10 --> UC14
+```
+
+## Diagramma Stati - DinnerBooking
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING: Guest crea prenotazione
+
+    PENDING --> CONFIRMED: Host conferma
+    PENDING --> CANCELLED: Host/Guest cancella
+
+    CONFIRMED --> CANCELLED: Host/Guest cancella
+
+    CANCELLED --> [*]: Prenotazione conclusa
+
+    note right of PENDING
+        - Modifica: SI (solo Guest)
+        - Cancellazione: SI (Host/Guest)
+        - Observer: Aggiorna guest availability → BOOKED
+    end note
+
+    note right of CONFIRMED
+        - Modifica: SI (solo Guest)
+        - Cancellazione: SI (Host/Guest)
+        - Observer: Aggiorna host availability count
+    end note
+
+    note right of CANCELLED
+        - Modifica: NO (read-only)
+        - Cancellazione: NO
+        - Observer: Libera posti host, guest → AVAILABLE
+    end note
+```
+
+## Diagramma Sequenza - Creazione Prenotazione
+
+```mermaid
+sequenceDiagram
+    actor Guest
+    participant UI as Calendario
+    participant Policy as DinnerBookingPolicy
+    participant Model as DinnerBooking
+    participant Observer as DinnerBookingObserver
+    participant HostAvail as Host Availability
+    participant GuestAvail as Guest Availability
+
+    Guest->>UI: Click "Prenota"
+    UI->>Policy: canBook(user, availability)?
+
+    Policy->>Policy: Verifica 8 condizioni
+    Note over Policy: 1. Utente in gruppo<br/>2. Non propria disponibilità<br/>3. Stesso gruppo<br/>4. can_host = true<br/>5. Status accetta prenotazioni<br/>6. Posti disponibili<br/>7. Non già prenotato<br/>8. Nessuna altra prenotazione stesso giorno
+
+    Policy-->>UI: true/false
+
+    alt Policy = true
+        UI->>Guest: Mostra form prenotazione
+        Guest->>UI: Compila e conferma
+        UI->>Model: create(booking)
+        Model->>Observer: created event
+
+        Observer->>GuestAvail: Update status → BOOKED
+        Observer->>HostAvail: Increment total_booked_guests
+        Observer->>HostAvail: Update status se necessario
+
+        Note over Observer,HostAvail: AVAILABLE_TO_HOST → ALMOST_FULL<br/>ALMOST_FULL → FULL (se pieno)
+
+        Observer-->>Model: Stati aggiornati
+        Model-->>UI: Prenotazione creata
+        UI-->>Guest: Notifica successo
+    else Policy = false
+        UI-->>Guest: Pulsante nascosto/disabilitato
+    end
+```
+
 ## Obiettivo
 Implementare un sistema di prenotazioni che permetta agli utenti di prenotare cene quando altri membri del gruppo si offrono come host (can_host=true). Il sistema deve gestire la capacità massima di ospiti e cambiare automaticamente lo stato dell'host a BOOKED quando necessario.
 
@@ -254,7 +502,7 @@ AVAILABLE
 ## Stato Attuale
 
 ### ✅ Completato (STEP 0-4)
-- ✅ Enum DinnerAvailabilityStatus aggiornato con 7 stati
+- ✅ Enum DinnerAvailabilityStatus aggiornato con 7 stati (incluso COMPLETED)
 - ✅ Database e modelli creati (dinner_bookings, max_guests)
 - ✅ Business logic implementata (ValidateBookingCapacity, DinnerBookingObserver)
 - ✅ Observer registrato in AppServiceProvider
@@ -262,6 +510,55 @@ AVAILABLE
 - ✅ Form prenotazione completo nel calendario
 - ✅ UI calendario migliorata con posti disponibili e pulsante prenota
 - ✅ Filtri aggiornati con nuovi stati
+- ✅ Risorsa Filament DinnerBooking completamente creata
+- ✅ Form modifica prenotazione con controllo `canUpdateBookings()`
+- ✅ Badge prenotazioni esistenti nel calendario
+
+### ✅ Correzioni Applicate (27/12/2025)
+
+**1. Policy DinnerAvailabilityPolicy.delete() - CORRETTO**
+- ✅ Ora controlla TUTTE le prenotazioni (pending, confirmed, cancelled)
+- ✅ Comportamento implementato:
+  - Senza prenotazioni → permette eliminazione (hard delete)
+  - Con prenotazioni (qualsiasi stato) → blocca eliminazione, deve usare stato HOST_CANCELLED
+- ✅ Documentazione PHPDoc aggiornata con spiegazione completa
+
+**2. Policy DinnerBookingPolicy.delete() - CORRETTO**
+- ✅ Ora restituisce sempre `false` - eliminazione fisica NON permessa
+- ✅ Comportamento implementato:
+  - Nessuna eliminazione fisica permessa per mantenere storico
+  - Guest/Host devono cambiare stato a CANCELLED tramite form
+  - Documentazione completa del flusso corretto
+- ✅ PHPDoc spiega come cancellare correttamente una prenotazione
+
+**3. EditDinnerBooking - CORRETTO**
+- ✅ Rimosso DeleteAction dall'header
+- ✅ Cancellazione avviene solo tramite cambio campo 'status' a CANCELLED
+- ✅ Documentazione aggiornata con nuovo flusso
+
+**4. Policy DinnerAvailabilityPolicy - Stato COMPLETED**
+- ✅ `update()`: Blocca modifica di disponibilità COMPLETED
+- ✅ `delete()`: Blocca eliminazione di disponibilità COMPLETED
+- ✅ Disponibilità completate sono immutabili (dato storico)
+
+**5. Policy DinnerBookingPolicy - Prenotazioni per Cene Completate**
+- ✅ `update()`: Blocca modifica di prenotazioni per disponibilità COMPLETED
+- ✅ Verifica `hostAvailability->status === COMPLETED`
+- ✅ Prenotazioni per cene concluse sono immutabili (dato storico)
+
+**6. Form Read-Only per Dati Storici**
+- ✅ `DinnerAvailabilityResource.form()`: Disabilita form se COMPLETED o data passata
+- ✅ `EditDinnerAvailability`: Nasconde azioni header e form se read-only
+- ✅ `DinnerBookingResource.form()`: Disabilita form se CANCELLED, COMPLETED o data passata
+- ✅ `EditDinnerBooking.isReadOnly()`: Verifica condizioni read-only complete
+- ✅ Form disabilitati mostrano dati ma non permettono modifiche (user experience migliore)
+
+**7. Pagina View per Disponibilità (27/12/2025)**
+- ✅ Creata `ViewDinnerAvailability.php` per visualizzazione in sola lettura
+- ✅ Registrata route `/{record}` nel DinnerAvailabilityResource
+- ✅ Aggiunto ViewAction nella tabella disponibilità
+- ✅ Mostra dettagli disponibilità + relation manager prenotazioni
+- ✅ Utilizzabile per disponibilità COMPLETED o passate
 
 ### ⏳ Prossimi Step
 

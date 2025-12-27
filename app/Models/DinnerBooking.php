@@ -58,6 +58,15 @@ class DinnerBooking extends Model
         return $query->where('status', 'confirmed');
     }
 
+   /**
+     * Scope per ottenere solo le prenotazioni non confermate.
+     */
+    public function scopeNotConfirmed($query)
+    {
+        return $query->whereNot('status', 'confirmed');
+    }
+
+
     /**
      * Scope per ottenere solo le prenotazioni cancellate.
      */

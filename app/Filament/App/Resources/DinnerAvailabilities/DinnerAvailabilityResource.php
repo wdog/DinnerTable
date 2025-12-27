@@ -12,6 +12,7 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\EditDinnerAvailability;
+use App\Filament\App\Resources\DinnerAvailabilities\Pages\ViewDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\CreateDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\ListDinnerAvailabilities;
 use App\Filament\App\Resources\DinnerAvailabilities\Schemas\DinnerAvailabilityForm;
@@ -95,6 +96,10 @@ class DinnerAvailabilityResource extends Resource
      * - Numero massimo ospiti (solo per host)
      * - Note opzionali
      *
+     * Form disabilitato automaticamente se:
+     * - Stato COMPLETED (cena conclusa)
+     * - Data nel passato
+     *
      * @param  Schema  $schema  Schema Filament da configurare
      * @return Schema Schema configurato con i campi del form
      *
@@ -102,7 +107,28 @@ class DinnerAvailabilityResource extends Resource
      */
     public static function form(Schema $schema): Schema
     {
-        return DinnerAvailabilityForm::configure($schema);
+        $schema = DinnerAvailabilityForm::configure($schema);
+
+        // Disabilita il form se è read-only (completato o passato)
+        $schema->disabled(function ($record) {
+            if (!$record) {
+                return false; // Form di creazione sempre abilitato
+            }
+
+            // Completata = read-only
+            if ($record->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+                return true;
+            }
+
+            // Data passata = read-only
+            if ($record->dinnerDate && $record->dinnerDate->dinner_date < today()) {
+                return true;
+            }
+
+            return false;
+        });
+
+        return $schema;
     }
 
     /**
@@ -144,6 +170,7 @@ class DinnerAvailabilityResource extends Resource
      * Pagine configurate:
      * - index: Lista di tutte le disponibilità dell'utente
      * - create: Form per creare una nuova disponibilità
+     * - view: Visualizzazione dettaglio in sola lettura
      * - edit: Form per modificare una disponibilità esistente
      *
      * @return array Array associativo di route per le pagine
@@ -153,6 +180,7 @@ class DinnerAvailabilityResource extends Resource
         return [
             'index'  => ListDinnerAvailabilities::route('/'),
             'create' => CreateDinnerAvailability::route('/create'),
+            'view'   => ViewDinnerAvailability::route('/{record}'),
             'edit'   => EditDinnerAvailability::route('/{record}/edit'),
         ];
     }

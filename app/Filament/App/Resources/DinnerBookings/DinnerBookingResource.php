@@ -56,12 +56,43 @@ class DinnerBookingResource extends Resource
             ->with(['hostAvailability.user', 'hostAvailability.dinnerDate']);
     }
 
+    /**
+     * Configura il form per modificare prenotazioni.
+     *
+     * Form disabilitato automaticamente se:
+     * - Prenotazione in stato CANCELLED
+     * - Disponibilità host COMPLETED o HOST_CANCELLED
+     * - Data nel passato
+     *
+     * @param Schema $schema
+     * @return Schema
+     */
     public static function form(Schema $schema): Schema
     {
         return DinnerBookingForm::configure($schema)
-            ->disabled(
-                fn ($record) => ! $record->hostAvailability->status->canUpdateBookings()
-            );
+            ->disabled(function ($record) {
+                if (!$record) {
+                    return false;
+                }
+
+                // Prenotazione cancellata = read-only
+                if ($record->status->value === 'cancelled') {
+                    return true;
+                }
+
+                // Disponibilità host non permette modifiche
+                if (!$record->hostAvailability->status->canUpdateBookings()) {
+                    return true;
+                }
+
+                // Data passata = read-only
+                if ($record->hostAvailability->dinnerDate &&
+                    $record->hostAvailability->dinnerDate->dinner_date < today()) {
+                    return true;
+                }
+
+                return false;
+            });
     }
 
     public static function table(Table $table): Table

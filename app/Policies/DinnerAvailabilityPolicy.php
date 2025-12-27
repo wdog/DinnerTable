@@ -80,42 +80,67 @@ class DinnerAvailabilityPolicy
     /**
      * Determina se l'utente può modificare una disponibilità.
      *
-     * Solo il proprietario della disponibilità può modificarla.
-     * Questo previene che altri membri del gruppo modifichino
-     * disponibilità altrui.
+     * La modifica è permessa solo se:
+     * 1. L'utente è il proprietario della disponibilità
+     * 2. Lo stato NON è COMPLETED (cena già conclusa)
      *
-     * Controllo:
-     * - Verifica che user_id della disponibilità corrisponda all'utente autenticato
+     * Questo previene:
+     * - Altri membri del gruppo modifichino disponibilità altrui
+     * - Modifiche a cene già concluse (storico immutabile)
+     *
+     * Stati modificabili:
+     * - AVAILABLE_TO_HOST, ALMOST_FULL, FULL (stati attivi host)
+     * - HOST_CANCELLED (può essere riattivato cambiando stato)
+     * - AVAILABLE, BOOKED, UNAVAILABLE (stati guest)
+     *
+     * Stati NON modificabili:
+     * - COMPLETED: cena già avvenuta, dato storico
      *
      * @param User $user Utente autenticato
      * @param DinnerAvailability $dinnerAvailability Disponibilità da modificare
-     * @return bool True se l'utente è il proprietario
+     * @return bool True se proprietario e non completato
      */
     public function update(User $user, DinnerAvailability $dinnerAvailability): bool
     {
-        return $user->id === $dinnerAvailability->user_id;
+        // Deve essere il proprietario
+        if ($user->id !== $dinnerAvailability->user_id) {
+            return false;
+        }
+
+        // Non può modificare disponibilità completate (cena conclusa)
+        if ($dinnerAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Determina se l'utente può eliminare una disponibilità.
      *
-     * L'eliminazione è permessa solo se:
+     * L'eliminazione fisica (hard delete) è permessa solo se:
      * 1. L'utente è il proprietario della disponibilità
-     * 2. Non ci sono prenotazioni confermate associate
+     * 2. Lo stato NON è COMPLETED (cena già conclusa, dato storico)
+     * 3. Non ci sono prenotazioni associate (di qualsiasi stato)
      *
-     * Questa regola protegge le prenotazioni dei guest: un host non può
-     * eliminare una disponibilità se ci sono già persone che hanno prenotato
-     * e sono state confermate. In questo caso, l'host deve prima cancellare
-     * la disponibilità (cambiando stato a HOST_CANCELLED) che gestirà
-     * automaticamente le notifiche ai guest.
+     * Questa regola protegge lo storico: un host non può eliminare una
+     * disponibilità se ci sono prenotazioni collegate o se la cena è
+     * già stata completata. Questo mantiene l'integrità dei dati storici.
      *
-     * Flusso consigliato per cancellazione:
-     * - Con prenotazioni confermate: cambia stato a HOST_CANCELLED
-     * - Senza prenotazioni: può eliminare direttamente il record
+     * Flusso per cancellazione:
+     * - **Senza prenotazioni E non completata**: può eliminare direttamente (hard delete)
+     * - **Con prenotazioni** (pending/confirmed/cancelled): deve cambiare stato a HOST_CANCELLED
+     * - **COMPLETED**: NON può eliminare né modificare (dato storico immutabile)
+     *
+     * Il cambio stato a HOST_CANCELLED:
+     * - Mantiene le prenotazioni nel database per storico
+     * - Impedisce nuove prenotazioni
+     * - Notifica i guest della cancellazione
+     * - Non elimina i dati ma li marca come cancellati
      *
      * @param User $user Utente autenticato
      * @param DinnerAvailability $dinnerAvailability Disponibilità da eliminare
-     * @return bool True se proprietario e senza prenotazioni confermate
+     * @return bool True se proprietario, non completata e senza prenotazioni
      */
     public function delete(User $user, DinnerAvailability $dinnerAvailability): bool
     {
@@ -124,12 +149,16 @@ class DinnerAvailabilityPolicy
             return false;
         }
 
-        // Non può eliminare se ci sono prenotazioni confermate
-        $hasConfirmedBookings = $dinnerAvailability->bookings()
-            ->where('status', 'confirmed')
-            ->exists();
+        // Non può eliminare disponibilità completate (dato storico)
+        if ($dinnerAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+            return false;
+        }
 
-        return ! $hasConfirmedBookings;
+        // Non può eliminare se ci sono prenotazioni di QUALSIASI stato
+        // (pending, confirmed, cancelled) per mantenere lo storico
+        $hasAnyBookings = $dinnerAvailability->bookings()->exists();
+
+        return ! $hasAnyBookings;
     }
 
     /**

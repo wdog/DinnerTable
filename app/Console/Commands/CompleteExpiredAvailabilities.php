@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
+use App\Enums\DinnerBookingStatus;
 
 /**
  * Comando per completare automaticamente le disponibilità scadute.
@@ -39,17 +40,19 @@ class CompleteExpiredAvailabilities extends Command
      */
     public function handle(): int
     {
-        $yesterday = Carbon::yesterday()->endOfDay();
+        $today = Carbon::today()->startOfDay();
 
-        // Trova tutte le disponibilità con data passata che non sono già completate o cancellate
-        $availabilities = DinnerAvailability::whereHas('dinnerDate', function ($query) use ($yesterday) {
-            $query->where('dinner_date', '<', $yesterday);
+        // Trova tutte le disponibilità con data passata (< oggi alle 00:00)
+        // Es: cena di lunedì viene completata martedì alle 00:00
+        $availabilities = DinnerAvailability::whereHas('dinnerDate', function ($query) use ($today) {
+            $query->where('dinner_date', '<', $today);
         })
             ->where('can_host', true) // Solo gli host possono essere completati
             ->whereIn('status', [
                 DinnerAvailabilityStatus::AVAILABLE_TO_HOST,
                 DinnerAvailabilityStatus::ALMOST_FULL,
                 DinnerAvailabilityStatus::FULL,
+                // DinnerAvailabilityStatus::COMPLETED,
             ])
             ->get();
 
@@ -62,6 +65,7 @@ class CompleteExpiredAvailabilities extends Command
         $count = 0;
         foreach ($availabilities as $availability) {
             $availability->status = DinnerAvailabilityStatus::COMPLETED;
+            $availability->bookings()->notConfirmed()->update(['status' => DinnerBookingStatus::CANCELLED]);
             $availability->save();
             $count++;
 

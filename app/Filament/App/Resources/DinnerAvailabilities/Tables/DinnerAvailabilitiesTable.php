@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources\DinnerAvailabilities\Tables;
 
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Grouping\Group;
 use Filament\Actions\BulkActionGroup;
@@ -84,6 +85,7 @@ class DinnerAvailabilitiesTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

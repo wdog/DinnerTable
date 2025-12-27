@@ -2,7 +2,6 @@
 
 namespace App\Filament\App\Resources\DinnerBookings\Pages;
 
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\App\Resources\DinnerBookings\DinnerBookingResource;
 
@@ -16,22 +15,30 @@ use App\Filament\App\Resources\DinnerBookings\DinnerBookingResource;
  * Funzionalità principali:
  * - Modifica numero di ospiti (guests_count)
  * - Modifica note della prenotazione
- * - Cancellazione prenotazione tramite DeleteAction
+ * - Cambio stato tramite campo select nel form (non eliminazione fisica)
  * - Disabilitazione automatica form per stati non modificabili
  *
  * Controlli di sicurezza:
  * - Form visibile solo se lo stato host permette modifiche
  * - Validazioni tramite policy DinnerBookingPolicy
  * - Controllo tramite hostAvailability->status->canUpdateBookings()
+ * - Policy blocca eliminazione fisica (delete sempre false)
  *
  * Stati che bloccano le modifiche:
  * - COMPLETED: cena già avvenuta
  * - HOST_CANCELLED: host ha cancellato la disponibilità
+ * - CANCELLED: prenotazione già cancellata (read-only)
+ *
+ * **Cancellazione prenotazione**:
+ * - NON esiste pulsante "Elimina" (hard delete bloccato da policy)
+ * - Per cancellare: cambiare campo 'status' a CANCELLED nel form
+ * - L'Observer gestisce automaticamente liberazione posti e stati
  *
  * @see DinnerBookingResource Risorsa principale
  * @see \App\Models\DinnerBooking Modello prenotazione
  * @see \App\Enums\DinnerAvailabilityStatus::canUpdateBookings()
- * @see \App\Policies\DinnerBookingPolicy
+ * @see \App\Policies\DinnerBookingPolicy::delete() Sempre false
+ * @see \App\Observers\DinnerBookingObserver Gestisce cambio stato
  */
 class EditDinnerBooking extends EditRecord
 {
@@ -45,47 +52,77 @@ class EditDinnerBooking extends EditRecord
     /**
      * Definisce le azioni disponibili nell'header della pagina.
      *
-     * Fornisce l'azione di cancellazione della prenotazione.
-     * L'azione DeleteAction viene controllata dalla policy per
-     * verificare i permessi dell'utente.
+     * Nessuna azione header in quanto:
+     * - L'eliminazione fisica è bloccata dalla policy (delete() = false)
+     * - La cancellazione avviene tramite cambio campo 'status' nel form
+     * - Non servono altre azioni particolari nell'header
      *
-     * @return array<DeleteAction> Array di azioni header
+     * @return array Array vuoto - nessuna azione header
      */
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return [];
     }
 
     /**
      * Definisce le azioni disponibili nel form di modifica.
      *
      * Controlla se la prenotazione può essere modificata verificando
-     * lo stato della disponibilità host. Se lo stato non permette
-     * modifiche (es. COMPLETED o HOST_CANCELLED), nasconde completamente
-     * i pulsanti del form (Salva, Annulla) rendendo il form di sola lettura.
+     * lo stato della disponibilità host e della prenotazione stessa.
+     *
+     * Nasconde i pulsanti (Salva, Annulla) se:
+     * - Disponibilità host in stato COMPLETED o HOST_CANCELLED
+     * - Prenotazione in stato CANCELLED
+     * - Data nel passato
      *
      * Logica:
-     * - Se hostAvailability->status->canUpdateBookings() = false -> nessun pulsante
+     * - Se isReadOnly() = true -> nessun pulsante
      * - Altrimenti -> mostra i pulsanti standard del parent (Salva, Annulla)
-     *
-     * Questo impedisce agli utenti di modificare prenotazioni per:
-     * - Cene già concluse (COMPLETED)
-     * - Disponibilità cancellate dall'host (HOST_CANCELLED)
      *
      * @return array<\Filament\Actions\Action> Array di azioni form (vuoto o standard)
      * @see \App\Enums\DinnerAvailabilityStatus::canUpdateBookings()
      */
     protected function getFormActions(): array
     {
-        // Verifica se lo stato della disponibilità host permette modifiche
-        if ( ! $this->record->hostAvailability->status->canUpdateBookings()) {
-            // Nessuna azione disponibile = form in sola lettura
+        if ($this->isReadOnly()) {
             return [];
         }
 
-        // Altrimenti usa le azioni standard (Salva, Annulla)
         return parent::getFormActions();
+    }
+
+    /**
+     * Verifica se la prenotazione è in sola lettura.
+     *
+     * Condizioni per read-only:
+     * - Stato disponibilità host non permette modifiche (COMPLETED, HOST_CANCELLED)
+     * - Prenotazione in stato CANCELLED
+     * - Data nel passato
+     *
+     * @return bool
+     */
+    protected function isReadOnly(): bool
+    {
+        if (!$this->record) {
+            return false;
+        }
+
+        // Prenotazione cancellata = read-only
+        if ($this->record->status->value === 'cancelled') {
+            return true;
+        }
+
+        // Disponibilità host non permette modifiche
+        if (!$this->record->hostAvailability->status->canUpdateBookings()) {
+            return true;
+        }
+
+        // Data passata = read-only
+        if ($this->record->hostAvailability->dinnerDate &&
+            $this->record->hostAvailability->dinnerDate->dinner_date < today()) {
+            return true;
+        }
+
+        return false;
     }
 }

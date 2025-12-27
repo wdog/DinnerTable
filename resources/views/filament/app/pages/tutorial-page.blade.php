@@ -1,6 +1,25 @@
+{{--
+    Tutorial DinnerTable - Guida completa per utenti
+
+    Questa pagina fornisce una guida interattiva per aiutare gli utenti a:
+    - Creare o unirsi a un gruppo
+    - Gestire disponibilità come HOST (chi cucina)
+    - Prenotare cene come GUEST (chi partecipa)
+    - Comprendere il sistema di stati e notifiche
+
+    Struttura:
+    1. Introduzione - Benvenuto e panoramica
+    2. Primi Passi - Creazione/join gruppo
+    3. Guida per Host - Gestione disponibilità e prenotazioni ricevute
+    4. Guida per Guest - Prenotazione e gestione partecipazioni
+    5. Gestione e Notifiche - Sistema notifiche e limiti temporali
+--}}
+
 <x-filament-panels::page>
     <div class="space-y-6">
-        {{-- Introduzione --}}
+        {{-- ============================================
+             SEZIONE 1: INTRODUZIONE
+             ============================================ --}}
         <div class="bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 p-8 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800">
             <h2 class="text-2xl font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center gap-3">
                 <span class="text-3xl">👋</span>
@@ -11,7 +30,10 @@
             </p>
         </div>
 
-        {{-- Primi Passi --}}
+        {{-- ============================================
+             SEZIONE 2: PRIMI PASSI
+             Come creare o unirsi a un gruppo
+             ============================================ --}}
         <div class="bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-950/40 dark:to-cyan-950/40 p-8 rounded-2xl border-2 border-blue-200 dark:border-blue-800">
             <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-6 flex items-center gap-3">
                 <span class="text-3xl">🚀</span>
@@ -71,7 +93,10 @@
             </div>
         </div>
 
-        {{-- Guida per Host --}}
+        {{-- ============================================
+             SEZIONE 3: GUIDA PER HOST
+             Gestione disponibilità, stati automatici, cancellazioni
+             ============================================ --}}
         <div class="bg-linear-to-r from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/40 p-8 rounded-2xl border-2 border-orange-200 dark:border-orange-800">
             <h2 class="text-2xl font-bold text-orange-900 dark:text-orange-100 mb-6 flex items-center gap-3">
                 <span class="text-3xl">👨‍🍳</span>
@@ -79,6 +104,7 @@
             </h2>
 
             <div class="space-y-6">
+                {{-- Sottosezione: Come dichiarare disponibilità HOST --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-orange-300 dark:border-orange-700 shadow-sm">
                     <h3 class="text-xl font-bold text-orange-900 dark:text-orange-100 mb-4">
                         Come funziona
@@ -99,6 +125,7 @@
                     </ol>
                 </div>
 
+                {{-- Sottosezione: Stati automatici della disponibilità --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-amber-300 dark:border-amber-700 shadow-sm">
                     <h3 class="text-xl font-bold text-amber-900 dark:text-amber-100 mb-4 flex items-center gap-2">
                         <span class="text-2xl">⚡</span>
@@ -151,10 +178,84 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Sottosezione: Cancellazione cena HOST --}}
+                <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-red-300 dark:border-red-700 shadow-sm">
+                    <h3 class="text-xl font-bold text-red-900 dark:text-red-100 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🗑️</span>
+                        Cancellare una Cena
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Senza prenotazioni:</h4>
+                            <p class="text-gray-700 dark:text-gray-300">
+                                Puoi <strong>eliminare completamente</strong> la disponibilità
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Con prenotazioni:</h4>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                Devi cambiare lo stato a <strong>"Annullato"</strong> (non puoi eliminare)
+                            </p>
+                            <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 ml-4">
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>Mantiene lo storico delle prenotazioni</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>Notifica automatica a tutti gli ospiti</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>Le prenotazioni vengono cancellate</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Cene completate:</h4>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                <strong>Non modificabili né eliminabili</strong> - sono dati storici
+                            </p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                                <span class="text-lg">👁️</span>
+                                <span>Usa il pulsante <strong>"Vedi"</strong> nella tabella per visualizzare i dettagli della cena e le prenotazioni ricevute in sola lettura</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Sottosezione: Gestione prenotazioni ricevute HOST --}}
+                <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-purple-300 dark:border-purple-700 shadow-sm">
+                    <h3 class="text-xl font-bold text-purple-900 dark:text-purple-100 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">👥</span>
+                        Gestire le Prenotazioni Ricevute
+                    </h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Vai su <strong>Le Mie Prenotazioni</strong> per vedere chi ha prenotato:
+                    </p>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li class="flex gap-2">
+                            <span class="text-purple-600 dark:text-purple-400">•</span>
+                            <span>Visualizza tutti gli ospiti confermati</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-purple-600 dark:text-purple-400">•</span>
+                            <span>Vedi quanti posti sono ancora liberi</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-purple-600 dark:text-purple-400">•</span>
+                            <span>Controlla note e allergie degli ospiti</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        {{-- Guida per Guest --}}
+        {{-- ============================================
+             SEZIONE 4: GUIDA PER GUEST
+             Prenotazione cene, modifiche, cancellazioni
+             ============================================ --}}
         <div class="bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 p-8 rounded-2xl border-2 border-emerald-200 dark:border-emerald-800">
             <h2 class="text-2xl font-bold text-emerald-900 dark:text-emerald-100 mb-6 flex items-center gap-3">
                 <span class="text-3xl">🍽️</span>
@@ -162,6 +263,7 @@
             </h2>
 
             <div class="space-y-6">
+                {{-- Sottosezione: Come dichiarare disponibilità GUEST --}}
                 <div class="bg-linear-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 p-6 rounded-xl border-l-4 border-yellow-500 shadow-sm">
                     <h3 class="text-xl font-bold text-yellow-900 dark:text-yellow-100 mb-3 flex items-center gap-2">
                         <span class="text-2xl">💡</span>
@@ -189,6 +291,7 @@
                     </p>
                 </div>
 
+                {{-- Sottosezione: Come prenotare una cena --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-teal-300 dark:border-teal-700 shadow-sm">
                     <h3 class="text-xl font-bold text-teal-900 dark:text-teal-100 mb-4">
                         Come prenotare
@@ -213,6 +316,7 @@
                     </ol>
                 </div>
 
+                {{-- Sottosezione: Regole prenotazione --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-emerald-300 dark:border-emerald-700 shadow-sm">
                     <h3 class="text-xl font-bold text-emerald-900 dark:text-emerald-100 mb-5 flex items-center gap-2">
                         <span class="text-2xl">📋</span>
@@ -251,10 +355,140 @@
                         </p>
                     </div>
                 </div>
+
+                {{-- Sottosezione: Modificare prenotazione GUEST --}}
+                <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-cyan-300 dark:border-cyan-700 shadow-sm">
+                    <h3 class="text-xl font-bold text-cyan-900 dark:text-cyan-100 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">✏️</span>
+                        Modificare una Prenotazione
+                    </h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-700 dark:text-gray-300">
+                            Puoi modificare la tua prenotazione finché la cena non è conclusa:
+                        </p>
+                        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                            <li class="flex gap-2">
+                                <span class="text-cyan-600 dark:text-cyan-400">•</span>
+                                <span>Cambiare il <strong>numero di ospiti</strong></span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-cyan-600 dark:text-cyan-400">•</span>
+                                <span>Modificare <strong>cosa porti</strong></span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-cyan-600 dark:text-cyan-400">•</span>
+                                <span>Aggiornare <strong>note e allergie</strong></span>
+                            </li>
+                        </ul>
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                            <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-start gap-2">
+                                <span class="text-lg">⚠️</span>
+                                <span>Rispetta il numero massimo di posti disponibili dell'host</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Sottosezione: Cancellare prenotazione GUEST --}}
+                <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-red-300 dark:border-red-700 shadow-sm">
+                    <h3 class="text-xl font-bold text-red-900 dark:text-red-100 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">❌</span>
+                        Cancellare una Prenotazione
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 dark:bg-red-900/30 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                            <p class="font-bold text-red-900 dark:text-red-100 mb-2">
+                                IMPORTANTE: Non puoi eliminare fisicamente la prenotazione
+                            </p>
+                            <p class="text-sm text-red-800 dark:text-red-200">
+                                Puoi solo cambiare lo stato a <strong>"Cancellato"</strong> per mantenere lo storico
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Come cancellare:</h4>
+                            <ol class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-red-600 dark:text-red-400">1.</span>
+                                    <span>Vai su <strong>Le Mie Prenotazioni</strong></span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-red-600 dark:text-red-400">2.</span>
+                                    <span>Apri la prenotazione da cancellare</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-red-600 dark:text-red-400">3.</span>
+                                    <span>Cambia lo <strong>stato</strong> a "Cancellato"</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-red-600 dark:text-red-400">4.</span>
+                                    <span>Salva le modifiche</span>
+                                </li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Cosa succede:</h4>
+                            <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 ml-4">
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>I posti vengono liberati per l'host</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>L'host riceve una notifica</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>La prenotazione rimane visibile come "Cancellata" nello storico</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span>•</span>
+                                    <span>Non potrai più modificare questa prenotazione</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <p class="text-sm text-blue-800 dark:text-blue-200 flex items-start gap-2">
+                                <span class="text-lg">ℹ️</span>
+                                <span>Prenotazioni cancellate sono <strong>read-only</strong> e non eliminabili - servono per lo storico</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Sottosezione: Stati prenotazioni GUEST --}}
+                <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-indigo-300 dark:border-indigo-700 shadow-sm">
+                    <h3 class="text-xl font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">📊</span>
+                        Stati delle Prenotazioni
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="px-4 py-2 rounded-lg font-medium bg-orange-500 text-white shadow-sm min-w-32 text-center">
+                                In attesa
+                            </span>
+                            <span class="text-gray-700 dark:text-gray-300">Prenotazione creata, in attesa conferma host</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-4 py-2 rounded-lg font-medium bg-green-500 text-white shadow-sm min-w-32 text-center">
+                                Confermato
+                            </span>
+                            <span class="text-gray-700 dark:text-gray-300">Prenotazione confermata dall'host</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-4 py-2 rounded-lg font-medium bg-red-500 text-white shadow-sm min-w-32 text-center">
+                                Cancellato
+                            </span>
+                            <span class="text-gray-700 dark:text-gray-300">Prenotazione annullata (guest o host)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Gestione Prenotazioni --}}
+        {{-- ============================================
+             SEZIONE 5: GESTIONE E NOTIFICHE
+             Sistema notifiche, limiti temporali, completamento automatico
+             ============================================ --}}
         <div class="bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/40 p-8 rounded-2xl border-2 border-purple-200 dark:border-purple-800">
             <h2 class="text-2xl font-bold text-purple-900 dark:text-purple-100 mb-6 flex items-center gap-3">
                 <span class="text-3xl">📱</span>
@@ -262,6 +496,7 @@
             </h2>
 
             <div class="space-y-6">
+                {{-- Sottosezione: Visualizzare le proprie prenotazioni --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-purple-300 dark:border-purple-700 shadow-sm">
                     <h3 class="text-xl font-bold text-purple-900 dark:text-purple-100 mb-4 flex items-center gap-2">
                         <span class="text-2xl">📋</span>
@@ -286,6 +521,7 @@
                     </ul>
                 </div>
 
+                {{-- Sottosezione: Sistema notifiche --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-pink-300 dark:border-pink-700 shadow-sm">
                     <h3 class="text-xl font-bold text-pink-900 dark:text-pink-100 mb-4 flex items-center gap-2">
                         <span class="text-2xl">🔔</span>
@@ -311,6 +547,7 @@
                     </div>
                 </div>
 
+                {{-- Sottosezione: Limiti temporali e completamento automatico --}}
                 <div class="bg-white/80 dark:bg-gray-900/60 p-6 rounded-xl border-2 border-indigo-300 dark:border-indigo-700 shadow-sm">
                     <h3 class="text-xl font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center gap-2">
                         <span class="text-2xl">⏰</span>
