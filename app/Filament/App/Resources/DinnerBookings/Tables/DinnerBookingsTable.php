@@ -8,10 +8,14 @@ use Filament\Actions\EditAction;
 use Filament\Support\Enums\Size;
 use App\Enums\DinnerBookingStatus;
 use Filament\Actions\DeleteAction;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class DinnerBookingsTable
 {
@@ -76,12 +80,45 @@ class DinnerBookingsTable
                     ->options(DinnerBookingStatus::class)
                     ->native(false),
 
-                SelectFilter::make('dinner_date')
-                    ->label('Data')
-                    ->relationship('hostAvailability.dinnerDate', 'dinner_date')
-                    ->searchable()
-                    ->preload(),
-            ])
+                Filter::make('dinner_date')
+                    ->schema([
+                        DatePicker::make('from')
+                            ->label('Da')
+                            ->native(false),
+                        DatePicker::make('until')
+                            ->label('A')
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn (Builder $query, $date): Builder => $query->whereHas('hostAvailability.dinnerDate', function (Builder $query) use ($date) {
+                                    $query->whereDate('dinner_date', '>=', $date);
+                                })
+                            )
+                            ->when(
+                                $data['until'],
+                                fn (Builder $query, $date): Builder => $query->whereHas('hostAvailability.dinnerDate', function (Builder $query) use ($date) {
+                                    $query->whereDate('dinner_date', '<=', $date);
+                                })
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['from'] ?? null) {
+                            $indicators[] = 'Da: ' . \Carbon\Carbon::parse($data['from'])->format('d/m/Y');
+                        }
+
+                        if ($data['until'] ?? null) {
+                            $indicators[] = 'A: ' . \Carbon\Carbon::parse($data['until'])->format('d/m/Y');
+                        }
+
+                        return $indicators;
+                    }),
+
+            ], FiltersLayout::AboveContent)
             ->defaultSort('hostAvailability.dinnerDate.dinner_date', 'desc')
             ->recordActions([
 
@@ -96,6 +133,7 @@ class DinnerBookingsTable
                         function ($record): bool {
                             /** @var \App\Models\User $user */
                             $user = Auth::user();
+
                             return $record->status !== DinnerBookingStatus::CONFIRMED &&
                                 $user->can('update', $record);
                         }
@@ -104,11 +142,10 @@ class DinnerBookingsTable
                     ->modalHeading('Conferma la tua prenotazione')
                     ->modalDescription('Confermi la tua presenza?')
                     ->action(function ($record) {
-
                         /** @var \App\Models\User $user */
                         $user = Auth::user();
                         // Verifica autorizzazione tramite policy prima di salvare
-                        if (! $user->can('update', $record)) {
+                        if ( ! $user->can('update', $record)) {
                             Notification::make()
                                 ->danger()
                                 ->title('Azione non permessa')
@@ -139,7 +176,8 @@ class DinnerBookingsTable
                         function ($record): bool {
                             /** @var \App\Models\User $user */
                             $user = Auth::user();
-                            return  $record->status !== DinnerBookingStatus::CANCELLED &&
+
+                            return $record->status !== DinnerBookingStatus::CANCELLED &&
                                 $user->can('update', $record);
                         }
                     )
@@ -150,7 +188,7 @@ class DinnerBookingsTable
                         // Verifica autorizzazione tramite policy prima di salvare
                         /** @var \App\Models\User $user */
                         $user = Auth::user();
-                        if (! $user->can('update', $record)) {
+                        if ( ! $user->can('update', $record)) {
                             Notification::make()
                                 ->danger()
                                 ->title('Azione non permessa')
