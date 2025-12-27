@@ -36,27 +36,6 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo-small.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-small.png') }}">
 
-    <!-- Schema.org structured data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "DinnerTable",
-      "description": "Piattaforma per organizzare cene di gruppo e gestire turni settimanali",
-      "applicationCategory": "LifestyleApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "127"
-      }
-    }
-    </script>
 
     @vite('resources/css/app.css')
 </head>
@@ -128,9 +107,9 @@
                     </p>
                 </div>
                 <div class="grid md:grid-cols-3 gap-10">
-                    <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-                        <div class="bg-lime-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-lime-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                        <div class="bg-lime-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -142,9 +121,9 @@
                             in un unico calendario intelligente e prenota il tuo posto in un attimo.
                         </p>
                     </div>
-                    <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-                        <div class="bg-lime-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-lime-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                        <div class="bg-lime-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-lime-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -156,9 +135,9 @@
                             quando è il tuo turno. Tu pensa solo a cosa cucinare di buono!
                         </p>
                     </div>
-                    <div class="bg-lime-600 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
-                        <div class="bg-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor"
+                    <div class="bg-lime-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                        <div class="bg-lime-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-lime-700" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
@@ -176,7 +155,7 @@
         </section>
 
         <!-- Come Funziona Section -->
-        <section id="features" class="bg-lime-600 py-24">
+        <section id="features" class="bg-lime-50 py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h3 class="text-4xl font-bold text-gray-900 mb-4">Come Funziona DinnerTable</h3>
@@ -188,12 +167,12 @@
                     <!-- Step 1 -->
                     <div class="relative">
                         <div
-                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                            class="absolute -top-4 -left-4 bg-lime-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             1
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
                             <div
-                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                class="bg-lime-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                                 <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -215,12 +194,12 @@
                     <!-- Step 2 -->
                     <div class="relative">
                         <div
-                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                            class="absolute -top-4 -left-4 bg-lime-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             2
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
                             <div
-                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                class="bg-lime-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                                 <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -242,13 +221,13 @@
                     <!-- Step 3 -->
                     <div class="relative">
                         <div
-                            class="absolute -top-4 -left-4 bg-lime-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
+                            class="absolute -top-4 -left-4 bg-lime-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg z-10">
                             3
                         </div>
                         <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition h-full">
                             <div
-                                class="bg-lime-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor"
+                                class="bg-lime-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-lime-700" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -271,21 +250,21 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="bg-lime-600 py-24">
+        <section class="bg-lime-100 py-24">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h3 class="text-5xl font-extrabold text-white mb-6 leading-tight">
+                <h3 class="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
                     Smetti di Organizzare,<br>Inizia a Cucinare!
                 </h3>
-                <p class="text-2xl text-lime-50 mb-4 max-w-3xl mx-auto">
+                <p class="text-2xl text-gray-700 mb-4 max-w-3xl mx-auto">
                     Unisciti alle centinaia di gruppi che hanno già scelto DinnerTable
                 </p>
-                <p class="text-lg text-lime-100 mb-10 max-w-2xl mx-auto">
+                <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
                     La registrazione è completamente gratuita e non richiede carta di credito.
                     Inizia a organizzare le tue cene in meno di 2 minuti!
                 </p>
                 <div class="flex gap-6 justify-center flex-wrap">
                     <a href="/dinner/register"
-                        class="bg-white text-green-700 px-12 py-5 rounded-xl text-2xl font-bold hover:bg-gray-100 transition shadow-2xl hover:shadow-3xl transform hover:scale-105 inline-flex items-center gap-3">
+                        class="bg-lime-600 text-white px-12 py-5 rounded-xl text-2xl font-bold hover:bg-lime-700 transition shadow-2xl hover:shadow-3xl transform hover:scale-105 inline-flex items-center gap-3">
                         <span>Crea il Tuo Gruppo Gratis</span>
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
@@ -293,7 +272,7 @@
                         </svg>
                     </a>
                 </div>
-                <p class="text-sm text-lime-100 mt-8">
+                <p class="text-sm text-gray-600 mt-8">
                     ✓ Nessun impegno · ✓ Cancella quando vuoi · ✓ Supporto via email incluso
                 </p>
             </div>
@@ -362,6 +341,7 @@
             </div>
         </div>
     </footer>
+    @vite('resources/js/app.js')
 
 </body>
 
