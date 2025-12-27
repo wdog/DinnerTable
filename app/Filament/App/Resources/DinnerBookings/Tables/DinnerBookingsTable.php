@@ -93,15 +93,22 @@ class DinnerBookingsTable
                     ->button()
                     ->size(Size::ExtraSmall)
                     ->visible(
-                        fn ($record) => $record->status !== DinnerBookingStatus::CONFIRMED &&
-                            Auth::user()->can('update', $record)
+                        function ($record): bool {
+                            /** @var \App\Models\User $user */
+                            $user = Auth::user();
+                            return $record->status !== DinnerBookingStatus::CONFIRMED &&
+                                $user->can('update', $record);
+                        }
                     )
                     ->requiresConfirmation()
                     ->modalHeading('Conferma la tua prenotazione')
                     ->modalDescription('Confermi la tua presenza?')
                     ->action(function ($record) {
+
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
                         // Verifica autorizzazione tramite policy prima di salvare
-                        if ( ! Auth::user()->can('update', $record)) {
+                        if (! $user->can('update', $record)) {
                             Notification::make()
                                 ->danger()
                                 ->title('Azione non permessa')
@@ -129,15 +136,21 @@ class DinnerBookingsTable
                     ->button()
                     ->size(Size::ExtraSmall)
                     ->visible(
-                        fn ($record) => $record->status !== DinnerBookingStatus::CANCELLED &&
-                            Auth::user()->can('update', $record)
+                        function ($record): bool {
+                            /** @var \App\Models\User $user */
+                            $user = Auth::user();
+                            return  $record->status !== DinnerBookingStatus::CANCELLED &&
+                                $user->can('update', $record);
+                        }
                     )
                     ->requiresConfirmation()
                     ->modalHeading('Annulla prenotazione')
                     ->modalDescription('Sei sicuro di voler annullare questa prenotazione?')
                     ->action(function ($record) {
                         // Verifica autorizzazione tramite policy prima di salvare
-                        if ( ! auth()->user()->can('update', $record)) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        if (! $user->can('update', $record)) {
                             Notification::make()
                                 ->danger()
                                 ->title('Azione non permessa')
