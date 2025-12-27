@@ -636,9 +636,55 @@
                 backToTop.classList.add('opacity-0', 'invisible');
             }
         });
+
+        // Smooth fade-in on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections and cards
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('fade-in');
+                observer.observe(section);
+            });
+
+            // Observe cards and important elements
+            document.querySelectorAll('.group').forEach(el => {
+                el.classList.add('fade-in');
+                observer.observe(el);
+            });
+        });
     </script>
 
     <style>
+        /* Smooth scroll with offset for fixed navbar */
+        html {
+            scroll-padding-top: 80px;
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Blob animations */
         @keyframes blob {
             0%, 100% { transform: translate(0, 0) scale(1); }
             25% { transform: translate(20px, -50px) scale(1.1); }
