@@ -31,13 +31,13 @@
             <x-slot name="heading">
                 <div class="flex flex-col gap-4 w-full">
                     {{-- Toggle Vista --}}
-                    <div class="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                    <div class="flex items-center
+                    justify-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                        {{-- month --}}
                         <button wire:click="changeViewType('month')" type="button" @class([
-                            'flex items-center gap-2 px-4 py-2 rounded-md transition-all font-semibold',
-                            'bg-white dark:bg-gray-700 text-custom-600 dark:text-custom-400 shadow' =>
-                                $viewType === 'month',
-                            'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' =>
-                                $viewType !== 'month',
+                            'flex items-center bg-white gap-2 px-4 py-2 rounded-md transition-all font-semibold shadow  hover:shadow-xl',
+                            'text-lime-500  !bg-lime-100' => $viewType === 'month',
+                            'text-orange-500 ' => $viewType !== 'month',
                         ])>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -45,13 +45,11 @@
                             </svg>
                             <span>Calendario Mensile</span>
                         </button>
-
+                        {{-- week --}}
                         <button wire:click="changeViewType('week')" type="button" @class([
-                            'flex items-center gap-2 px-4 py-2 rounded-md transition-all font-semibold',
-                            'bg-white dark:bg-gray-700 text-custom-600 dark:text-custom-400 shadow' =>
-                                $viewType === 'week',
-                            'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700' =>
-                                $viewType !== 'week',
+                            'flex items-center bg-white gap-2 px-4 py-2 rounded-md transition-all font-semibold shadow  hover:shadow-xl',
+                            'text-lime-500 !bg-lime-100' => $viewType === 'week',
+                            'text-orange-500 ' => $viewType !== 'week',
                         ])>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -94,8 +92,7 @@
 
                             <button wire:click="goToCurrentMonth"
                                 class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300"
-                                type="button"
-                                title="Vai al mese corrente">
+                                type="button" title="Vai al mese corrente">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -146,7 +143,9 @@
                              Contiene header giorno + cards disponibilità
                              ============================================ --}}
                         <div @class([
-                            'border dark:border-gray-500 dark:bg-white/10 border-lime-500 bg-lime-500/20' => $dateInfo['date']->isSameDay(\Carbon\Carbon::now()),
+                            'border dark:border-gray-500 dark:bg-white/10 border-lime-500 bg-lime-500/20' => $dateInfo[
+                                'date'
+                            ]->isSameDay(\Carbon\Carbon::now()),
 
                             'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900/50 px-2 pt-2',
                         ])>
