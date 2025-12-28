@@ -109,6 +109,22 @@ class GroupAvailabilities extends Page implements HasActions
     public bool $filterCanHost = false;
 
     /**
+     * Tipo di vista corrente (month/week).
+     *
+     * Determina se mostrare il calendario mensile o la vista settimanale.
+     * Valori possibili: 'month', 'week'
+     */
+    public string $viewType = 'month';
+
+    /**
+     * Settimana selezionata (formato Y-W).
+     *
+     * Utilizzato per la vista settimanale. Viene inizializzato alla settimana
+     * corrente e può essere modificato dall'utente tramite i controlli di navigazione.
+     */
+    public ?string $selectedWeek = null;
+
+    /**
      * Dati del calendario per il mese corrente.
      *
      * Array che contiene la struttura del calendario mensile con:
@@ -117,6 +133,16 @@ class GroupAvailabilities extends Page implements HasActions
      * - informazioni aggregate per ogni giorno
      */
     public array $calendarData = [];
+
+    /**
+     * Dati della vista settimanale.
+     *
+     * Array che contiene i 7 giorni della settimana selezionata con:
+     * - data completa
+     * - giorno del mese
+     * - disponibilità filtrate per quel giorno
+     */
+    public array $weekData = [];
 
     /**
      * Path della vista blade che renderizza questa pagina.
@@ -161,7 +187,8 @@ class GroupAvailabilities extends Page implements HasActions
     public function mount(): void
     {
         $this->selectedMonth = Carbon::now()->format('Y-m');
-        $this->loadCalendarData();
+        $this->selectedWeek  = Carbon::now()->format('Y-W');
+        $this->loadData();
     }
 
     /**
@@ -193,6 +220,48 @@ class GroupAvailabilities extends Page implements HasActions
     }
 
     /**
+     * Naviga alla settimana precedente.
+     *
+     * Decrementa la settimana selezionata di una settimana e ricarica i dati.
+     * Gestisce correttamente il passaggio tra anni.
+     */
+    public function previousWeek(): void
+    {
+        [$year, $week]      = explode('-', $this->selectedWeek);
+        $date               = Carbon::now()->setISODate((int) $year, (int) $week)->subWeek();
+        $this->selectedWeek = $date->format('Y-W');
+        $this->loadWeekData();
+    }
+
+    /**
+     * Naviga alla settimana successiva.
+     *
+     * Incrementa la settimana selezionata di una settimana e ricarica i dati.
+     * Gestisce correttamente il passaggio tra anni.
+     */
+    public function nextWeek(): void
+    {
+        [$year, $week]      = explode('-', $this->selectedWeek);
+        $date               = Carbon::now()->setISODate((int) $year, (int) $week)->addWeek();
+        $this->selectedWeek = $date->format('Y-W');
+        $this->loadWeekData();
+    }
+
+    /**
+     * Cambia il tipo di vista (month/week).
+     *
+     * Alterna tra vista calendario mensile e vista settimanale,
+     * caricando i dati appropriati per la vista selezionata.
+     *
+     * @param  string  $type  Tipo di vista ('month' o 'week')
+     */
+    public function changeViewType(string $type): void
+    {
+        $this->viewType = $type;
+        $this->loadData();
+    }
+
+    /**
      * Livewire lifecycle hook: eseguito quando selectedMonth viene modificato.
      *
      * Ricarica automaticamente i dati del calendario quando l'utente
@@ -220,7 +289,7 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function updatedFilterCanHost(): void
     {
-        $this->loadCalendarData();
+        $this->loadData();
     }
 
     /**
@@ -287,6 +356,127 @@ class GroupAvailabilities extends Page implements HasActions
             'Host (chi cucina)'     => $hostStates,
             'Guest (chi partecipa)' => $guestStates,
         ];
+    }
+
+    /**
+     * Ottiene il range di date della settimana selezionata.
+     *
+     * @return string Range formattato "D MMM - D MMM YYYY"
+     */
+    public function getWeekRange(): string
+    {
+        if ( ! $this->selectedWeek) {
+            return '';
+        }
+
+        [$year, $week] = explode('-', $this->selectedWeek);
+        $startOfWeek   = Carbon::now()->setISODate((int) $year, (int) $week);
+        $endOfWeek     = $startOfWeek->copy()->addDays(6);
+
+        return $startOfWeek->isoFormat('D MMM') . ' - ' . $endOfWeek->isoFormat('D MMM YYYY');
+    }
+
+    /**
+     * Carica i dati per la vista settimanale.
+     *
+     * Recupera tutte le DinnerDate e disponibilità per i 7 giorni della settimana selezionata,
+     * applicando gli stessi filtri della vista mensile.
+     *
+     * Per ogni giorno della settimana, calcola:
+     * - Numero totale di disponibilità (filtrate)
+     * - Numero di disponibilità con can_host = true
+     * - Dettagli di ogni disponibilità (utente, status, posti, prenotabilità)
+     */
+    public function loadWeekData(): void
+    {
+        if ( ! $this->selectedWeek) {
+            $this->weekData = [];
+
+            return;
+        }
+
+        [$year, $week] = explode('-', $this->selectedWeek);
+        $startOfWeek   = Carbon::now()->setISODate((int) $year, (int) $week);
+
+        $weekDays = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $currentDate = $startOfWeek->copy()->addDays($i);
+
+            // Recupera la DinnerDate per questo giorno specifico
+            $dinnerDate = DinnerDate::where('dinner_group_id', Auth::user()->dinner_group_id)
+                ->whereDate('dinner_date', $currentDate->format('Y-m-d'))
+                ->with(['availabilities.user'])
+                ->first();
+
+            if ($dinnerDate) {
+                $availabilities = $dinnerDate->availabilities;
+
+                // Applica i filtri alle disponibilità
+                $filteredAvailabilities = $availabilities->filter(function ($availability) {
+                    // Filtro per status
+                    if ($this->filterStatus && $availability->status->value !== $this->filterStatus) {
+                        return false;
+                    }
+
+                    // Filtro per can_host
+                    if ($this->filterCanHost && ! $availability->can_host) {
+                        return false;
+                    }
+
+                    return true;
+                });
+
+                // Verifica se l'utente ha prenotazioni per questa data
+                $userBooking = DinnerBooking::where('guest_user_id', Auth::id())
+                    ->whereHas('hostAvailability.dinnerDate', function ($query) use ($dinnerDate) {
+                        $query->where('id', $dinnerDate->id);
+                    })
+                    ->with('hostAvailability.user')
+                    ->first();
+
+                $weekDays[] = [
+                    'date'                 => $currentDate,
+                    'day'                  => $currentDate->day,
+                    'day_name'             => $currentDate->isoFormat('dddd'),
+                    'total_availabilities' => $filteredAvailabilities->count(),
+                    'can_host_count'       => $filteredAvailabilities->where('can_host', true)->count(),
+                    'user_booking'         => $userBooking ? [
+                        'id'        => $userBooking->id,
+                        'status'    => $userBooking->status,
+                        'host_name' => $userBooking->hostAvailability->user->name,
+                    ] : null,
+                    'availabilities' => $filteredAvailabilities->map(function ($availability) {
+                        $canBook = $this->canBook($availability->id);
+
+                        return [
+                            'id'              => $availability->id,
+                            'user_name'       => $availability->user->name,
+                            'status'          => $availability->status,
+                            'can_host'        => $availability->can_host,
+                            'note'            => $availability->note,
+                            'can_book'        => $canBook,
+                            'max_guests'      => $availability->max_guests ?? 0,
+                            'available_spots' => $availability->available_spots ?? 0,
+                            'total_booked'    => $availability->total_booked_guests ?? 0,
+                        ];
+                    })->toArray(),
+                ];
+            } else {
+                // Giorno senza dati nel database
+                $weekDays[] = [
+                    'date'                 => $currentDate,
+                    'day'                  => $currentDate->day,
+                    'day_name'             => $currentDate->isoFormat('dddd'),
+                    'total_availabilities' => 0,
+                    'can_host_count'       => 0,
+                    'user_booking'         => null,
+                    'availabilities'       => [],
+                ];
+            }
+        }
+
+        $this->weekData = $weekDays;
     }
 
     /**
@@ -588,5 +778,21 @@ class GroupAvailabilities extends Page implements HasActions
                         ->send();
                 }
             });
+    }
+
+    /**
+     * Carica i dati in base al tipo di vista selezionato.
+     *
+     * Questo metodo centralizzato determina quale metodo di caricamento
+     * dati invocare (calendario mensile o vista settimanale) in base
+     * al valore di $viewType.
+     */
+    protected function loadData(): void
+    {
+        if ($this->viewType === 'week') {
+            $this->loadWeekData();
+        } else {
+            $this->loadCalendarData();
+        }
     }
 }
