@@ -44,10 +44,10 @@
     <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-lime-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-3">
-                    <a href="/">
+                <div >
+                    <a class="flex items-center justify-center flex-col" href="/">
+                        <span class="text-sm font-bold text-slate-500 rounded-2xl bg-lime-300 px-2">Dinner Table</span>
                         <img src="{{ asset('images/logo-small.png') }}" alt="DinnerTable" class="h-10 w-auto">
-                        <span class="text-xl font-bold text-gray-900">DinnerTable</span>
                     </a>
                 </div>
                 <div class="hidden md:flex items-center gap-8">
@@ -162,52 +162,101 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="trust" direction="down" />
         </section>
 
         <!-- Trust Section -->
-        <section id="trust" class="snap-start snap-always relative min-h-screen h-auto flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-white">
-            <div class="max-w-7xl mx-auto">
-                <!-- Hero Image/Illustration -->
-                <div class="mb-16 relative">
-                    <div class="absolute inset-0 bg-linear-to-tl from-white/40 via-transparent to-transparent z-10">
-                    </div>
-                    <img src="{{ asset('images/banner_dinner.png') }}" alt="DinnerTable Interface"
-                        class="mx-auto max-w-4xl w-full rounded-2xl shadow-2xl">
-                </div>
+        <section id="trust" class="snap-start snap-always relative min-h-screen h-auto flex flex-col justify-center pt-2 pb-2 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50 overflow-hidden">
+            <!-- Decorative background elements -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-lime-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
 
-                <!-- Trust Indicators -->
-                <div class="flex flex-wrap justify-center items-center gap-12">
-                    <div class="flex flex-col items-center gap-3 p-6 bg-lime-50 rounded-2xl border border-lime-200 min-w-50">
-                        <svg class="w-12 h-12 text-lime-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="text-2xl font-bold text-gray-900">2 minuti</span>
-                        <span class="text-sm text-gray-600 font-medium">Setup veloce</span>
+            <div class="max-w-7xl mx-auto w-full relative z-10">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Immagine a sinistra -->
+                    <div class="relative group">
+                        <!-- Glow effect dietro l'immagine -->
+                        <div class="absolute -inset-4 bg-linear-to-r from-lime-400 to-emerald-400 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+
+                        <!-- Gradient overlay -->
+                        <div class="absolute inset-0 bg-linear-to-tl from-lime-500/10 via-transparent to-emerald-500/10 rounded-2xl z-10"></div>
+
+                        <img src="{{ asset('images/banner_dinner.png') }}" alt="DinnerTable Interface"
+                            class="relative w-full rounded-2xl shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-500">
                     </div>
 
-                    <div class="flex flex-col items-center gap-3 p-6 bg-emerald-50 rounded-2xl border border-emerald-200 min-w-50">
-                        <svg class="w-12 h-12 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="text-2xl font-bold text-gray-900">100% Gratis</span>
-                        <span class="text-sm text-gray-600 font-medium">Per sempre</span>
-                    </div>
+                    <!-- Trust Cards a destra - sovrapposte -->
+                    <div class="relative flex flex-col gap-6">
+                        <!-- Card 1 - 2 minuti -->
+                        <div class="flex gap-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-lime-100">
+                            <div class="shrink-0">
+                                <div class="bg-lime-100 p-2.5 rounded-xl">
+                                    <svg class="w-8 h-8 text-lime-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
 
-                    <div class="flex flex-col items-center gap-3 p-6 bg-lime-50 rounded-2xl border border-lime-200 min-w-50">
-                        <svg class="w-12 h-12 text-lime-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="text-2xl font-bold text-gray-900">Nessun vincolo</span>
-                        <span class="text-sm text-gray-600 font-medium">Libertà totale</span>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Setup in 2 minuti</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">
+                                    Registrati, crea il tuo gruppo e inizia subito. Non serve configurazione complicata:
+                                    inserisci i dati base, invita i membri e sei pronto per organizzare la prima cena.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 - 100% Gratis -->
+                        <div class="flex gap-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-emerald-100">
+                            <div class="shrink-0">
+                                <div class="bg-emerald-100 p-2.5 rounded-xl">
+                                    <svg class="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">100% Gratis per sempre</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">
+                                    Zero costi nascosti, zero abbonamenti, zero limiti di utilizzo. Tutte le funzionalità
+                                    sono completamente gratuite per sempre. Organizza cene illimitate senza spendere un centesimo.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 - Nessun vincolo -->
+                        <div class="flex gap-4 p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-lime-100">
+                            <div class="shrink-0">
+                                <div class="bg-lime-100 p-2.5 rounded-xl">
+                                    <svg class="w-8 h-8 text-lime-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Nessun vincolo o impegno</h3>
+                                <p class="text-sm text-gray-600 leading-relaxed">
+                                    Usa DinnerTable quando vuoi, come vuoi. Nessuna registrazione obbligatoria per i membri,
+                                    nessun contratto vincolante. Puoi modificare o cancellare il gruppo in qualsiasi momento.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="benefits" direction="down" />
         </section>
 
         <!-- Benefits Section -->
@@ -323,6 +372,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="features" direction="down"/>
         </section>
 
         <!-- Features Section -->
@@ -447,6 +499,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="testimonials" direction="down" />
         </section>
 
         <!-- Testimonials Section -->
@@ -589,6 +644,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="cta" direction="down" />
         </section>
 
         <!-- CTA Section -->
@@ -651,6 +709,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pulsante navigazione -->
+            <x-section-nav-button target="contacts" direction="down"/>
         </section>
 
         <!-- Sezione Contatti -->
@@ -735,6 +796,7 @@
                     </div>
                 </div>
             </div>
+            <x-section-nav-button target="hero" direction="up"/>
         </section>
     </main>
 
