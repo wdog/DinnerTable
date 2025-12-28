@@ -65,9 +65,9 @@
         </div>
     </nav>
 
-    <main>
+    <main class="snap-y snap-mandatory overflow-y-scroll h-screen" style="scroll-padding-top: 5rem;">
         <!-- Hero Section -->
-        <section id="hero" class="relative min-h-screen flex flex-col justify-center pt-32 pb-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50 overflow-hidden">
+        <section id="hero" class="snap-start relative min-h-screen flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50 overflow-hidden">
             <!-- Decorative Elements -->
             <div class="absolute top-0 left-0 w-96 h-96 bg-lime-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
             <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -144,17 +144,10 @@
                 </div>
             </div>
 
-            <!-- Scroll Down Indicator -->
-            <a href="#benefits" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 hover:text-lime-600 transition-colors animate-bounce">
-                <span class="text-sm font-medium">Scopri di più</span>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                </svg>
-            </a>
         </section>
 
         <!-- Benefits Section -->
-        <section id="benefits" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <section id="benefits" class="snap-start relative min-h-screen flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-white">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Vantaggi</span>
@@ -234,18 +227,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Next Section Button -->
-            <a href="#features" class="mx-auto mt-16 flex w-fit items-center gap-3 bg-lime-100 text-lime-700 px-6 py-3 rounded-full hover:bg-lime-200 transition-all duration-300 group shadow-md hover:shadow-lg">
-                <span class="font-semibold">Prossima sezione</span>
-                <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                </svg>
-            </a>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50">
+        <section id="features" class="snap-start relative min-h-screen flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-50 via-white to-emerald-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Come Funziona</span>
@@ -337,26 +322,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Navigation Buttons -->
-            <div class="flex justify-center items-center gap-8 mt-16">
-                <a href="#benefits" class="flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 group shadow-md hover:shadow-lg border border-gray-200">
-                    <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                    </svg>
-                    <span class="font-semibold">Sezione precedente</span>
-                </a>
-                <a href="#testimonials" class="flex items-center gap-3 bg-lime-100 text-lime-700 px-6 py-3 rounded-full hover:bg-lime-200 transition-all duration-300 group shadow-md hover:shadow-lg">
-                    <span class="font-semibold">Prossima sezione</span>
-                    <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                    </svg>
-                </a>
-            </div>
         </section>
 
         <!-- Testimonials Section -->
-        <section id="testimonials" class="relative min-h-screen flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <section id="testimonials" class="snap-start relative min-h-screen flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-white">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <span class="inline-block text-lime-600 font-semibold text-sm uppercase tracking-wider mb-3">Testimonianze</span>
@@ -469,26 +438,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Navigation Buttons -->
-            <div class="flex justify-center items-center gap-8 mt-16">
-                <a href="#features" class="flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 group shadow-md hover:shadow-lg border border-gray-200">
-                    <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                    </svg>
-                    <span class="font-semibold">Sezione precedente</span>
-                </a>
-                <a href="#cta" class="flex items-center gap-3 bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition-all duration-300 group shadow-lg hover:shadow-xl">
-                    <span class="font-semibold">Inizia ora</span>
-                    <svg class="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                    </svg>
-                </a>
-            </div>
         </section>
 
         <!-- CTA Section -->
-        <section id="cta" class="relative min-h-screen flex flex-col justify-center py-32 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-500 via-lime-400 to-emerald-400 overflow-hidden">
+        <section id="cta" class="snap-start relative min-h-screen flex flex-col justify-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-lime-500 via-lime-400 to-emerald-400 overflow-hidden">
             <!-- Decorative Elements -->
             <div class="absolute top-0 left-0 w-full h-full opacity-10">
                 <div class="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
@@ -538,19 +491,11 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Back to Top -->
-            <a href="#hero" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors group">
-                <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                </svg>
-                <span class="text-sm font-medium">Torna su</span>
-            </a>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
+    <footer class="snap-start bg-gray-900 text-white min-h-screen flex items-center pt-32 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-10 mb-12">
                 <div class="md:col-span-2">
@@ -616,30 +561,12 @@
         </div>
     </footer>
 
-    <!-- Floating Back to Top Button -->
-    <a href="#hero" id="backToTop"
-       class="fixed bottom-8 right-8 bg-lime-500 text-white w-14 h-14 rounded-full shadow-2xl shadow-lime-500/30 flex items-center justify-center hover:bg-lime-600 transition-all duration-300 hover:scale-110 opacity-0 invisible z-40">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-        </svg>
-    </a>
-
     @vite('resources/js/app.js')
 
     <script>
-        // Show/hide back to top button
-        const backToTop = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.classList.remove('opacity-0', 'invisible');
-            } else {
-                backToTop.classList.add('opacity-0', 'invisible');
-            }
-        });
-
-        // Smooth fade-in/out on scroll with heavy transitions
+        // Smooth fade-in/out SOLO per le sezioni principali
         const observerOptions = {
-            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+            threshold: [0.1, 0.5, 0.9],
             rootMargin: '0px'
         };
 
@@ -647,16 +574,13 @@
             entries.forEach(entry => {
                 const section = entry.target;
 
-                if (entry.isIntersecting) {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
                     // Fade in when entering
                     section.classList.add('fade-in-visible');
                     section.classList.remove('fade-out-visible');
-
-                    // Calculate opacity based on intersection ratio for smooth transition
-                    const opacity = Math.min(entry.intersectionRatio * 1.5, 1);
-                    section.style.opacity = opacity;
-                } else {
-                    // Fade out when leaving
+                    section.style.opacity = 1;
+                } else if (!entry.isIntersecting) {
+                    // Fade out when completely out of view
                     section.classList.remove('fade-in-visible');
                     section.classList.add('fade-out-visible');
                     section.style.opacity = 0.3;
@@ -664,31 +588,15 @@
             });
         }, observerOptions);
 
-        // Observe all sections and cards
+        // Observe SOLO le sezioni principali
         document.addEventListener('DOMContentLoaded', () => {
-            // Observe sections with heavy fade
-            document.querySelectorAll('section').forEach((section, index) => {
+            document.querySelectorAll('section').forEach((section) => {
                 section.classList.add('fade-in');
                 observer.observe(section);
             });
-
-            // Observe cards with stagger effect
-            document.querySelectorAll('.group').forEach((el, index) => {
-                el.classList.add('fade-in');
-                el.style.transitionDelay = `${(index % 3) * 0.3}s`;
-                observer.observe(el);
-            });
-
-            // Observe navigation buttons
-            document.querySelectorAll('a[href^="#"]').forEach(el => {
-                if (el.closest('.flex.justify-center')) {
-                    el.classList.add('fade-in');
-                    observer.observe(el);
-                }
-            });
         });
 
-        // Slow down scroll speed with smooth animation
+        // Smooth scroll to sections using native snap scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -696,73 +604,56 @@
                 const targetElement = document.querySelector(targetId);
 
                 if (targetElement) {
-                    const startPosition = window.pageYOffset;
-                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
-                    const distance = targetPosition - startPosition;
-                    const duration = 3500; // 3.5 seconds for ultra slow cinematic scroll
-                    let start = null;
-
-                    function animation(currentTime) {
-                        if (start === null) start = currentTime;
-                        const timeElapsed = currentTime - start;
-                        const progress = Math.min(timeElapsed / duration, 1);
-
-                        // Cubic easing for ultra smooth movement
-                        const easing = progress < 0.5
-                            ? 4 * progress * progress * progress
-                            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-                        window.scrollTo(0, startPosition + (distance * easing));
-
-                        if (timeElapsed < duration) {
-                            requestAnimationFrame(animation);
-                        }
-                    }
-
-                    requestAnimationFrame(animation);
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         });
     </script>
 
     <style>
-        /* Smooth scroll with offset for fixed navbar */
-        html {
-            scroll-padding-top: 80px;
+        /* Snap scrolling configuration */
+        html, body {
+            scroll-behavior: smooth;
+            overscroll-behavior-y: none;
         }
 
-        /* Heavy fade-in/out animation for sections */
-        section {
-            transition: opacity 2.8s cubic-bezier(0.25, 0.1, 0.25, 1),
-                        transform 2.8s cubic-bezier(0.25, 0.1, 0.25, 1);
-            will-change: opacity, transform;
+        main {
+            scroll-padding-top: 5rem; /* 80px = altezza navbar */
+        }
+
+        /* Nascondi scrollbar */
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        main {
+            -ms-overflow-style: none;  /* IE e Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Fade-in/out animation SOLO per sezioni - senza will-change */
+        section, footer {
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .fade-in {
             opacity: 0;
-            transform: translateY(100px) scale(0.92);
         }
 
         .fade-in-visible {
             opacity: 1 !important;
-            transform: translateY(0) scale(1);
         }
 
         .fade-out-visible {
-            opacity: 0.2 !important;
-            transform: translateY(-50px) scale(0.96);
-        }
-
-        /* Cards stagger animation */
-        .group {
-            transition: opacity 2.2s cubic-bezier(0.25, 0.1, 0.25, 1),
-                        transform 2.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-            will-change: opacity, transform;
+            opacity: 0.3 !important;
         }
 
         /* Smoother transitions for all interactive elements */
         a, button {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Disable default smooth scroll behavior - we handle it manually */
