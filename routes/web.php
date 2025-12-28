@@ -10,3 +10,6 @@ Route::get('/', function () {
 // Filament handles both panel routings:
 // - Friend Panel: /app (login, registration, user dashboard)
 // - Admin Panel: /admin (admin only)
+
+
+Route::get("/test", fn() =>  view('landing'));
