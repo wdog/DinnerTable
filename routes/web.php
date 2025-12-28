@@ -11,5 +11,4 @@ Route::get('/', function () {
 // - Friend Panel: /app (login, registration, user dashboard)
 // - Admin Panel: /admin (admin only)
 
-
-Route::get("/test", fn() =>  view('landing'));
+Route::get('test', fn () => view('landing'));
