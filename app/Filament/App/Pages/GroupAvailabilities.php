@@ -114,7 +114,7 @@ class GroupAvailabilities extends Page implements HasActions
      * Determina se mostrare il calendario mensile o la vista settimanale.
      * Valori possibili: 'month', 'week'
      */
-    public string $viewType = 'month';
+    public string $viewType = 'week';
 
     /**
      * Settimana selezionata (formato Y-W).
@@ -220,6 +220,18 @@ class GroupAvailabilities extends Page implements HasActions
     }
 
     /**
+     * Naviga al mese corrente.
+     *
+     * Imposta il mese selezionato al mese corrente
+     * e ricarica i dati del calendario mensile.
+     */
+    public function goToCurrentMonth(): void
+    {
+        $this->selectedMonth = Carbon::now()->format('Y-m');
+        $this->loadCalendarData();
+    }
+
+    /**
      * Naviga alla settimana precedente.
      *
      * Decrementa la settimana selezionata di una settimana e ricarica i dati.
@@ -244,6 +256,18 @@ class GroupAvailabilities extends Page implements HasActions
         [$year, $week]      = explode('-', $this->selectedWeek);
         $date               = Carbon::now()->setISODate((int) $year, (int) $week)->addWeek();
         $this->selectedWeek = $date->format('Y-W');
+        $this->loadWeekData();
+    }
+
+    /**
+     * Naviga alla settimana corrente.
+     *
+     * Imposta la settimana selezionata alla settimana corrente
+     * e ricarica i dati della vista settimanale.
+     */
+    public function goToCurrentWeek(): void
+    {
+        $this->selectedWeek = Carbon::now()->format('Y-W');
         $this->loadWeekData();
     }
 
@@ -778,6 +802,22 @@ class GroupAvailabilities extends Page implements HasActions
                         ->send();
                 }
             });
+    }
+
+    /**
+     * Restituisce la vista blade da renderizzare in base al tipo di vista selezionato.
+     *
+     * Override del metodo di Filament\Pages\Page per supportare viste dinamiche.
+     * Permette di switchare tra calendario mensile e vista settimanale senza
+     * duplicare il codice della pagina.
+     *
+     * @return string Path della vista Blade da renderizzare
+     */
+    public function getView(): string
+    {
+        return $this->viewType === 'week'
+            ? 'filament.app.pages.group-availabilities-week'
+            : 'filament.app.pages.group-availabilities';
     }
 
     /**
