@@ -114,7 +114,7 @@ class GroupAvailabilities extends Page implements HasActions
      * Determina se mostrare il calendario mensile o la vista settimanale.
      * Valori possibili: 'month', 'week'
      */
-    public string $viewType = 'month';
+    public string $viewType = 'week';
 
     /**
      * Settimana selezionata (formato Y-W).

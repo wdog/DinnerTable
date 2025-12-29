@@ -9,8 +9,9 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
+use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 
-class EditProfile extends \Filament\Auth\Pages\EditProfile
+class EditProfile extends BaseEditProfile
 {
     /**
      * Imposta la larghezza massima del form.
