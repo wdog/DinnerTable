@@ -8,6 +8,7 @@ use Filament\Tables\Table;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Auth;
 use Filament\Widgets\TableWidget as BaseWidget;
+use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 /**
  * Widget tabella prossime cene dell'utente.
@@ -24,10 +25,11 @@ class UpcomingDinnersTableWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
+            ->recordUrl(fn (DinnerAvailability $record) => DinnerAvailabilityResource::getUrl('edit', ['record' => $record]))
             ->query(
                 DinnerAvailability::query()
                     ->where('user_id', Auth::id())
-                    ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
+                    ->whereHas('dinnerDate', fn($q) => $q->where('dinner_date', '>=', now()->toDateString()))
                     ->with(['dinnerDate', 'confirmedBookings'])
                     ->orderBy('id')
             )
@@ -35,25 +37,24 @@ class UpcomingDinnersTableWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('dinnerDate.dinner_date')
                     ->label('Data')
                     ->date('d/m/Y')
-                    ->description(fn ($record) => Carbon::parse($record->dinnerDate->dinner_date)->isoFormat('dddd'))
+                    ->description(fn($record) => Carbon::parse($record->dinnerDate->dinner_date)->isoFormat('dddd'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('role')
                     ->label('Ruolo')
                     ->badge()
-                    ->state(fn ($record) => $record->can_host ? 'Host' : 'Guest')
-                    ->color(fn ($record) => $record->can_host ? 'success' : 'info')
-                    ->icon(fn ($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3'),
+                    ->state(fn($record) => $record->can_host ? 'Host' : 'Guest')
+                    ->color(fn($record) => $record->can_host ? 'success' : 'info')
+                    ->icon(fn($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3'),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Stato')
-                    ->badge()
-                 ,
+                    ->badge(),
 
                 Tables\Columns\TextColumn::make('guests_info')
                     ->label('Ospiti')
                     ->state(function ($record) {
-                        if ( ! $record->can_host) {
+                        if (! $record->can_host) {
                             return '-';
                         }
 
@@ -64,7 +65,7 @@ class UpcomingDinnersTableWidget extends BaseWidget
                         return "{$confirmed} / {$total}";
                     })
                     ->description(function ($record) {
-                        if ( ! $record->can_host) {
+                        if (! $record->can_host) {
                             return null;
                         }
 
@@ -85,15 +86,15 @@ class UpcomingDinnersTableWidget extends BaseWidget
 
                         return $details ? implode(' • ', $details) : 'Nessuna prenotazione';
                     })
-                    ->icon(fn ($record) => $record->can_host ? match (true) {
-                        $record->confirmedBookings->sum('guests_count') === $record->max_guests => 'tabler-checks',
-                        $record->bookings()->where('status', 'pending')->exists() => 'tabler-clock',
-                        $record->confirmedBookings->sum('guests_count') === 0 => 'tabler-user-question',
+                    ->icon(fn($record) => $record->can_host ? match (true) {
+                        $record->confirmedBookings->sum('guests_count') === $record->max_guests => 'tabler-glass-full',
+                        $record->bookings()->where('status', 'pending')->exists() => 'tabler-user-question',
+                        $record->confirmedBookings->sum('guests_count') === 0 => 'tabler-sparkles',
                         default => 'tabler-users',
                     } : null)
                     ->badge()
                     ->color(function ($record) {
-                        if ( ! $record->can_host) {
+                        if (! $record->can_host) {
                             return 'gray';
                         }
 
@@ -108,11 +109,10 @@ class UpcomingDinnersTableWidget extends BaseWidget
                         }
 
                         return 'warning';
-                    })
-                    ->icon('tabler-users'),
+                    }),
             ])
             ->heading('Le tue prossime cene')
-            ->paginated([5,10,25])
+            ->paginated([5, 10, 25])
             ->defaultPaginationPageOption(5);
     }
 }
