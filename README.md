@@ -210,9 +210,14 @@ docker-compose exec app php artisan migrate:rollback
 # Laravel Pint (code formatting)
 docker-compose exec app vendor/bin/pint
 
-# Tighten Duster (linting)
-docker-compose exec app vendor/bin/duster
+# Tighten Duster (linting + auto-fix)
+docker-compose exec app vendor/bin/duster fix
 ```
+
+**⚠️ Importante**: Eseguire sempre `vendor/bin/duster fix` prima di committare per garantire:
+- Import corretti delle classi (no FQCN)
+- Formattazione codice consistente
+- Conformità agli standard Laravel
 
 ### Testing
 

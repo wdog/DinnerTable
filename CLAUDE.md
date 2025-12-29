@@ -155,8 +155,10 @@ php artisan test --filter=TestName  # Run specific test
 ### Code Quality
 ```bash
 vendor/bin/pint              # Laravel Pint (code formatting)
-vendor/bin/duster            # Tighten Duster (linting)
+vendor/bin/duster fix        # Tighten Duster (linting and auto-fix)
 ```
+
+**Important**: Always run `vendor/bin/duster fix` before committing to ensure code style compliance.
 
 ### Database
 ```bash
@@ -531,6 +533,44 @@ When adding new features, follow this order:
 5. Add policies for authorization
 6. Update seeders for testing data
 - non chiedere mai il permesso per usare il comando docker-compose dentro il progetto laravel
+
+## Code Quality Standards
+
+### Import Best Practices
+**CRITICAL**: Sempre importare le classi all'inizio del file invece di usare FQCN (Fully Qualified Class Names).
+
+**✅ CORRETTO**:
+```php
+use Carbon\Carbon;
+use App\Enums\DinnerAvailabilityStatus;
+use Filament\Tables\Columns\TextColumn;
+
+// Poi usare nel codice:
+$date = Carbon::parse($value);
+if ($status === DinnerAvailabilityStatus::COMPLETED) { }
+TextColumn::make('name')
+```
+
+**❌ ERRATO** (viola TLint/Duster):
+```php
+// NO FQCN:
+$date = \Carbon\Carbon::parse($value);
+if ($status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) { }
+\Filament\Tables\Columns\TextColumn::make('name')
+```
+
+**Classi comuni da importare**:
+- `Carbon\Carbon` - Per manipolazione date
+- `App\Enums\*` - Tutti gli enum dell'applicazione
+- `App\Models\*` - Modelli Eloquent
+- `Filament\Tables\Columns\TextColumn` - Invece di `Tables\Columns\TextColumn`
+- `Illuminate\Support\Facades\Blade` - Per renderizzare Blade inline
+
+**Tool di verifica**:
+```bash
+# Verifica e corregge automaticamente gli import
+docker-compose exec app vendor/bin/duster fix
+```
 
 ## Code Documentation Standards
 
