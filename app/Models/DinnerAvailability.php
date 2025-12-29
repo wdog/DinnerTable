@@ -34,6 +34,7 @@ class DinnerAvailability extends Model
         'user_id',
         'status',
         'can_host',
+        'dinner_name',
         'max_guests',
         'note',
         'cancellation_reason',
@@ -67,9 +68,10 @@ class DinnerAvailability extends Model
                 $model->status = DinnerAvailabilityStatus::AVAILABLE_TO_HOST;
             }
 
-            // Se can_host è false, max_guests deve essere null
+            // Se can_host è false, max_guests e dinner_name devono essere null
             if ($model->can_host === false) {
-                $model->max_guests = null;
+                $model->max_guests  = null;
+                $model->dinner_name = null;
             }
         });
     }

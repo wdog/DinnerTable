@@ -70,6 +70,15 @@ class DinnerAvailabilitiesTable
                     ->icon('tabler-calendar')
                     ->sortable(),
 
+                // ! Titolo cena (solo per host)
+                TextColumn::make('dinner_name')
+                    ->label('Titolo')
+                    ->icon('tabler-sparkles')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('-')
+                    ->toggleable(),
+
                 // !
                 TextColumn::make('status')
                     ->badge()

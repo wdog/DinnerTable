@@ -7,7 +7,6 @@ use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use App\Models\DinnerBooking;
 use Filament\Resources\Resource;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerBookings\Pages\EditDinnerBooking;
@@ -34,7 +33,7 @@ class DinnerBookingResource extends Resource
 {
     protected static ?string $model = DinnerBooking::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
+    protected static string|BackedEnum|null $navigationIcon = 'tabler-users-group';
 
     protected static ?string $navigationLabel = 'Le mie prenotazioni';
 

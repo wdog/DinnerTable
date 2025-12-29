@@ -105,11 +105,21 @@ class DinnerAvailabilityForm
                                 } else {
                                     // Se diventa guest, imposta AVAILABLE
                                     $set('status', DinnerAvailabilityStatus::AVAILABLE->value);
-                                    // IMPORTANTE: Resetta max_guests quando non può ospitare
+                                    // IMPORTANTE: Resetta max_guests e dinner_name quando non può ospitare
                                     $set('max_guests', null);
+                                    $set('dinner_name', null);
                                 }
                             })
                             ->required(),
+
+                        // ! Campo dinner_name visibile solo quando can_host è true
+                        TextInput::make('dinner_name')
+                            ->label('Titolo della cena')
+                            ->maxLength(255)
+                            ->placeholder('es. Pizza napoletana, Pasta al forno, Sushi night...')
+                            ->visible(fn (Get $get) => $get('can_host') === true)
+                            ->helperText('Dai un nome alla tua cena per renderla più invitante!')
+                            ->columnSpan(2),
 
                         // !
                         Select::make('status')

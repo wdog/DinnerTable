@@ -8,7 +8,6 @@ use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use App\Models\DinnerAvailability;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,7 +44,7 @@ class DinnerAvailabilityResource extends Resource
     /**
      * Icona mostrata nel menu di navigazione.
      */
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'tabler-home-2';
 
     /**
      * Attributo del modello usato come titolo del record.
@@ -55,7 +54,7 @@ class DinnerAvailabilityResource extends Resource
     /**
      * Label mostrata nel menu di navigazione.
      */
-    protected static ?string $navigationLabel = 'Disponibilità';
+    protected static ?string $navigationLabel = 'Le mie Disponibilità';
 
     protected static ?string $modelLabel = 'La mia disponibilità';
 

@@ -17,7 +17,10 @@ class ListDinnerAvailabilities extends ListRecords
         $user = Auth::user();
 
         return [
-            CreateAction::make()->visible( ! empty($user->dinnerGroup)),
+            CreateAction::make()
+                ->icon('tabler-chef-hat')
+                ->label('Crea nuovo evento')
+                ->visible( ! empty($user->dinnerGroup)),
         ];
     }
 }

@@ -201,6 +201,12 @@
                                                         <div class="text-sm  font-bold">
                                                             {{ $availability['user_name'] }}
                                                         </div>
+                                                        @if ($canHost && !empty($availability['dinner_name']))
+                                                            <div class="text-xs font-normal opacity-90 flex items-center gap-1">
+                                                                @svg('tabler-sparkles', 'w-3 h-3')
+                                                                {{ $availability['dinner_name'] }}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
 

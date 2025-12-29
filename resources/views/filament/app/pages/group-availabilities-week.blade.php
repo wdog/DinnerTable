@@ -154,8 +154,16 @@
                                             @else
                                                 @svg('tabler-tools-kitchen-3', 'w-4 h-4')
                                             @endif
-                                            <div class="font-semibold text-sm">
-                                                {{ $availability['user_name'] }}
+                                            <div class="flex-1">
+                                                <div class="font-semibold text-sm">
+                                                    {{ $availability['user_name'] }}
+                                                </div>
+                                                @if ($canHost && !empty($availability['dinner_name']))
+                                                    <div class="text-xs font-normal opacity-90 flex items-center gap-1">
+                                                        @svg('tabler-sparkles', 'w-3 h-3')
+                                                        {{ $availability['dinner_name'] }}
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
 

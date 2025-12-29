@@ -519,6 +519,7 @@ class GroupAvailabilities extends Page implements HasActions
                         return [
                             'id'              => $availability->id,
                             'user_name'       => $availability->user->name,
+                            'dinner_name'     => $availability->dinner_name,
                             'is_mine'         => $availability->user_id === Auth::id(),
                             'status'          => $availability->status,
                             'can_host'        => $availability->can_host,
@@ -651,6 +652,7 @@ class GroupAvailabilities extends Page implements HasActions
                         return [
                             'id'              => $availability->id,
                             'user_name'       => $availability->user->name,
+                            'dinner_name'     => $availability->dinner_name,
                             'is_mine'         => $availability->user_id === Auth::id(),
                             'status'          => $availability->status,
                             'can_host'        => $availability->can_host,
