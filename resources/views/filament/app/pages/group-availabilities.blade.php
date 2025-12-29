@@ -110,7 +110,7 @@
                 @foreach ($calendarData as $dateInfo)
                     @if ($dateInfo['empty'])
                         {{-- Cella vuota per allineamento inizio settimana --}}
-                        <div class="aspect-square"></div>
+                        <div class="min-h-24 border border-white/10 dark:bg-black/20 bg-gray-100"></div>
                     @else
                         {{-- ============================================
                              CELLA GIORNO
@@ -121,7 +121,7 @@
                                 'date'
                             ]->isSameDay(\Carbon\Carbon::now()),
 
-                            'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900/50 px-2 pt-2',
+                            'min-h-24 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900/50 px-2 pt-2',
                         ])>
                             {{-- Header giorno --}}
                             <div
