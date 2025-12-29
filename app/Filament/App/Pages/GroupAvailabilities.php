@@ -17,6 +17,7 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use App\Policies\DinnerBookingPolicy;
 use App\Rules\ValidateBookingCapacity;
+use App\Enums\DinnerAvailabilityStatus;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -410,7 +411,7 @@ class GroupAvailabilities extends Page implements HasActions
         $hostStates  = [];
         $guestStates = [];
 
-        foreach (\App\Enums\DinnerAvailabilityStatus::cases() as $status) {
+        foreach (DinnerAvailabilityStatus::cases() as $status) {
             if ($status->isHostStatus()) {
                 $hostStates[$status->value] = $status->getLabel();
             } elseif ($status->isGuestStatus()) {
