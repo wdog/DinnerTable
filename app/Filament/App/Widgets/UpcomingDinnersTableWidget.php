@@ -74,17 +74,23 @@ class UpcomingDinnersTableWidget extends BaseWidget
 
                         $details = [];
                         if ($confirmed > 0) {
-                            $details[] = "✓ {$confirmed} confermati";
+                            $details[] = "Confermati: {$confirmed}";
                         }
                         if ($pending > 0) {
-                            $details[] = "⏳ {$pending} in attesa";
+                            $details[] = "In attesa: {$pending}";
                         }
                         if ($available > 0) {
-                            $details[] = "🔓 {$available} liberi";
+                            $details[] = "Liberi: {$available}";
                         }
 
-                        return implode(' • ', $details) ?: 'Nessuna prenotazione';
+                        return $details ? implode(' • ', $details) : 'Nessuna prenotazione';
                     })
+                    ->icon(fn ($record) => $record->can_host ? match (true) {
+                        $record->confirmedBookings->sum('guests_count') === $record->max_guests => 'tabler-checks',
+                        $record->bookings()->where('status', 'pending')->exists() => 'tabler-clock',
+                        $record->confirmedBookings->sum('guests_count') === 0 => 'tabler-user-question',
+                        default => 'tabler-users',
+                    } : null)
                     ->badge()
                     ->color(function ($record) {
                         if ( ! $record->can_host) {

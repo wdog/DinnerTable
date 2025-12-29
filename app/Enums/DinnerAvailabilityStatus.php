@@ -153,7 +153,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             // Host states
-            self::AVAILABLE_TO_HOST => 'tabler-chef-hat-filled',  // Cappello da chef
+            self::AVAILABLE_TO_HOST => 'tabler-home-2',  // Cappello da chef
             self::ALMOST_FULL       => 'tabler-users',            // Gruppo utenti
             self::FULL              => 'tabler-door-off',         // Porta chiusa
             self::HOST_CANCELLED    => 'tabler-ban',              // Simbolo divieto
