@@ -14,9 +14,11 @@ use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Support\Exceptions\Halt;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -263,13 +265,13 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->with(['profile', 'dinnerGroup'])
             )
             ->columns([
-                Tables\Columns\ImageColumn::make('profile.avatar_url')
+                ImageColumn::make('profile.avatar_url')
                     ->label('Avatar')
                     ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.svg')),
 
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nome')
                     ->searchable()
                     ->sortable()
@@ -285,7 +287,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                             : 'gray'
                     ),
 
-                Tables\Columns\TextColumn::make('profile.city')
+                TextColumn::make('profile.city')
                     ->label('Città')
                     ->searchable()
                     ->sortable()
@@ -293,7 +295,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->iconColor('danger')
                     ->placeholder('Non specificata'),
 
-                Tables\Columns\TextColumn::make('profile.max_guests')
+                TextColumn::make('profile.max_guests')
                     ->label('Max Ospiti')
                     ->sortable()
                     ->alignCenter()
@@ -301,7 +303,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->icon('tabler-users-group')
                     ->color('success'),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Membro dal')
                     ->dateTime('d/m/Y')
                     ->sortable()
@@ -309,7 +311,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->iconColor('info')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\IconColumn::make('is_creator')
+                IconColumn::make('is_creator')
                     ->label('Creatore')
                     ->boolean()
                     ->state(
@@ -320,7 +322,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->trueColor('warning')
                     ->falseColor('gray'),
 
-                Tables\Columns\IconColumn::make('is_you')
+                IconColumn::make('is_you')
                     ->label('Tu')
                     ->boolean()
                     ->state(

@@ -41,9 +41,13 @@
                                 </svg>
                             </button>
 
-                            <div class="text-xl font-bold text-slate-600 dark:text-lime-400 px-3">
-                                {{ $this->getWeekRange() }}
-                            </div>
+                            <select wire:model.live="selectedWeek"
+                                class="text-xl font-bold text-custom-600 dark:text-custom-400 capitalize bg-transparent border-0 focus:ring-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-3 py-1 transition-colors">
+                                @foreach ($this->getWeekOptions() as $value => $label)
+                                    <option value="{{ $value }}" class="text-gray-900 dark:text-gray-100">
+                                        {{ $label }}</option>
+                                @endforeach
+                            </select>
 
                             <button wire:click="nextWeek"
                                 class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
