@@ -42,6 +42,11 @@ class AppPanelProvider extends PanelProvider
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()
+            ->widgets([
+                \App\Filament\App\Widgets\NextDinnersStatsWidget::class,
+                \App\Filament\App\Widgets\UpcomingDinnersTableWidget::class,
+                \App\Filament\App\Widgets\PendingBookingRequestsWidget::class,
+            ])
             ->colors([
                 /*
     |--------------------------------------------------------------------------
