@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\DinnerBookings\Tables;
 
+use Carbon\Carbon;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -110,11 +111,11 @@ class DinnerBookingsTable
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators[] = 'Da: ' . \Carbon\Carbon::parse($data['from'])->format('d/m/Y');
+                            $indicators[] = 'Da: ' . Carbon::parse($data['from'])->format('d/m/Y');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = 'A: ' . \Carbon\Carbon::parse($data['until'])->format('d/m/Y');
+                            $indicators[] = 'A: ' . Carbon::parse($data['until'])->format('d/m/Y');
                         }
 
                         return $indicators;

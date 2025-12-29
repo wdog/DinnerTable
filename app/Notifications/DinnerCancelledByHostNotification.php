@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use App\Models\DinnerBooking;
 use Illuminate\Bus\Queueable;
 use App\Models\DinnerAvailability;
@@ -57,7 +58,7 @@ class DinnerCancelledByHostNotification extends Notification implements ShouldQu
     {
         $host          = $this->availability->user;
         $dinnerDate    = $this->availability->dinnerDate->dinner_date;
-        $formattedDate = \Carbon\Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
+        $formattedDate = Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
 
         $reason = $this->availability->cancellation_reason
             ? $this->availability->cancellation_reason->getLabel()
@@ -89,7 +90,7 @@ class DinnerCancelledByHostNotification extends Notification implements ShouldQu
     public function toArray(object $notifiable): array
     {
         $dinnerDate    = $this->availability->dinnerDate->dinner_date;
-        $formattedDate = \Carbon\Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
+        $formattedDate = Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
 
         return [
             'title'               => 'Cena cancellata',
@@ -105,7 +106,7 @@ class DinnerCancelledByHostNotification extends Notification implements ShouldQu
     public function toDatabase(object $notifiable): array
     {
         $dinnerDate    = $this->availability->dinnerDate->dinner_date;
-        $formattedDate = \Carbon\Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
+        $formattedDate = Carbon::parse($dinnerDate)->isoFormat('dddd D MMMM YYYY');
 
         return FilamentNotification::make()
             ->title('Cena Cancellata')

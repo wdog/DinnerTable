@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\DinnerAvailability;
+use App\Enums\DinnerAvailabilityStatus;
 
 /**
  * Policy per l'autorizzazione delle operazioni su DinnerAvailability.
@@ -108,7 +109,7 @@ class DinnerAvailabilityPolicy
         }
 
         // Non può modificare disponibilità completate (cena conclusa)
-        if ($dinnerAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+        if ($dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED) {
             return false;
         }
 
@@ -150,7 +151,7 @@ class DinnerAvailabilityPolicy
         }
 
         // Non può eliminare disponibilità completate (dato storico)
-        if ($dinnerAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+        if ($dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED) {
             return false;
         }
 

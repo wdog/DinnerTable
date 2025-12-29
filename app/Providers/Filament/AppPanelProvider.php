@@ -9,6 +9,7 @@ use Filament\Pages\Dashboard;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use App\Http\Middleware\EnsureProfileIsComplete;
@@ -38,7 +39,7 @@ class AppPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logo-small.png'))
             ->brandLogoHeight('5rem')
             ->favicon(asset('images/favico.png'))
-            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()

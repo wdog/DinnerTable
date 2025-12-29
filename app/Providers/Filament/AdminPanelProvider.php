@@ -8,6 +8,7 @@ use Filament\Pages\Dashboard;
 use Filament\Support\Enums\Width;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
+use Illuminate\Support\Facades\Blade;
 use Filament\Http\Middleware\Authenticate;
 use App\Filament\App\Auth\Pages\EditProfile;
 use Illuminate\Session\Middleware\StartSession;
@@ -33,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logo-small.png'))
             ->brandLogoHeight('5rem')
             ->favicon(asset('images/pavico.png'))
-            ->renderHook('panels::body.end', fn (): string => \Illuminate\Support\Facades\Blade::render("@vite('resources/js/app.js')"))
+            ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()

@@ -2,7 +2,6 @@
 
 namespace App\Filament\App\Widgets;
 
-use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
@@ -34,21 +33,21 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->latest()
             )
             ->columns([
-                Tables\Columns\TextColumn::make('hostAvailability.dinnerDate.dinner_date')
+                TextColumn::make('hostAvailability.dinnerDate.dinner_date')
                     ->label('Data cena')
                     ->date('d/m/Y')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('guest.name')
+                TextColumn::make('guest.name')
                     ->label('Ospite')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('guests_count')
+                TextColumn::make('guests_count')
                     ->label('N. Persone')
                     ->badge()
                     ->color('info'),
 
-                Tables\Columns\TextColumn::make('bringing_items')
+                TextColumn::make('bringing_items')
                     ->label('Porta')
                     ->badge()
                     ->state(fn ($record) => $record->bringing_items ?? [])
@@ -57,7 +56,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                 TextColumn::make('status')
                     ->badge(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Richiesta il')
                     ->since()
                     ->sortable(),

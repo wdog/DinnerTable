@@ -3,6 +3,7 @@
 namespace App\Filament\App\Widgets;
 
 use Carbon\Carbon;
+use App\Models\DinnerBooking;
 use Illuminate\Support\Facades\Auth;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -70,7 +71,7 @@ class NextDinnersStatsWidget extends StatsOverviewWidget
             ->color($upcomingGuestBookings > 0 ? 'success' : 'gray');
 
         // 3. Richieste pendenti (se HOST)
-        $pendingRequests = \App\Models\DinnerBooking::query()
+        $pendingRequests = DinnerBooking::query()
             ->whereHas('hostAvailability', fn ($q) => $q->where('user_id', $user->id))
             ->where('status', 'pending')
             ->count();

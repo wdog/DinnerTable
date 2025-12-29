@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\DinnerBooking;
 use App\Models\DinnerAvailability;
+use App\Enums\DinnerAvailabilityStatus;
 
 /**
  * Policy per l'autorizzazione delle operazioni su DinnerBooking.
@@ -204,7 +205,7 @@ class DinnerBookingPolicy
         }
 
         // Non può modificare prenotazioni per disponibilità completate (cena conclusa)
-        if ($booking->hostAvailability->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+        if ($booking->hostAvailability->status === DinnerAvailabilityStatus::COMPLETED) {
             return false;
         }
 

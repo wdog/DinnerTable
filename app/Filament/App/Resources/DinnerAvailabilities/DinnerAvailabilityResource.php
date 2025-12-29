@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use App\Models\DinnerAvailability;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\EditDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\ViewDinnerAvailability;
@@ -116,7 +117,7 @@ class DinnerAvailabilityResource extends Resource
             }
 
             // Completata = read-only
-            if ($record->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+            if ($record->status === DinnerAvailabilityStatus::COMPLETED) {
                 return true;
             }
 

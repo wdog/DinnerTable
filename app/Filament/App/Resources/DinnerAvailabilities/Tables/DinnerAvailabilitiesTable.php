@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\DinnerAvailabilities\Tables;
 
+use Carbon\Carbon;
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -154,11 +155,11 @@ class DinnerAvailabilitiesTable
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators[] = 'Da: ' . \Carbon\Carbon::parse($data['from'])->format('d/m/Y');
+                            $indicators[] = 'Da: ' . Carbon::parse($data['from'])->format('d/m/Y');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators[] = 'A: ' . \Carbon\Carbon::parse($data['until'])->format('d/m/Y');
+                            $indicators[] = 'A: ' . Carbon::parse($data['until'])->format('d/m/Y');
                         }
 
                         return $indicators;
@@ -193,7 +194,7 @@ class DinnerAvailabilitiesTable
                                     $skipped++;
 
                                     // Determina il motivo del blocco
-                                    if ($record->status === \App\Enums\DinnerAvailabilityStatus::COMPLETED) {
+                                    if ($record->status === DinnerAvailabilityStatus::COMPLETED) {
                                         $reasons[] = "Disponibilità del {$record->dinnerDate->dinner_date->format('d/m/Y')}: completata (dato storico)";
                                     } elseif ($record->bookings()->exists()) {
                                         $reasons[] = "Disponibilità del {$record->dinnerDate->dinner_date->format('d/m/Y')}: ha prenotazioni collegate";
