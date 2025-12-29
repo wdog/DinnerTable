@@ -4,44 +4,107 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview: DinnerTable
 
-**DinnerTable** is a team-based dinner scheduling application where users can form teams and coordinate weekly dinner rotations.
+**DinnerTable** è un'applicazione web per la gestione e coordinamento di cene di gruppo. Permette agli utenti di organizzarsi in gruppi, dichiarare disponibilità ad ospitare o partecipare a cene, e gestire prenotazioni.
 
 ### Core Concept
-Users register, join or create a team, and participate in weekly dinner scheduling. Each week, a cron job creates a new weekly calendar (Monday-Sunday) where team members can volunteer to host dinner by selecting:
-- Day of the week
-- Time slot
-- Maximum number of guests
+Gli utenti si registrano, creano o si uniscono a un gruppo cena (DinnerGroup), e partecipano alla pianificazione delle cene. Il sistema si basa su:
+
+1. **Disponibilità (DinnerAvailability)** - Due ruoli:
+   - **Host**: dichiara disponibilità ad ospitare per una data specifica con numero max ospiti
+   - **Guest**: dichiara disponibilità a partecipare come ospite
+
+2. **Prenotazioni (DinnerBooking)** - I guest prenotano presso gli host disponibili
+
+3. **Gestione Stati** - Sistema automatico di aggiornamento stati:
+   - Host: AVAILABLE_TO_HOST → ALMOST_FULL → FULL (in base a prenotazioni)
+   - Cene passate: automaticamente completate dal cron job giornaliero
 
 ### User Roles & Panels
-1. **Admin Panel** (`/admin`) - For administrators to manage the system
-2. **User Panel** (`/`) - For end users to register, join teams, and manage dinner schedules
+1. **Admin Panel** (`/admin`) - Gestione completa sistema (utenti, gruppi)
+2. **App Panel** (`/dinner`) - Pannello utenti finali per gestione disponibilità e prenotazioni
 
 ### Registration & Onboarding Flow
-When a user registers, they must complete a Filament wizard with the following steps:
-1. **Privacy & Contact**:
-   - Accept privacy policy
-   - First name (nome)
-   - Last name (cognome)
-   - Valid email with confirmation/verification
-2. **Address & Hosting Details**:
-   - Street and number (via e civico)
-   - City (città)
-   - Maximum guests they can host (numero massimo di ospiti)
+Quando un utente si registra, deve completare obbligatoriamente il proprio profilo tramite wizard Filament:
 
-### Team System
-- Users can **create a team** and receive a unique team code
-- Users can **join a team** using a team code
-- Each user belongs to **only one team** at a time
+1. **Dati Personali & Privacy**:
+   - Nome (name)
+   - Email con verifica obbligatoria
+   - Password
+   - Accettazione privacy policy
 
-### Weekly Calendar System
-- **Automated Job**: Every Thursday at 9:00 AM, a cron job creates and enables the calendar for the following week (Monday-Sunday)
-- Team members select availability to host dinner:
-  - Day of the week
-  - Time slot
-  - Max number of guests for that event
+2. **Profilo Dettagliato** (modello Profile separato):
+   - Città (city)
+   - Indirizzo (address)
+   - Numero civico (house_number)
+   - CAP (postal_code)
+   - Numero massimo ospiti che può ospitare (max_guests)
+   - Avatar opzionale (avatar_url)
 
-### Future Development Notes
-Additional features and associations will be specified in future iterations. This document will be updated as new requirements are defined.
+Il middleware `EnsureProfileIsComplete` blocca l'accesso finché il wizard non è completato.
+
+### DinnerGroup System
+- Gli utenti possono **creare un gruppo** ricevendo un codice univoco di 14 caratteri alfanumerici
+- Gli utenti possono **unirsi a un gruppo** tramite codice invito
+- Ogni utente appartiene a **un solo gruppo** alla volta (dinner_group_id nullable)
+- Struttura gruppo:
+  - Nome, slogan, immagine gruppo
+  - Creatore (created_by)
+  - Lista membri con avatar
+
+### Sistema Disponibilità e Prenotazioni
+
+#### DinnerDate
+Ogni data (dinner_date) rappresenta una giornata in cui il gruppo può organizzare cene.
+- Unique constraint: (dinner_group_id, dinner_date)
+- Contiene multiple DinnerAvailability per quella data
+
+#### DinnerAvailability (Host/Guest)
+Disponibilità dichiarata da un membro per una specifica data:
+
+**Come HOST (can_host = true)**:
+- Status: AVAILABLE_TO_HOST, ALMOST_FULL, FULL, HOST_CANCELLED, COMPLETED
+- max_guests: capacità massima
+- Riceve prenotazioni da altri membri
+- Status aggiornato automaticamente da DinnerAvailabilityObserver in base a prenotazioni
+
+**Come GUEST (can_host = false)**:
+- Status: AVAILABLE, NOT_AVAILABLE
+- Comunica al gruppo la propria presenza/assenza
+- Può prenotare presso host disponibili
+
+#### DinnerBooking
+Prenotazione effettuata da un guest presso un host:
+- guests_count: numero ospiti (guest + accompagnatori)
+- bringing_items: array di oggetti che il guest porterà (es. vino, dolce)
+- Status: PENDING, CONFIRMED, CANCELLED
+- Validazione automatica capacità tramite DinnerBookingObserver
+
+### Scheduled Jobs (Cron)
+Il sistema richiede Laravel scheduler attivo:
+
+**CompleteExpiredAvailabilities Command**:
+- **Schedule**: Daily alle 02:00 (Europe/Rome timezone)
+- **Funzione**: Completa automaticamente le disponibilità con dinner_date passata
+- **Azioni**:
+  - Imposta status COMPLETED per disponibilità scadute
+  - Cancella prenotazioni non confermate associate
+
+### Business Logic Automatica
+
+#### Observers
+1. **DinnerAvailabilityObserver**:
+   - Aggiorna status host in base al numero di prenotazioni confermate
+   - Sincronizza can_host con status appropriato
+   - Gestisce transizioni di stato
+
+2. **DinnerBookingObserver**:
+   - Valida capacità disponibile prima di creare/aggiornare prenotazioni
+   - Aggiorna automaticamente lo status della disponibilità host
+   - Previene overbooking
+
+#### Policies
+- **DinnerAvailabilityPolicy**: controllo accessi per creare/modificare disponibilità
+- **DinnerBookingPolicy**: validazione prenotazioni (capacità, autorizzazioni)
 
 ## Development Commands
 
@@ -113,18 +176,29 @@ This project uses **Filament v4** with two separate panels:
    - Pages in `app/Filament/Admin/Pages/`
    - Widgets in `app/Filament/Admin/Widgets/`
    - Access controlled by FilamentShield permissions
+   - Resources:
+     - UserResource (gestione utenti, verifica email, promozione admin)
+     - DinnerGroupResource (gestione gruppi con MembersRelationManager)
 
-2. **User Panel** - End-user interface (default)
-   - Path: `/` (root)
-   - Resources in `app/Filament/User/Resources/`
-   - Pages in `app/Filament/User/Pages/`
-   - Widgets in `app/Filament/User/Widgets/`
-   - For registered users to manage teams and dinner schedules
+2. **App Panel** - End-user interface
+   - Path: `/dinner` (not root)
+   - Panel ID: `dinner`
+   - Resources in `app/Filament/App/Resources/`
+   - Pages in `app/Filament/App/Pages/`
+   - Widgets in `app/Filament/App/Widgets/`
+   - Resources:
+     - DinnerAvailabilityResource (gestione disponibilità host/guest)
+     - DinnerBookingResource (gestione prenotazioni)
+   - Pages Custom:
+     - CompleteProfile (wizard completamento profilo obbligatorio)
+     - ManageDinnerGroup (crea/unisciti gruppo, visualizza membri)
+     - GroupAvailabilities (calendario con vista mensile/settimanale)
+     - TutorialPage (guida uso applicazione)
+     - EditProfile (modifica profilo utente)
 
-**Current Configuration**: [app/Providers/Filament/AdminPanelProvider.php](app/Providers/Filament/AdminPanelProvider.php)
-- Currently only Admin panel exists
-- User panel to be created with separate provider
-- Both panels use FilamentShield for permissions
+**Note Importanti**:
+- Root path `/` è riservato alla home page pubblica (non Filament)
+- Middleware `EnsureProfileIsComplete` forza completamento profilo prima di accedere al panel
 
 ### Authentication & Permissions
 Uses **Filament Shield** (bezhansalleh/filament-shield) for role and permission management:
@@ -156,35 +230,91 @@ Default configuration uses **SQLite** for development:
 - Test environment uses in-memory SQLite
 - Queue and cache use database driver by default
 
-### Database Schema (Planned)
+### Database Schema (Implemented)
 
-**Users Table** (Extended from Laravel default):
-- Core fields: id, email, password, email_verified_at
-- Profile fields: nome (first name), cognome (last name)
-- Address: via_civico (street & number), citta (city)
-- Hosting: max_ospiti (maximum guests user can host)
-- Privacy: privacy_accepted_at (timestamp)
-- Relations: belongs to one Team
-
-**Teams Table**:
-- id, name, team_code (unique)
-- created_by (user_id)
+**users** (Laravel default + extensions):
+- id, name, email, password, email_verified_at
+- is_admin (boolean, default false)
+- dinner_group_id (FK nullable a dinner_groups)
 - timestamps
-- Relations: has many Users
+- Relations:
+  - hasOne Profile
+  - belongsTo DinnerGroup
+  - hasMany DinnerAvailability
+  - hasMany DinnerBooking (as guest)
 
-**Weekly Calendars Table**:
-- id, week_start_date, week_end_date
-- enabled (boolean, set by cron job)
-- team_id (foreign key)
+**profiles** (Profilo separato 1:1 con User):
+- id, user_id (FK unique a users)
+- city, address, house_number, postal_code
+- max_guests (integer)
+- privacy_accepted_at (timestamp)
+- avatar_url (nullable)
 - timestamps
+- Relations: belongsTo User
 
-**Dinner Events Table**:
-- id, weekly_calendar_id
-- host_user_id (foreign key to users)
-- day_of_week (1-7 or date)
-- time_slot
-- max_guests
+**dinner_groups**:
+- id, name, slogan (nullable), group_image (nullable)
+- group_code (string 14 chars, unique)
+- created_by (FK a users)
 - timestamps
+- Unique: group_code
+- Relations:
+  - hasMany User (members)
+  - belongsTo User (creator)
+  - hasMany DinnerDate
+
+**dinner_dates**:
+- id, dinner_group_id (FK), dinner_date (date)
+- timestamps
+- Unique: (dinner_group_id, dinner_date)
+- Relations:
+  - belongsTo DinnerGroup
+  - hasMany DinnerAvailability
+
+**dinner_availabilities**:
+- id, dinner_date_id (FK), user_id (FK)
+- status (enum: DinnerAvailabilityStatus)
+- can_host (boolean)
+- max_guests (integer nullable)
+- note (text nullable)
+- cancellation_reason (enum nullable: CancellationReason)
+- timestamps
+- Unique: (dinner_date_id, user_id)
+- Relations:
+  - belongsTo DinnerDate
+  - belongsTo User
+  - hasMany DinnerBooking (quando è host)
+
+**dinner_bookings**:
+- id, host_availability_id (FK a dinner_availabilities), guest_user_id (FK a users)
+- guests_count (integer, include guest + accompagnatori)
+- bringing_items (json array)
+- notes (text nullable)
+- status (enum: DinnerBookingStatus)
+- timestamps
+- Unique: (host_availability_id, guest_user_id)
+- Relations:
+  - belongsTo DinnerAvailability (hostAvailability)
+  - belongsTo User (guest)
+
+### Enums
+
+**DinnerAvailabilityStatus** (7 stati):
+- AVAILABLE_TO_HOST - Host con posti disponibili
+- ALMOST_FULL - Host quasi al completo
+- FULL - Host al completo
+- HOST_CANCELLED - Cancellato dall'host
+- COMPLETED - Cena completata (set da cron)
+- AVAILABLE - Guest disponibile
+- NOT_AVAILABLE - Guest non disponibile
+
+**DinnerBookingStatus** (3 stati):
+- PENDING - In attesa conferma
+- CONFIRMED - Confermato
+- CANCELLED - Cancellato
+
+**CancellationReason** (motivi cancellazione):
+- Utilizzato in DinnerAvailability.cancellation_reason
 
 ### Queue System
 Configured to use database queue driver:
@@ -198,98 +328,185 @@ The application requires Laravel's task scheduler to run:
 * * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-**Weekly Calendar Creation Job**:
-- Runs every Thursday at 9:00 AM
-- Creates WeeklyCalendar records for the following week (Monday-Sunday)
-- Enables the calendar for team member access
-- Command location: `app/Console/Commands/` (to be created)
+**CompleteExpiredAvailabilities Command**:
+- **Schedule**: Daily at 02:00 AM (Europe/Rome timezone)
+- **Location**: `app/Console/Commands/CompleteExpiredAvailabilities.php`
+- **Function**: Completa automaticamente le disponibilità scadute
+- **Actions**:
+  - Trova tutte le DinnerAvailability con dinner_date < oggi
+  - Imposta status = COMPLETED
+  - Cancella tutte le prenotazioni non confermate associate
 
 ## Project Structure
 
 ```
 app/
 ├── Console/
-│   └── Commands/           # Artisan commands
-│       └── CreateWeeklyCalendars.php  # Thursday 9AM cron job (to be created)
+│   └── Commands/
+│       └── CompleteExpiredAvailabilities.php  # Daily 02:00 AM job
+├── Enums/
+│   ├── DinnerAvailabilityStatus.php  # 7 stati disponibilità
+│   ├── DinnerBookingStatus.php       # 3 stati prenotazione
+│   └── CancellationReason.php        # Motivi cancellazione
 ├── Filament/
 │   ├── Admin/              # Admin panel (/admin)
-│   │   ├── Resources/      # Admin CRUD resources
-│   │   ├── Pages/          # Admin custom pages
-│   │   └── Widgets/        # Admin dashboard widgets
-│   └── User/               # User panel (/) - to be created
-│       ├── Resources/      # User resources
-│       ├── Pages/          # User pages (team management, calendar)
-│       └── Widgets/        # User dashboard widgets
+│   │   ├── Resources/
+│   │   │   ├── UserResource.php
+│   │   │   └── DinnerGroupResource/
+│   │   │       ├── DinnerGroupResource.php
+│   │   │       └── RelationManagers/
+│   │   │           └── MembersRelationManager.php
+│   │   ├── Pages/
+│   │   └── Widgets/
+│   └── App/                # App panel (/dinner)
+│       ├── Resources/
+│       │   ├── DinnerAvailabilityResource/
+│       │   │   ├── DinnerAvailabilityResource.php
+│       │   │   ├── Forms/DinnerAvailabilityForm.php
+│       │   │   └── Tables/DinnerAvailabilitiesTable.php
+│       │   └── DinnerBookingResource/
+│       │       ├── DinnerBookingResource.php
+│       │       ├── Forms/DinnerBookingForm.php
+│       │       └── Tables/DinnerBookingsTable.php
+│       ├── Pages/
+│       │   ├── CompleteProfile.php    # Wizard profilo
+│       │   ├── ManageDinnerGroup.php  # Gestione gruppo
+│       │   ├── GroupAvailabilities.php # Calendario mensile/settimanale
+│       │   ├── TutorialPage.php
+│       │   └── Auth/
+│       │       └── EditProfile.php
+│       └── Widgets/
 ├── Http/
-│   └── Controllers/
+│   ├── Controllers/
+│   └── Middleware/
+│       └── EnsureProfileIsComplete.php  # Forza completamento profilo
 ├── Models/
-│   ├── User.php           # Extended with profile, address, team relation
-│   ├── Team.php           # To be created
-│   ├── WeeklyCalendar.php # To be created
-│   └── DinnerEvent.php    # To be created
-├── Policies/              # Authorization policies (Shield integration)
+│   ├── User.php              # Base + is_admin + dinner_group_id
+│   ├── Profile.php           # Profilo separato 1:1
+│   ├── DinnerGroup.php       # Gruppo cena
+│   ├── DinnerDate.php        # Date singole
+│   ├── DinnerAvailability.php # Disponibilità host/guest
+│   └── DinnerBooking.php      # Prenotazioni
+├── Observers/
+│   ├── DinnerAvailabilityObserver.php  # Auto-update status
+│   └── DinnerBookingObserver.php       # Validazione capacità
+├── Policies/
+│   ├── DinnerAvailabilityPolicy.php
+│   └── DinnerBookingPolicy.php
 └── Providers/
     └── Filament/
-        ├── AdminPanelProvider.php  # Admin panel configuration
-        └── UserPanelProvider.php   # User panel configuration (to be created)
+        ├── AdminPanelProvider.php  # /admin
+        └── AppPanelProvider.php    # /dinner
 
 database/
+├── factories/
+│   ├── UserFactory.php
+│   └── DinnerGroupFactory.php
 ├── migrations/
-│   ├── xxxx_create_users_table.php      # Extended with profile fields
-│   ├── xxxx_create_teams_table.php      # To be created
-│   ├── xxxx_create_weekly_calendars_table.php  # To be created
-│   └── xxxx_create_dinner_events_table.php     # To be created
+│   ├── 0001_01_01_000000_create_users_table.php
+│   ├── xxxx_create_profiles_table.php
+│   ├── xxxx_create_dinner_groups_table.php
+│   ├── xxxx_create_dinner_dates_table.php
+│   ├── xxxx_create_dinner_availabilities_table.php
+│   └── xxxx_create_dinner_bookings_table.php
 └── seeders/
+    ├── DatabaseSeeder.php
+    ├── UserSeeder.php
+    ├── DinnerGroupSeeder.php
+    └── DinnerDatesSeeder.php
 
 resources/
 ├── css/
-│   └── app.css       # Tailwind CSS entry
+│   └── app.css       # Tailwind CSS v4
 ├── js/
 │   ├── app.js        # Main JS entry
 │   ├── bootstrap.js  # Axios & Laravel config
 │   └── echo.js       # WebSocket/Reverb config
 └── views/
+    ├── home.blade.php  # Home pubblica
+    └── components/
+        └── view-toggle.blade.php  # Toggle vista calendario
 
 routes/
-├── web.php           # Custom web routes (if needed)
-├── channels.php      # Broadcast channel authorization
-└── console.php       # Artisan commands
+├── web.php           # Route home pubblica
+├── channels.php      # Broadcast channels
+└── console.php       # Scheduled commands
 ```
 
 ## Important Notes
 
 ### Filament Multi-Panel Setup
 - **Admin Panel**: Use `php artisan make:filament-resource ModelName --panel=admin`
-- **User Panel**: Use `php artisan make:filament-resource ModelName --panel=user`
+- **App Panel**: Use `php artisan make:filament-resource ModelName --panel=dinner`
 - Each panel has separate auto-discovery directories
-- Panel access controlled via `canAccessPanel()` method in User model
+- Panel access:
+  - Admin: `canAccessPanel()` checks `is_admin` flag
+  - App: richiede email verificata e profilo completo (middleware)
 
-### User Registration & Wizard
-- New users must complete a Filament wizard during first login/registration
-- Wizard steps:
-  1. Privacy acceptance + personal info (nome, cognome, email verification)
-  2. Address (via_civico, citta) + max_ospiti
-- User cannot access main application until wizard is complete
-- Consider using Filament's `getProfilePage()` or custom registration page
+### User Registration & Profile Completion
+- New users si registrano con email + password
+- Email verification obbligatoria
+- **CompleteProfile wizard** obbligatorio prima di accedere:
+  - Step 1: Dati personali (city, address, house_number, postal_code)
+  - Step 2: Capacità hosting (max_guests)
+  - Step 3: Accettazione privacy
+- Middleware `EnsureProfileIsComplete` blocca accesso se profilo incompleto
+- Avatar opzionale modificabile da EditProfile page
 
-### Team Management
-- Each user can belong to only one team at a time
-- Team codes must be unique and easily shareable
-- Consider using a short alphanumeric code generator (e.g., 6-8 characters)
-- Switching teams should handle calendar/event cleanup
+### DinnerGroup Management
+- Ogni utente può appartenere a **un solo gruppo** alla volta
+- Group codes: 14 caratteri alfanumerici (unici)
+- Creazione gruppo:
+  - ManageDinnerGroup page
+  - Nome + slogan opzionale + immagine gruppo
+  - Auto-join del creatore
+- Join gruppo:
+  - Inserimento codice invito
+  - Validazione e auto-associazione
+- Visualizzazione membri con avatar e badge creatore
 
-### Weekly Calendar Logic
-- Calendars are team-specific
-- Only enabled calendars can accept dinner event submissions
-- Week boundaries: Monday 00:00 to Sunday 23:59
-- Old calendars should be archived, not deleted (for history)
+### Availability & Booking Flow
+**Flusso HOST**:
+1. Utente crea DinnerAvailability con can_host=true per una data
+2. Imposta max_guests
+3. Status iniziale: AVAILABLE_TO_HOST
+4. Altri membri prenotano → Observer aggiorna status automaticamente:
+   - ALMOST_FULL (quasi pieno)
+   - FULL (al completo)
+5. Cron job daily imposta COMPLETED per date passate
 
-### Cron Job Setup
-Add to server crontab or use Laravel Forge/Envoyer:
+**Flusso GUEST**:
+1. Guest visualizza calendario disponibilità gruppo (GroupAvailabilities page)
+2. Vede host con posti disponibili
+3. Crea DinnerBooking specificando:
+   - guests_count (include se stesso + accompagnatori)
+   - bringing_items (cosa porta: vino, dolce, ecc.)
+   - notes opzionali
+4. Status PENDING → host conferma → CONFIRMED
+
+**Validazioni automatiche** (Observers):
+- Controllo capacità disponibile
+- Aggiornamento status host
+- Prevenzione overbooking
+- Cancellazione prenotazioni se host cancella
+
+### Calendar UI Features
+**GroupAvailabilities Page** include:
+- Toggle vista: Mensile / Settimanale
+- Vista mensile: griglia 7 giorni (lun-dom) con navigazione mesi
+- Vista settimanale: lista giornaliera con navigazione settimane
+- Filtri per status e capacità host
+- Prenotazione diretta da calendario
+- Badge per prenotazioni utente
+- Aggiornamento real-time disponibilità
+
+### Scheduled Jobs Setup
+Add to server crontab:
 ```bash
 * * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
 ```
-Then define the Thursday 9 AM schedule in `app/Console/Kernel.php` or `routes/console.php`
+Schedule definito in `routes/console.php`:
+- `availabilities:complete-expired` daily at 02:00 (Europe/Rome)
 
 ### Routes
 Filament handles both panel routings. Add custom routes to [routes/web.php](routes/web.php) only when needed outside Filament panels.

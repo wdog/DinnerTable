@@ -273,11 +273,11 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->label('Nome')
                     ->searchable()
                     ->sortable()
-                    ->description(fn (User $record): string => $record->email)
+                    ->description(fn (User $record): string => $record->id == Auth::user()->id ? $record->email : '')
                     ->icon(
                         fn (User $record): ?string => $record->id === $this->getUserGroup()?->created_by
-                            ? 'tabler-crown'
-                            : 'tabler-user'
+                            ? 'tabler-shield-filled'
+                            : 'tabler-user-filled'
                     )
                     ->iconColor(
                         fn (User $record): string => $record->id === $this->getUserGroup()?->created_by
@@ -315,7 +315,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     ->state(
                         fn (User $record): bool => $record->id === $this->getUserGroup()?->created_by
                     )
-                    ->trueIcon('tabler-crown')
+                    ->trueIcon('tabler-shield')
                     ->falseIcon('tabler-minus')
                     ->trueColor('warning')
                     ->falseColor('gray'),
