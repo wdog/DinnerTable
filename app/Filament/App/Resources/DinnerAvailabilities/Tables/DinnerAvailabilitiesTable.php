@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use App\Enums\DinnerAvailabilityStatus;
@@ -62,7 +63,7 @@ class DinnerAvailabilitiesTable
                         fn (Model $record): string => 'Dinner del ' . $record->dinnerDate->dinner_date->format('d/m/Y')
                     ),
             ])
-            ->defaultSort('dinnerDate.dinner_date', 'desc')
+            ->defaultSort('dinnerDate.dinner_date', 'asc')
             ->columns([
                 // !
                 TextColumn::make('dinnerDate.dinner_date')
@@ -198,8 +199,10 @@ class DinnerAvailabilitiesTable
                             $reasons = [];
 
                             foreach ($records as $record) {
+                                /** @var User $user */
+                                $user = Auth::user();
                                 // Verifica autorizzazione tramite policy
-                                if ( ! auth()->user()->can('delete', $record)) {
+                                if ( ! $user->can('delete', $record)) {
                                     $skipped++;
 
                                     // Determina il motivo del blocco

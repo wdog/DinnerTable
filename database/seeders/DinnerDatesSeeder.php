@@ -83,10 +83,35 @@ class DinnerDatesSeeder extends Seeder
 
                         // Max guests random tra 4 e 10
                         $maxGuests = rand(4, 10);
+
+                        // Titoli cena vari e invitanti
+                        $dinnerTitles = [
+                            'Pizza Napoletana',
+                            'Pasta al Forno',
+                            'Sushi Night',
+                            'BBQ Serata',
+                            'Carbonara Perfetta',
+                            'Risotto ai Funghi',
+                            'Lasagne della Nonna',
+                            'Grigliata Mista',
+                            'Pesce Fresco',
+                            'Serata Vegan',
+                            'Aperitivo Italiano',
+                            'Cena Messicana',
+                            'Burger Gourmet',
+                            'Pasta Fresca',
+                            'Cucina Giapponese',
+                            null, // 30% senza titolo
+                            null,
+                            null,
+                        ];
+
+                        $dinnerName = collect($dinnerTitles)->random();
                     } else {
                         // GUEST: usa sempre AVAILABLE (unico stato per guest)
-                        $status    = DinnerAvailabilityStatus::AVAILABLE;
-                        $maxGuests = null;
+                        $status     = DinnerAvailabilityStatus::AVAILABLE;
+                        $maxGuests  = null;
+                        $dinnerName = null;
                     }
 
                     $availability = DinnerAvailability::firstOrCreate(
@@ -95,10 +120,11 @@ class DinnerDatesSeeder extends Seeder
                             'user_id'        => $member->id,
                         ],
                         [
-                            'status'     => $status,
-                            'can_host'   => $canHost,
-                            'max_guests' => $maxGuests,
-                            'note'       => $canHost ? 'Disponibile ad ospitare!' : null,
+                            'status'      => $status,
+                            'can_host'    => $canHost,
+                            'dinner_name' => $dinnerName,
+                            'max_guests'  => $maxGuests,
+                            'note'        => $canHost ? 'Disponibile ad ospitare!' : null,
                         ]
                     );
 

@@ -28,8 +28,8 @@ class DinnerAvailabilityForm
 
                 Section::make()
                     ->columns([
-                        'xs' => 2,
-                        'md' => 4,
+                        'xs' => 3,
+                        'md' => 3,
                     ])
                     ->schema([
                         // !
@@ -118,8 +118,7 @@ class DinnerAvailabilityForm
                             ->maxLength(255)
                             ->placeholder('es. Pizza napoletana, Pasta al forno, Sushi night...')
                             ->visible(fn (Get $get) => $get('can_host') === true)
-                            ->helperText('Dai un nome alla tua cena per renderla più invitante!')
-                            ->columnSpan(2),
+                            ->helperText('Dai un nome alla tua cena per renderla più invitante!'),
 
                         // !
                         Select::make('status')
@@ -172,8 +171,7 @@ class DinnerAvailabilityForm
                             ->helperText('Specifica il motivo per cui stai cancellando la cena'),
                         // ! NOTES
 
-                        Textarea::make('note')
-                            ->columnSpanFull(),
+                        Textarea::make('note'),
                     ])->columnSpanFull(),
             ]);
     }
