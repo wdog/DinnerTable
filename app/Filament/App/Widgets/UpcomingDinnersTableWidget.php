@@ -47,7 +47,15 @@ class UpcomingDinnersTableWidget extends BaseWidget
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Stato')
-                    ->badge(),
+                    ->badge()
+                    ->color(fn ($record) => match ($record->status) {
+                        \App\Enums\DinnerAvailabilityStatus::AVAILABLE_TO_HOST => 'gray',
+                        \App\Enums\DinnerAvailabilityStatus::ALMOST_FULL => 'warning',
+                        \App\Enums\DinnerAvailabilityStatus::FULL => 'success',
+                        \App\Enums\DinnerAvailabilityStatus::COMPLETED => 'success',
+                        \App\Enums\DinnerAvailabilityStatus::HOST_CANCELLED => 'danger',
+                        default => 'info',
+                    }),
 
                 Tables\Columns\TextColumn::make('guests_info')
                     ->label('Ospiti')
