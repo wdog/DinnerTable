@@ -20,10 +20,10 @@
 
 <x-filament-panels::page>
     {{-- ============================================
-         SEZIONE CALENDARIO MENSILE
+         SEZIONE CALENDARIO - Vista Mensile o Settimanale
          Mostra calendario solo se ci sono dati
          ============================================ --}}
-    @if (count($calendarData) > 0)
+    @if (($viewType === 'week' && count($weekData) > 0) || ($viewType === 'month' && count($calendarData) > 0))
         <x-filament::section>
             {{-- ============================================
                  HEADER: Toggle vista, Navigazione e filtri
@@ -34,9 +34,10 @@
                     <x-calendar-view-toggle :viewType="$viewType" />
 
                     <div class="flex items-center justify-between w-full">
-                        {{-- Navigazione Mensile --}}
+                        {{-- Navigazione Mensile o Settimanale --}}
                         <div class="flex items-center gap-3">
-                            <button wire:click="previousMonth"
+                            @if ($viewType === 'month')
+                                <button wire:click="previousMonth"
                                 class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 type="button">
                                 <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
@@ -73,6 +74,46 @@
                                 </svg>
                                 <span>Oggi</span>
                             </button>
+                            @else
+                                {{-- Navigazione Settimanale --}}
+                                <button wire:click="previousWeek"
+                                    class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                    type="button">
+                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+
+                                <select wire:model.live="selectedWeek"
+                                    class="text-xl font-bold text-custom-600 dark:text-custom-400 capitalize bg-transparent border-0 focus:ring-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-3 py-1 transition-colors">
+                                    @foreach ($this->getWeekOptions() as $value => $label)
+                                        <option value="{{ $value }}" class="text-gray-900 dark:text-gray-100">
+                                            {{ $label }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button wire:click="nextWeek"
+                                    class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                    type="button">
+                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+
+                                <button wire:click="goToCurrentWeek"
+                                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    type="button" title="Vai alla settimana corrente">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>Oggi</span>
+                                </button>
+                            @endif
                         </div>
 
                         {{-- Filtri --}}
@@ -107,9 +148,9 @@
                      Layout responsive: 3 colonne mobile, 7 desktop
                      ============================================ --}}
             <div class="grid grid-cols-3 lg:grid-cols-7 gap-0">
-                @foreach ($calendarData as $dateInfo)
-                    @if ($dateInfo['empty'])
-                        {{-- Cella vuota per allineamento inizio settimana --}}
+                @foreach (($viewType === 'week' ? $weekData : $calendarData) as $dateInfo)
+                    @if (isset($dateInfo['empty']) && $dateInfo['empty'])
+                        {{-- Cella vuota per allineamento inizio settimana (solo vista mensile) --}}
                         <div class="min-h-24 border border-white/10 dark:bg-black/20 bg-gray-100"></div>
                     @else
                         {{-- ============================================

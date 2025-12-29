@@ -3,13 +3,14 @@
 namespace App\Filament\App\Pages;
 
 use BackedEnum;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Filament\Support\Exceptions\Halt;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -90,7 +91,7 @@ class CompleteProfile extends Page implements HasForms
                 Section::make('Informazioni Privacy')
                     ->description('Accetta la privacy policy per continuare')
                     ->schema([
-                        Forms\Components\Checkbox::make('privacy_accepted')
+                        Checkbox::make('privacy_accepted')
                             ->label('Accetto la privacy policy')
                             ->required()
                             ->accepted(),
@@ -99,27 +100,27 @@ class CompleteProfile extends Page implements HasForms
                 Section::make('Indirizzo e Ospitalità')
                     ->description('Inserisci il tuo indirizzo e il numero massimo di ospiti che puoi accogliere')
                     ->schema([
-                        Forms\Components\TextInput::make('address')
+                        TextInput::make('address')
                             ->label('Via')
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('house_number')
+                        TextInput::make('house_number')
                             ->label('Civico')
                             ->required()
                             ->maxLength(10),
 
-                        Forms\Components\TextInput::make('postal_code')
+                        TextInput::make('postal_code')
                             ->label('Cap')
                             ->required()
                             ->maxLength(5),
 
-                        Forms\Components\TextInput::make('city')
+                        TextInput::make('city')
                             ->label('Città')
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('max_guests')
+                        TextInput::make('max_guests')
                             ->label('Numero massimo di ospiti')
                             ->required()
                             ->numeric()
