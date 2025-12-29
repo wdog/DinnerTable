@@ -4,6 +4,7 @@ namespace App\Filament\App\Widgets;
 
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use App\Models\DinnerBooking;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
@@ -57,12 +58,13 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->since()
                     ->sortable(),
             ])
-            ->actions([
-                Tables\Actions\Action::make('confirm')
+            ->recordActions([
+                Action::make('confirm')
                     ->label('Conferma')
                     ->icon('tabler-check')
                     ->color('success')
                     ->requiresConfirmation()
+                    ->authorize(fn (DinnerBooking $record) => $record->hostAvailability->user_id === Auth::id())
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'confirmed']);
 
@@ -72,11 +74,12 @@ class PendingBookingRequestsWidget extends BaseWidget
                             ->send();
                     }),
 
-                Tables\Actions\Action::make('cancel')
+                Action::make('cancel')
                     ->label('Rifiuta')
                     ->icon('tabler-x')
                     ->color('danger')
                     ->requiresConfirmation()
+                    ->authorize(fn (DinnerBooking $record) => $record->hostAvailability->user_id === Auth::id())
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'cancelled']);
 
