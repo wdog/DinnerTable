@@ -48,14 +48,7 @@ class UpcomingDinnersTableWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('status')
                     ->label('Stato')
                     ->badge()
-                    ->color(fn ($record) => match ($record->status) {
-                        \App\Enums\DinnerAvailabilityStatus::AVAILABLE_TO_HOST => 'gray',
-                        \App\Enums\DinnerAvailabilityStatus::ALMOST_FULL => 'warning',
-                        \App\Enums\DinnerAvailabilityStatus::FULL => 'success',
-                        \App\Enums\DinnerAvailabilityStatus::COMPLETED => 'success',
-                        \App\Enums\DinnerAvailabilityStatus::HOST_CANCELLED => 'danger',
-                        default => 'info',
-                    }),
+                 ,
 
                 Tables\Columns\TextColumn::make('guests_info')
                     ->label('Ospiti')
@@ -68,14 +61,48 @@ class UpcomingDinnersTableWidget extends BaseWidget
                         $pending = $record->bookings()->where('status', 'pending')->sum('guests_count');
                         $total = $record->max_guests;
 
-                        if ($pending > 0) {
-                            return "{$confirmed} conf. + {$pending} pend. / {$total}";
-                        }
-
                         return "{$confirmed} / {$total}";
                     })
+                    ->description(function ($record) {
+                        if ( ! $record->can_host) {
+                            return null;
+                        }
+
+                        $confirmed = $record->confirmedBookings->sum('guests_count');
+                        $pending = $record->bookings()->where('status', 'pending')->sum('guests_count');
+                        $available = $record->available_spots;
+
+                        $details = [];
+                        if ($confirmed > 0) {
+                            $details[] = "✓ {$confirmed} confermati";
+                        }
+                        if ($pending > 0) {
+                            $details[] = "⏳ {$pending} in attesa";
+                        }
+                        if ($available > 0) {
+                            $details[] = "🔓 {$available} liberi";
+                        }
+
+                        return implode(' • ', $details) ?: 'Nessuna prenotazione';
+                    })
                     ->badge()
-                    ->color(fn ($record) => ! $record->can_host ? 'gray' : ($record->available_spots === 0 ? 'danger' : ($record->available_spots <= 2 ? 'warning' : 'success')))
+                    ->color(function ($record) {
+                        if ( ! $record->can_host) {
+                            return 'gray';
+                        }
+
+                        $confirmed = $record->confirmedBookings->sum('guests_count');
+                        $total = $record->max_guests;
+
+                        if ($confirmed === 0) {
+                            return 'gray';
+                        }
+                        if ($confirmed === $total) {
+                            return 'success';
+                        }
+
+                        return 'warning';
+                    })
                     ->icon('tabler-users'),
             ])
             ->heading('Le tue prossime cene')
