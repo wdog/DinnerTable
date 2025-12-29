@@ -103,7 +103,7 @@
                     <div @class([
                         'border dark:border-gray-500 dark:bg-white/10 border-lime-500 bg-lime-500/20' => $dayInfo[
                             'date'
-                        ]->isSameDay(\Carbon\Carbon::now()),
+                        ]->isSameDay(\Carbon\Carbon::toDay()),
                         'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900/50 p-2',
                     ])>
                         {{-- Header giorno --}}

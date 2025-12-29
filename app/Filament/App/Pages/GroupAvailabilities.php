@@ -187,7 +187,7 @@ class GroupAvailabilities extends Page implements HasActions
     public function mount(): void
     {
         $this->selectedMonth = Carbon::now()->format('Y-m');
-        $this->selectedWeek  = Carbon::now()->format('Y-W');
+        $this->selectedWeek  = Carbon::now()->format('o-W'); // 'o' = ISO year
         $this->loadData();
     }
 
@@ -241,7 +241,7 @@ class GroupAvailabilities extends Page implements HasActions
     {
         [$year, $week]      = explode('-', $this->selectedWeek);
         $date               = Carbon::now()->setISODate((int) $year, (int) $week)->subWeek();
-        $this->selectedWeek = $date->format('Y-W');
+        $this->selectedWeek = $date->format('o-W'); // 'o' = ISO year
         $this->loadWeekData();
     }
 
@@ -255,7 +255,7 @@ class GroupAvailabilities extends Page implements HasActions
     {
         [$year, $week]      = explode('-', $this->selectedWeek);
         $date               = Carbon::now()->setISODate((int) $year, (int) $week)->addWeek();
-        $this->selectedWeek = $date->format('Y-W');
+        $this->selectedWeek = $date->format('o-W'); // 'o' = ISO year
         $this->loadWeekData();
     }
 
@@ -267,7 +267,7 @@ class GroupAvailabilities extends Page implements HasActions
      */
     public function goToCurrentWeek(): void
     {
-        $this->selectedWeek = Carbon::now()->format('Y-W');
+        $this->selectedWeek = Carbon::now()->format('o-W'); // 'o' = ISO year
         $this->loadWeekData();
     }
 
@@ -350,6 +350,37 @@ class GroupAvailabilities extends Page implements HasActions
         for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
             $key           = $date->format('Y-m');
             $options[$key] = $date->isoFormat('MMMM YYYY');
+        }
+
+        return $options;
+    }
+
+    /**
+     * Genera le opzioni per il dropdown selezione settimana.
+     *
+     * Crea un array di settimane dalla settimana corrente -4 a +12 settimane.
+     * Usa il formato ISO 'o-W' (anno ISO + numero settimana) come chiave
+     * e mostra l'intervallo di date come etichetta.
+     *
+     * @return array Array associativo ['2026-01' => 'Settimana 1: 29 Dic - 04 Gen', ...]
+     */
+    public function getWeekOptions(): array
+    {
+        $options = [];
+        $start   = Carbon::now()->subWeeks(4)->startOfWeek();
+        $end     = Carbon::now()->addWeeks(12);
+
+        for ($date = $start->copy(); $date->lte($end); $date->addWeek()) {
+            $weekStart = $date->copy()->startOfWeek();
+            $weekEnd   = $date->copy()->endOfWeek();
+            $key       = $date->format('o-W'); // ISO year + week number
+            $label     = sprintf(
+                'Settimana %d: %s - %s',
+                $date->isoWeek(),
+                $weekStart->isoFormat('D MMM'),
+                $weekEnd->isoFormat('D MMM')
+            );
+            $options[$key] = $label;
         }
 
         return $options;
