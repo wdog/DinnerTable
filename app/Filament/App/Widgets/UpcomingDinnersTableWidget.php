@@ -30,7 +30,6 @@ class UpcomingDinnersTableWidget extends BaseWidget
                     ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
                     ->with(['dinnerDate', 'confirmedBookings'])
                     ->orderBy('id')
-                    ->limit(3)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('dinnerDate.dinner_date')
@@ -58,12 +57,21 @@ class UpcomingDinnersTableWidget extends BaseWidget
                         }
 
                         $confirmed = $record->confirmedBookings->sum('guests_count');
+                        $pending = $record->bookings()->where('status', 'pending')->sum('guests_count');
+                        $total = $record->max_guests;
 
-                        return "{$confirmed}/{$record->max_guests}";
+                        if ($pending > 0) {
+                            return "{$confirmed} conf. + {$pending} pend. / {$total}";
+                        }
+
+                        return "{$confirmed} / {$total}";
                     })
+                    ->badge()
+                    ->color(fn ($record) => ! $record->can_host ? 'gray' : ($record->available_spots === 0 ? 'danger' : ($record->available_spots <= 2 ? 'warning' : 'success')))
                     ->icon('tabler-users'),
             ])
             ->heading('Le tue prossime cene')
-            ->paginated(false);
+            ->paginated([5,10,25])
+            ->defaultPaginationPageOption(5);
     }
 }

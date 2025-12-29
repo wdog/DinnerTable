@@ -191,7 +191,7 @@ class AppPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->widgets([
-                AccountWidget::class,
+                // AccountWidget::class,
             ])
             ->renderHook(
                 'panels::user-menu.before',
