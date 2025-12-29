@@ -212,6 +212,21 @@ class DinnerBookingPolicy
     }
 
     /**
+     * Determina se l'host può confermare o rifiutare una prenotazione.
+     *
+     * Solo l'HOST (proprietario della disponibilità) può modificare lo status
+     * delle prenotazioni ricevute (PENDING → CONFIRMED o CANCELLED).
+     *
+     * @param  User  $user  Utente autenticato
+     * @param  DinnerBooking  $booking  Prenotazione da confermare/rifiutare
+     * @return bool True se l'utente è l'host della disponibilità
+     */
+    public function confirmBooking(User $user, DinnerBooking $booking): bool
+    {
+        return $booking->hostAvailability->user_id === $user->id;
+    }
+
+    /**
      * Determina se l'utente può eliminare fisicamente una prenotazione.
      *
      * **IMPORTANTE**: Le prenotazioni NON possono essere eliminate fisicamente (hard delete).

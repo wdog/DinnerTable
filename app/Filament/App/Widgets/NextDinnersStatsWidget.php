@@ -35,6 +35,7 @@ class NextDinnersStatsWidget extends StatsOverviewWidget
      */
     protected function getStats(): array
     {
+        /** @var \App\Models\User $user */
         $user  = Auth::user();
         $group = $user->dinnerGroup;
 
@@ -48,7 +49,7 @@ class NextDinnersStatsWidget extends StatsOverviewWidget
         }
 
         // 1. Prossima cena come HOST
-        $nextHostDinner = $user->dinnerAvailabilities()
+        $nextHostDinner = $user->availabilities()
             ->where('can_host', true)
             ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
             ->with(['dinnerDate', 'confirmedBookings'])
@@ -58,7 +59,7 @@ class NextDinnersStatsWidget extends StatsOverviewWidget
         $hostStat = $this->getHostStat($nextHostDinner);
 
         // 2. Prossime cene come GUEST
-        $upcomingGuestBookings = $user->dinnerBookings()
+        $upcomingGuestBookings = $user->guestBookings()
             ->where('status', 'confirmed')
             ->whereHas('hostAvailability.dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
             ->count();

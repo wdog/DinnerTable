@@ -64,7 +64,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->icon('tabler-check')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->authorize(fn (DinnerBooking $record) => $record->hostAvailability->user_id === Auth::id())
+                    ->authorize('confirmBooking')
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'confirmed']);
 
@@ -79,7 +79,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->icon('tabler-x')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->authorize(fn (DinnerBooking $record) => $record->hostAvailability->user_id === Auth::id())
+                    ->authorize('confirmBooking')
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'cancelled']);
 
