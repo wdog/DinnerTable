@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +21,8 @@ class DinnerGroupFactory extends Factory
         return [
             'name'       => fake()->words(3, true) . ' Dinner Group',
             'slogan'     => fake()->sentence(),
-            'group_code' => strtoupper(\Illuminate\Support\Str::random(14)),
-            'created_by' => \App\Models\User::factory(),
+            'group_code' => strtoupper(Str::random(14)),
+            'created_by' => User::factory(),
         ];
     }
 }

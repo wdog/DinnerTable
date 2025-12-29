@@ -297,6 +297,17 @@ class GroupAvailabilities extends Page implements HasActions
     }
 
     /**
+     * Livewire lifecycle hook: eseguito quando selectedWeek viene modificato.
+     *
+     * Ricarica i dati della vista settimanale quando l'utente seleziona
+     * una settimana diversa dal dropdown.
+     */
+    public function updatedSelectedWeek(): void
+    {
+        $this->loadWeekData();
+    }
+
+    /**
      * Livewire lifecycle hook: eseguito quando filterStatus viene modificato.
      *
      * Ricarica i dati del calendario applicando il nuovo filtro per status.

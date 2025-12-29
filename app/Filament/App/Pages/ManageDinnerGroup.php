@@ -5,20 +5,23 @@ namespace App\Filament\App\Pages;
 use UnitEnum;
 use BackedEnum;
 use App\Models\User;
-use Filament\Tables;
+use App\Models\Profile;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\DinnerGroup;
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Support\Exceptions\Halt;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -325,6 +328,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                 IconColumn::make('is_you')
                     ->label('Tu')
                     ->boolean()
+                 /* */
                     ->state(
                         fn (User $record): bool => $record->id === $this->getUser()->id
                     )
@@ -335,7 +339,7 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
             ])
             ->filters([
 
-                Tables\Filters\Filter::make('high_capacity')
+                Filter::make('high_capacity')
                     ->label('Alta Capacità (4+ ospiti)')
                     ->query(
                         fn (Builder $query): Builder => $query->whereHas(
@@ -345,10 +349,10 @@ class ManageDinnerGroup extends Page implements HasForms, HasTable
                     )
                     ->toggle(),
 
-                Tables\Filters\SelectFilter::make('city')
+                SelectFilter::make('city')
                     ->label('Città')
                     ->options(function () {
-                        return \App\Models\Profile::query()
+                        return Profile::query()
                             ->whereNotNull('city')
                             ->distinct()
                             ->pluck('city', 'city');

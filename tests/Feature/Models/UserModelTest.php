@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\Profile;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -96,7 +98,7 @@ test('user password is hashed', function () {
     // La password salvata non dovrebbe essere uguale a quella in chiaro
     expect($user->password)->not->toBe($plainPassword)
         // Ma dovrebbe essere verificabile con Hash::check
-        ->and(\Illuminate\Support\Facades\Hash::check($plainPassword, $user->password))->toBeTrue();
+        ->and(Hash::check($plainPassword, $user->password))->toBeTrue();
 });
 
 test('user can have admin flag', function () {
@@ -119,7 +121,7 @@ test('user timestamps are set automatically', function () {
 
     expect($user->created_at)->not->toBeNull()
         ->and($user->updated_at)->not->toBeNull()
-        ->and($user->created_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+        ->and($user->created_at)->toBeInstanceOf(Carbon::class);
 });
 
 test('can find user by email', function () {
