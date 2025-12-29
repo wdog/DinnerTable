@@ -7,8 +7,8 @@ use Filament\Tables\Table;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
 use Illuminate\Support\Facades\Auth;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Notification;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 /**
@@ -28,7 +28,7 @@ class PendingBookingRequestsWidget extends BaseWidget
         return $table
             ->query(
                 DinnerBooking::query()
-                    ->whereHas('hostAvailability', fn($q) => $q->where('user_id', Auth::id()))
+                    ->whereHas('hostAvailability', fn ($q) => $q->where('user_id', Auth::id()))
                     ->where('status', 'pending')
                     ->with(['guest', 'hostAvailability.dinnerDate'])
                     ->latest()
@@ -51,7 +51,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('bringing_items')
                     ->label('Porta')
                     ->badge()
-                    ->state(fn($record) => $record->bringing_items ?? [])
+                    ->state(fn ($record) => $record->bringing_items ?? [])
                     ->default('-'),
 
                 TextColumn::make('status')

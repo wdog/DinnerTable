@@ -29,7 +29,7 @@ class UpcomingDinnersTableWidget extends BaseWidget
             ->query(
                 DinnerAvailability::query()
                     ->where('user_id', Auth::id())
-                    ->whereHas('dinnerDate', fn($q) => $q->where('dinner_date', '>=', now()->toDateString()))
+                    ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
                     ->with(['dinnerDate', 'confirmedBookings'])
                     ->orderBy('id')
             )
@@ -37,15 +37,15 @@ class UpcomingDinnersTableWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('dinnerDate.dinner_date')
                     ->label('Data')
                     ->date('d/m/Y')
-                    ->description(fn($record) => Carbon::parse($record->dinnerDate->dinner_date)->isoFormat('dddd'))
+                    ->description(fn ($record) => Carbon::parse($record->dinnerDate->dinner_date)->isoFormat('dddd'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('role')
                     ->label('Ruolo')
                     ->badge()
-                    ->state(fn($record) => $record->can_host ? 'Host' : 'Guest')
-                    ->color(fn($record) => $record->can_host ? 'success' : 'info')
-                    ->icon(fn($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3'),
+                    ->state(fn ($record) => $record->can_host ? 'Host' : 'Guest')
+                    ->color(fn ($record) => $record->can_host ? 'success' : 'info')
+                    ->icon(fn ($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3'),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Stato')
@@ -54,23 +54,23 @@ class UpcomingDinnersTableWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('guests_info')
                     ->label('Ospiti')
                     ->state(function ($record) {
-                        if (! $record->can_host) {
+                        if ( ! $record->can_host) {
                             return '-';
                         }
 
                         $confirmed = $record->confirmedBookings->sum('guests_count');
-                        $pending = $record->bookings()->where('status', 'pending')->sum('guests_count');
-                        $total = $record->max_guests;
+                        $pending   = $record->bookings()->where('status', 'pending')->sum('guests_count');
+                        $total     = $record->max_guests;
 
                         return "{$confirmed} / {$total}";
                     })
                     ->description(function ($record) {
-                        if (! $record->can_host) {
-                            return null;
+                        if ( ! $record->can_host) {
+                            return;
                         }
 
                         $confirmed = $record->confirmedBookings->sum('guests_count');
-                        $pending = $record->bookings()->where('status', 'pending')->sum('guests_count');
+                        $pending   = $record->bookings()->where('status', 'pending')->sum('guests_count');
                         $available = $record->available_spots;
 
                         $details = [];
@@ -86,20 +86,20 @@ class UpcomingDinnersTableWidget extends BaseWidget
 
                         return $details ? implode(' • ', $details) : 'Nessuna prenotazione';
                     })
-                    ->icon(fn($record) => $record->can_host ? match (true) {
+                    ->icon(fn ($record) => $record->can_host ? match (true) {
                         $record->confirmedBookings->sum('guests_count') === $record->max_guests => 'tabler-glass-full',
-                        $record->bookings()->where('status', 'pending')->exists() => 'tabler-user-question',
-                        $record->confirmedBookings->sum('guests_count') === 0 => 'tabler-sparkles',
-                        default => 'tabler-users',
+                        $record->bookings()->where('status', 'pending')->exists()               => 'tabler-user-question',
+                        $record->confirmedBookings->sum('guests_count') === 0                   => 'tabler-sparkles',
+                        default                                                                 => 'tabler-users',
                     } : null)
                     ->badge()
                     ->color(function ($record) {
-                        if (! $record->can_host) {
+                        if ( ! $record->can_host) {
                             return 'gray';
                         }
 
                         $confirmed = $record->confirmedBookings->sum('guests_count');
-                        $total = $record->max_guests;
+                        $total     = $record->max_guests;
 
                         if ($confirmed === 0) {
                             return 'gray';

@@ -156,13 +156,22 @@
                                             @php
                                                 $statusValue = $availability['status']->value;
                                                 $canHost = $availability['can_host'];
+                                                $isMine = $availability['is_mine'] ?? false;
                                                 // Determina colori in base a ruolo
                                                 if ($canHost) {
                                                     $bgClass = ' bg-lime-300';
                                                     $textClass = ' text-lime-800 ';
+                                                    if ($isMine) {
+                                                        $bgClass = ' bg-lime-500';
+                                                        $textClass = ' text-slate-900 ';
+                                                    }
                                                 } else {
                                                     $bgClass = 'bg-orange-400';
                                                     $textClass = 'text-orange-950 ';
+                                                    if ($isMine) {
+                                                        $bgClass = 'bg-orange-600';
+                                                        $textClass = 'text-orange-50 ';
+                                                    }
                                                 }
 
                                                 $extraClass = null;
