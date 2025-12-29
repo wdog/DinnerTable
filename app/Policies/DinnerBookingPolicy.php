@@ -221,7 +221,7 @@ class DinnerBookingPolicy
      * @param  DinnerBooking  $booking  Prenotazione da confermare/rifiutare
      * @return bool True se l'utente è l'host della disponibilità
      */
-    public function confirmBooking(User $user, DinnerBooking $booking): bool
+    public function updateGuestBooking(User $user, DinnerBooking $booking): bool
     {
         return $booking->hostAvailability->user_id === $user->id;
     }

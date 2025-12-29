@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use App\Models\DinnerBooking;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 /**
@@ -27,7 +28,7 @@ class PendingBookingRequestsWidget extends BaseWidget
         return $table
             ->query(
                 DinnerBooking::query()
-                    ->whereHas('hostAvailability', fn ($q) => $q->where('user_id', Auth::id()))
+                    ->whereHas('hostAvailability', fn($q) => $q->where('user_id', Auth::id()))
                     ->where('status', 'pending')
                     ->with(['guest', 'hostAvailability.dinnerDate'])
                     ->latest()
@@ -50,8 +51,11 @@ class PendingBookingRequestsWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('bringing_items')
                     ->label('Porta')
                     ->badge()
-                    ->state(fn ($record) => $record->bringing_items ?? [])
+                    ->state(fn($record) => $record->bringing_items ?? [])
                     ->default('-'),
+
+                TextColumn::make('status')
+                    ->badge(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Richiesta il')
@@ -64,7 +68,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->icon('tabler-check')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->authorize('confirmBooking')
+                    ->authorize('update')
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'confirmed']);
 
@@ -79,7 +83,7 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->icon('tabler-x')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->authorize('confirmBooking')
+                    ->authorize('updateGuestBooking')
                     ->action(function (DinnerBooking $record) {
                         $record->update(['status' => 'cancelled']);
 
@@ -93,6 +97,7 @@ class PendingBookingRequestsWidget extends BaseWidget
             ->emptyStateHeading('Nessuna richiesta pendente')
             ->emptyStateDescription('Quando riceverai prenotazioni, appariranno qui')
             ->emptyStateIcon('tabler-inbox')
-            ->paginated(false);
+            ->paginated([5, 10, 25])
+            ->defaultPaginationPageOption(5);
     }
 }

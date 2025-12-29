@@ -30,7 +30,7 @@ class UpcomingDinnersTableWidget extends BaseWidget
                     ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
                     ->with(['dinnerDate', 'confirmedBookings'])
                     ->orderBy('id')
-                    ->limit(7)
+                    ->limit(3)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('dinnerDate.dinner_date')
