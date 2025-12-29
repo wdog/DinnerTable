@@ -358,7 +358,7 @@ class GroupAvailabilities extends Page implements HasActions
     /**
      * Genera le opzioni per il dropdown selezione settimana.
      *
-     * Crea un array di settimane dalla settimana corrente -4 a +12 settimane.
+     * Crea un array con la settimana corrente e le prossime 3 settimane (totale 4).
      * Usa il formato ISO 'o-W' (anno ISO + numero settimana) come chiave
      * e mostra l'intervallo di date come etichetta.
      *
@@ -367,16 +367,16 @@ class GroupAvailabilities extends Page implements HasActions
     public function getWeekOptions(): array
     {
         $options = [];
-        $start   = Carbon::now()->subWeeks(4)->startOfWeek();
-        $end     = Carbon::now()->addWeeks(12);
+        $current = Carbon::now()->startOfWeek();
 
-        for ($date = $start->copy(); $date->lte($end); $date->addWeek()) {
-            $weekStart = $date->copy()->startOfWeek();
-            $weekEnd   = $date->copy()->endOfWeek();
-            $key       = $date->format('o-W'); // ISO year + week number
+        // Genera 4 settimane: corrente + prossime 3
+        for ($i = 0; $i < 4; $i++) {
+            $weekStart = $current->copy()->addWeeks($i);
+            $weekEnd   = $weekStart->copy()->endOfWeek();
+            $key       = $weekStart->format('o-W'); // ISO year + week number
             $label     = sprintf(
                 'Settimana %d: %s - %s',
-                $date->isoWeek(),
+                $weekStart->isoWeek(),
                 $weekStart->isoFormat('D MMM'),
                 $weekEnd->isoFormat('D MMM')
             );
