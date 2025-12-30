@@ -179,6 +179,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     }
 
     /**
+     * Relazione con AppReview.
+     *
+     * Ogni utente può lasciare una sola recensione dell'applicazione.
+     */
+    public function appReview(): HasOne
+    {
+        return $this->hasOne(AppReview::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

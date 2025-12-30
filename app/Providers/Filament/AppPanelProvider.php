@@ -6,11 +6,14 @@ use Filament\Panel;
 use App\Models\User;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
+use Filament\Navigation\MenuItem;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use App\Filament\App\Pages\LeaveReview;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\App\Auth\Pages\EditProfile;
 use Illuminate\Session\Middleware\StartSession;
 use App\Http\Middleware\EnsureProfileIsComplete;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -32,7 +35,17 @@ class AppPanelProvider extends PanelProvider
             ->id('dinner')
             ->path('dinner')
             ->login()
-            ->profile(\App\Filament\App\Auth\Pages\EditProfile::class)
+            ->profile(EditProfile::class)
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label('Profilo')
+                    ->url(fn (): string => EditProfile::getUrl())
+                    ->icon('tabler-user'),
+                'review' => MenuItem::make()
+                    ->label('Recensione')
+                    ->url(fn (): string => LeaveReview::getUrl())
+                    ->icon('tabler-star'),
+            ])
             ->registration()
             ->emailVerification()
             ->brandName('DinnerTable')
