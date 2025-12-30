@@ -12,11 +12,9 @@ Route::get('/', function () {
         ->take(4)
         ->get();
 
-    return view('home', compact('reviews'));
+    return view('home', ['reviews' => $reviews]);
 })->name('home');
 
 // Filament handles both panel routings:
 // - Friend Panel: /app (login, registration, user dashboard)
 // - Admin Panel: /admin (admin only)
-
-Route::get('test', fn () => view('landing'));
