@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DinnerGroupSeeder::class,
             DinnerDatesSeeder::class,
+            AppReviewSeeder::class,
         ]);
     }
 }

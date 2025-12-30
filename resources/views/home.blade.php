@@ -560,88 +560,65 @@
                     </p>
                 </div>
 
-                <div class="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-8">
-                    <!-- Testimonial 1 -->
-                    <div
-                        class="bg-linear-to-br from-lime-50 to-white p-3 md:p-8 rounded-xl md:rounded-3xl shadow-lg border border-lime-100">
-                        <p
-                            class="text-xs md:text-base text-gray-700 leading-snug md:leading-relaxed mb-2 md:mb-4 italic">
-                            "Perfetto per il nostro team aziendale! Ora le cene mensili sono sempre ben organizzate."
-                        </p>
-                        <div class="flex items-center justify-between gap-2 md:gap-4 mb-2 md:mb-4">
+                <div class="flex flex-col md:grid md:grid-cols-2 gap-3 md:gap-8">
+                    @forelse ($reviews as $review)
+                        <div
+                            class="bg-linear-to-br from-lime-50 to-white p-3 md:p-8 rounded-xl md:rounded-3xl shadow-lg border border-lime-100">
+                            @if ($review->comment)
+                                <p
+                                    class="text-xs md:text-base text-gray-700 leading-snug md:leading-relaxed mb-2 md:mb-4 italic">
+                                    "{{ $review->comment }}"
+                                </p>
+                            @endif
 
+                            <div class="flex items-center justify-between gap-2 md:gap-4 mb-2 md:mb-4">
+                                <div class="flex gap-0.5">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $review->rating)
+                                            @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
+                                        @else
+                                            @svg('tabler-star', 'w-3 h-3 md:w-4 md:h-4 text-gray-300')
+                                        @endif
+                                    @endfor
+                                </div>
 
-                            <div class="flex gap-0.5">
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                            </div>
-
-
-                            <div class='text-right'>
-                                <p class="text-xs md:text-base font-semibold text-gray-900">@svg('tabler-chef-hat-filled', 'w-3 h-3 inline')
-                                    Alessandro Ferrari</p>
-                                <p class="text-[10px] md:text-sm text-gray-500">HR Manager @ Torino</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 2 -->
-                    <div
-                        class="bg-linear-to-br from-lime-50 to-white p-3 md:p-8 rounded-xl md:rounded-3xl shadow-lg border border-lime-100">
-                        <p
-                            class="text-xs md:text-base text-gray-700 leading-snug md:leading-relaxed mb-2 md:mb-4 italic">
-                            "Perfetto per il nostro team aziendale! Ora le cene mensili sono sempre ben organizzate."
-                        </p>
-                        <div class="flex items-center justify-between gap-2 md:gap-4 mb-2 md:mb-4">
-
-
-                            <div class="flex gap-0.5">
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                            </div>
-
-
-                            <div class='text-right'>
-                                <p class="text-xs md:text-base font-semibold text-gray-900">@svg('tabler-chef-hat-filled', 'w-3 h-3 inline')
-                                    Alessandro Ferrari</p>
-                                <p class="text-[10px] md:text-sm text-gray-500">HR Manager @ Torino</p>
+                                <div class='text-right'>
+                                    <p class="text-xs md:text-base font-semibold text-gray-900">
+                                        @svg('tabler-user', 'w-3 h-3 inline')
+                                        {{ $review->user->name }}
+                                    </p>
+                                    <p class="text-[10px] md:text-sm text-gray-500">
+                                        @if ($review->user->dinnerGroup)
+                                            {{ $review->user->dinnerGroup->name }}
+                                        @else
+                                            {{ $review->created_at->locale('it')->diffForHumans() }}
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-
-                    <!-- Testimonial 3 -->
-                    <div
-                        class="bg-linear-to-br from-lime-50 to-white p-3 md:p-8 rounded-xl md:rounded-3xl shadow-lg border border-lime-100">
-                        <p
-                            class="text-xs md:text-base text-gray-700 leading-snug md:leading-relaxed mb-2 md:mb-4 italic">
-                            "Perfetto per il nostro team aziendale! Ora le cene mensili sono sempre ben organizzate."
-                        </p>
-                        <div class="flex items-center justify-between gap-2 md:gap-4 mb-2 md:mb-4">
-
-
-                            <div class="flex gap-0.5">
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                                @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
-                            </div>
-
-
-                            <div class='text-right'>
-                                <p class="text-xs md:text-base font-semibold text-gray-900">@svg('tabler-chef-hat-filled', 'w-3 h-3 inline')
-                                    Alessandro Ferrari</p>
-                                <p class="text-[10px] md:text-sm text-gray-500">HR Manager @ Torino</p>
+                    @empty
+                        <!-- Fallback testimonial statico se non ci sono recensioni -->
+                        <div
+                            class="bg-linear-to-br from-lime-50 to-white p-3 md:p-8 rounded-xl md:rounded-3xl shadow-lg border border-lime-100">
+                            <p
+                                class="text-xs md:text-base text-gray-700 leading-snug md:leading-relaxed mb-2 md:mb-4 italic">
+                                "App fantastica! Organizzare le cene non è mai stato così facile."
+                            </p>
+                            <div class="flex items-center justify-between gap-2 md:gap-4 mb-2 md:mb-4">
+                                <div class="flex gap-0.5">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @svg('tabler-star-filled', 'w-3 h-3 md:w-4 md:h-4 text-yellow-400')
+                                    @endfor
+                                </div>
+                                <div class='text-right'>
+                                    <p class="text-xs md:text-base font-semibold text-gray-900">
+                                        @svg('tabler-user', 'w-3 h-3 inline') Utente DinnerTable
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
