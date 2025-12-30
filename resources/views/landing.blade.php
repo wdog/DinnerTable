@@ -182,7 +182,7 @@
                         <div
                             class="absolute inset-0 bg-linear-to-tl from-white/40 via-transparent to-transparent z-10">
                         </div>
-                        <img src="{{ asset('images/banner_dinner.png') }}" alt="DinnerTable Interface"
+                        <img src="{{ asset('images/banner_dinner.jpg') }}" alt="DinnerTable Interface"
                             class="mx-auto max-w-4xl w-full rounded-2xl shadow-2xl">
                     </div>
                 </div>

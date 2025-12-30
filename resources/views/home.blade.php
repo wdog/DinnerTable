@@ -182,7 +182,7 @@
                         <!-- Gradient overlay -->
                         <div class="absolute inset-0 bg-linear-to-tl from-lime-500/10 via-transparent to-emerald-500/10 rounded-2xl z-10"></div>
 
-                        <img src="{{ asset('images/banner_dinner.png') }}" alt="DinnerTable Interface"
+                        <img src="{{ asset('images/banner_dinner.jpg') }}" alt="DinnerTable Interface"
                             class="relative w-full rounded-2xl shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-500">
                     </div>
 
