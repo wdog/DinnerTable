@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Widgets;
 
-use Carbon\Carbon;
 use Filament\Tables\Table;
 use App\Models\DinnerAvailability;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -32,12 +32,16 @@ class UpcomingDinnersTableWidget extends BaseWidget
                     ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_date', '>=', now()->toDateString()))
                     ->with(['dinnerDate', 'confirmedBookings'])
                     ->orderBy('id')
-            )
-            ->columns([
+            )->columns([
                 TextColumn::make('dinnerDate.dinner_date')
                     ->label('Data')
-                    ->date('d/m/Y')
-                    ->description(fn ($record) => Carbon::parse($record->dinnerDate->dinner_date)->isoFormat('dddd'))
+                    ->date('d M Y, l')
+                    ->description(
+                        function ($record) {
+                            return new HtmlString("<div class='text-primary-500 font-bold'>{$record->dinner_name}</div>");
+                        }
+                    )
+                    ->html()
                     ->sortable(),
 
                 TextColumn::make('role')
@@ -45,11 +49,13 @@ class UpcomingDinnersTableWidget extends BaseWidget
                     ->badge()
                     ->state(fn ($record) => $record->can_host ? 'Host' : 'Guest')
                     ->color(fn ($record) => $record->can_host ? 'success' : 'info')
-                    ->icon(fn ($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3'),
+                    ->icon(fn ($record) => $record->can_host ? 'tabler-chef-hat' : 'tabler-tools-kitchen-3')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('status')
                     ->label('Stato')
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('guests_info')
                     ->label('Ospiti')
@@ -70,22 +76,26 @@ class UpcomingDinnersTableWidget extends BaseWidget
                         }
 
                         $confirmed = $record->confirmedBookings->sum('guests_count');
-                        $pending   = $record->bookings()->where('status', 'pending')->sum('guests_count');
                         $available = $record->available_spots;
+                        $pending   = $record->bookings()->where('status', 'pending')->sum('guests_count');
 
                         $details = [];
+                        // Icona check + numero ospiti confermati
                         if ($confirmed > 0) {
-                            $details[] = "Confermati: {$confirmed}";
+                            $details[] = svg('tabler-check', 'w-4 h-4 inline text-primary-500')->toHtml() . "<span class='text-gray-600 dark:text-gray-200 p-2 font-bold'>{$confirmed}</span>";
                         }
+                        // Icona clock + numero ospiti in attesa
                         if ($pending > 0) {
-                            $details[] = "In attesa: {$pending}";
+                            $details[] = svg('tabler-clock', 'w-4 h-4 inline text-warning-500')->toHtml() . "<span class='text-gray-600 dark:text-gray-200 p-2 font-bold'>{$pending}</span>";
                         }
+                        // Icona user-plus + posti ancora disponibili
                         if ($available > 0) {
-                            $details[] = "Liberi: {$available}";
+                            $details[] = svg('tabler-user-plus', 'w-4 h-4 inline text-info-500')->toHtml() . "<span class='text-gray-600 dark:text-gray-200 p-2 font-bold'>{$available}</span>";
                         }
 
-                        return $details ? implode(' • ', $details) : 'Nessuna prenotazione';
+                        return $details ? new HtmlString(implode(' ', $details)) : 'Nessuna prenotazione';
                     })
+                    ->html()
                     ->icon(fn ($record) => $record->can_host ? match (true) {
                         $record->confirmedBookings->sum('guests_count') === $record->max_guests => 'tabler-glass-full',
                         $record->bookings()->where('status', 'pending')->exists()               => 'tabler-user-question',
