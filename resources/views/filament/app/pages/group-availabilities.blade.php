@@ -33,14 +33,14 @@
                     {{-- Toggle Vista --}}
                     <x-calendar-view-toggle :viewType="$viewType" />
 
-                    <div class="flex items-center justify-between w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 w-full">
                         {{-- Navigazione Mensile --}}
-                        <div class="flex items-center gap-3">
-                            <button wire:click="previousMonth"
+                        <div class="justify-center md:justify-start flex  items-center gap-3"> <button
+                                wire:click="previousMonth"
                                 class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 type="button">
-                                <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 19l-7-7 7-7" />
                                 </svg>
@@ -64,7 +64,12 @@
                                 </svg>
                             </button>
 
-                            <button wire:click="goToCurrentMonth"
+
+                        </div>
+
+
+                        <div class="justify-center md:justify-start flex  items-center gap-3"> <button
+                                wire:click="goToCurrentMonth"
                                 class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300"
                                 type="button" title="Vai al mese corrente">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,9 +80,9 @@
                             </button>
                         </div>
 
+
                         {{-- Filtri --}}
-                        <div class="flex items-center gap-3">
-                            {{-- Filtro Status (generato dinamicamente dall'enum) --}}
+                        <div class="justify-center md:justify-end flex  items-center gap-3"> {{-- Filtro Status (generato dinamicamente dall'enum) --}}
                             <x-filament::input.wrapper class="w-auto">
                                 <x-filament::input.select wire:model.live="filterStatus">
                                     <option value="">Tutti gli status</option>
@@ -106,7 +111,7 @@
                      GRIGLIA CALENDARIO
                      Layout responsive: 3 colonne mobile, 7 desktop
                      ============================================ --}}
-            <div class="grid grid-cols-3 lg:grid-cols-7 gap-0">
+            <div class="pb-4 grid grid-cols-1 lg:grid-cols-7 gap-0">
                 @foreach ($calendarData as $dateInfo)
                     @if ($dateInfo['empty'])
                         {{-- Cella vuota per allineamento inizio settimana --}}
@@ -202,7 +207,8 @@
                                                             {{ $availability['user_name'] }}
                                                         </div>
                                                         @if ($canHost && !empty($availability['dinner_name']))
-                                                            <div class="text-xs font-normal opacity-90 flex items-center gap-1">
+                                                            <div
+                                                                class="text-xs font-normal opacity-90 flex items-center gap-1">
                                                                 @svg('tabler-sparkles', 'w-3 h-3')
                                                                 {{ $availability['dinner_name'] }}
                                                             </div>

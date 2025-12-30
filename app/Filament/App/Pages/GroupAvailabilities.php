@@ -387,8 +387,7 @@ class GroupAvailabilities extends Page implements HasActions
             $weekEnd   = $weekStart->copy()->endOfWeek();
             $key       = $weekStart->format('o-W'); // ISO year + week number
             $label     = sprintf(
-                'Settimana %d: %s - %s',
-                $weekStart->isoWeek(),
+                '%s - %s',
                 $weekStart->isoFormat('D MMM'),
                 $weekEnd->isoFormat('D MMM')
             );

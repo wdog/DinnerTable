@@ -124,13 +124,11 @@ class DinnerBookingsTable
             ], FiltersLayout::AboveContent)
             ->defaultSort('hostAvailability.dinnerDate.dinner_date', 'desc')
             ->recordActions([
-
                 // ! Azione per confermare la prenotazione
                 Action::make('confirm')
                     ->label('Conferma')
                     ->icon('tabler-check')
                     ->color('success')
-                    ->button()
                     ->size(Size::ExtraSmall)
                     ->visible(
                         function ($record): bool {
@@ -170,10 +168,9 @@ class DinnerBookingsTable
 
                 // ! Azione per annullare la prenotazione
                 Action::make('cancel')
-                    ->label('Annulla')
+                    ->label('Cancella')
                     ->icon('tabler-x')
                     ->color('danger')
-                    ->button()
                     ->size(Size::ExtraSmall)
                     ->visible(
                         function ($record): bool {

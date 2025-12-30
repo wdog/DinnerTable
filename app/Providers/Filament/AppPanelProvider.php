@@ -37,7 +37,7 @@ class AppPanelProvider extends PanelProvider
             ->emailVerification()
             ->brandName('DinnerTable')
             ->brandLogo(asset('images/logo-small.png'))
-            ->brandLogoHeight('5rem')
+            ->brandLogoHeight('3rem')
             ->favicon(asset('images/favico.png'))
             ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')

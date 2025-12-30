@@ -24,25 +24,21 @@
                  HEADER: Toggle vista, Navigazione e filtri
                  ============================================ --}}
             <x-slot name="heading">
-                <div class="flex flex-col gap-4 w-full">
+                <div class="flex flex-col justify-center gap-4 w-full">
                     {{-- Toggle Vista --}}
                     <x-calendar-view-toggle :viewType="$viewType" />
 
-                    <div class="flex items-center justify-between w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 w-full ">
                         {{-- Navigazione Settimanale --}}
-                        <div class="flex items-center gap-3">
+                        <div class="justify-center md:justify-start flex  items-center gap-3">
                             <button wire:click="previousWeek"
                                 class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 type="button">
-                                <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 19l-7-7 7-7" />
-                                </svg>
+                                @svg('tabler-chevron-left', 'w-6 h-6 text-gray-600 dark:text-gray-400')
                             </button>
 
                             <select wire:model.live="selectedWeek"
-                                class="text-xl font-bold text-custom-600 dark:text-custom-400 capitalize bg-transparent border-0 focus:ring-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-3 py-1 transition-colors">
+                                class="text-xl font-bold text-custom-600 dark:text-custom-400 capitalize bg-transparent -0 focus:ring-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg px-3 py-1 transition-colors">
                                 @foreach ($this->getWeekOptions() as $value => $label)
                                     <option value="{{ $value }}" class="text-gray-900 dark:text-gray-100">
                                         {{ $label }}</option>
@@ -52,29 +48,26 @@
                             <button wire:click="nextWeek"
                                 class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 type="button">
-                                <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
+                                @svg('tabler-chevron-right', 'w-6 h-6 text-gray-600 dark:text-gray-400')
                             </button>
 
+
+                        </div>
+                        {{-- today --}}
+                        <div class='justify-center md:justify-start flex  items-end gap-3'>
                             <button wire:click="goToCurrentWeek"
-                                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300"
-                                type="button"
-                                title="Vai alla settimana corrente">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                                class="flex gap-2 px-3 py-2
+                                rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-gray-700 dark:text-gray-300"
+                                type="button" title="Vai alla settimana corrente">
+                                @svg('tabler-calendar', 'w-6 h-6 text-gray-600 dark:text-gray-400')
                                 <span>Oggi</span>
                             </button>
                         </div>
 
                         {{-- Filtri --}}
-                        <div class="flex items-center gap-3">
+                        <div class="justify-center md:justify-end flex items-center gap-3">
                             {{-- Filtro Status --}}
-                            <x-filament::input.wrapper class="w-auto">
+                            <x-filament::input.wrapper class="">
                                 <x-filament::input.select wire:model.live="filterStatus">
                                     <option value="">Tutti gli status</option>
                                     @foreach ($this->getStatusFilterOptions() as $groupLabel => $statuses)
@@ -88,7 +81,7 @@
                             </x-filament::input.wrapper>
 
                             {{-- Filtro Can Host --}}
-                            <label class="flex items-center gap-2 cursor-pointer">
+                            <label class="flex justify-center items-center gap-2 cursor-pointer">
                                 <x-filament::input.checkbox wire:model.live="filterCanHost" />
                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Solo chi può
                                     ospitare</span>
@@ -102,7 +95,7 @@
                  VISTA SETTIMANALE
                  Layout: 1 colonna mobile, 7 colonne desktop
                  ============================================ --}}
-            <div class="grid grid-cols-1 xl:grid-cols-7 gap-0">
+            <div class="grid grid-cols-1 xl:grid-cols-7 gap-0 pb-4">
                 @foreach ($weekData as $dayInfo)
                     <div @class([
                         'border dark:border-gray-500 dark:bg-white/10 border-lime-500 bg-lime-500/20' => $dayInfo[

@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Widgets;
 
+use Carbon\Carbon;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use App\Models\DinnerBooking;
@@ -35,7 +36,8 @@ class PendingBookingRequestsWidget extends BaseWidget
             ->columns([
                 TextColumn::make('hostAvailability.dinnerDate.dinner_date')
                     ->label('Data cena')
-                    ->date('d/m/Y')
+                    ->date('d M Y')
+                    ->description(fn ($record) => Carbon::parse($record->hostAvailability->dinnerDate->dinner_date)->isoFormat('dddd'))
                     ->sortable(),
 
                 TextColumn::make('guest.name')
@@ -43,23 +45,24 @@ class PendingBookingRequestsWidget extends BaseWidget
                     ->searchable(),
 
                 TextColumn::make('guests_count')
-                    ->label('N. Persone')
+                    ->label('Con')
                     ->badge()
+                    ->alignCenter()
                     ->color('info'),
 
-                TextColumn::make('bringing_items')
-                    ->label('Porta')
-                    ->badge()
-                    ->state(fn ($record) => $record->bringing_items ?? [])
-                    ->default('-'),
+                // TextColumn::make('bringing_items')
+                //     ->label('Porta')
+                //     ->badge()
+                //     ->state(fn ($record) => $record->bringing_items ?? [])
+                //     ->default('-'),
 
-                TextColumn::make('status')
-                    ->badge(),
+                // TextColumn::make('status')
+                //     ->badge(),
 
-                TextColumn::make('created_at')
-                    ->label('Richiesta il')
-                    ->since()
-                    ->sortable(),
+                // TextColumn::make('created_at')
+                //     ->label('Richiesta il')
+                //     ->since()
+                //     ->sortable(),
             ])
             ->recordActions([
                 Action::make('confirm')
