@@ -6,11 +6,12 @@ use BackedEnum;
 use Filament\Pages\Page;
 use App\Models\AppReview;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Radio;
+use App\Forms\Components\RatingStar;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 
 /**
@@ -54,25 +55,21 @@ class LeaveReview extends Page implements HasForms
     {
         return $schema
             ->schema([
-                Radio::make('rating')
-                    ->label('Quanto ti piace DinnerTable?')
-                    ->required()
-                    ->options([
-                        0 => '0 - Per niente',
-                        1 => '1 - Scarso',
-                        2 => '2 - Sufficiente',
-                        3 => '3 - Buono',
-                        4 => '4 - Ottimo',
-                        5 => '5 - Eccellente',
-                    ])
-                    ->inline()
-                    ->columnSpanFull(),
+                Section::make('Valuta la tua esperienza')
+                    ->schema([
+                        RatingStar::make('rating')
+                            ->label('Quanto ti piace DinnerTable?')
+                            ->required()
+                            ->maxStars(5),
 
-                Textarea::make('comment')
-                    ->label('Il tuo commento (opzionale)')
-                    ->rows(4)
-                    ->maxLength(1000)
-                    ->placeholder('Raccontaci cosa ti piace o cosa potremmo migliorare...')
+                        Textarea::make('comment')
+                            ->label('Il tuo commento (opzionale)')
+                            ->rows(4)
+                            ->maxLength(1000)
+                            ->columnSpan(2)
+                            ->placeholder('Raccontaci cosa ti piace o cosa potremmo migliorare...'),
+                    ])
+                    ->columns(3)
                     ->columnSpanFull(),
             ])
             ->statePath('data');

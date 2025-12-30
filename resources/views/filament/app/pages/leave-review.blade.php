@@ -2,13 +2,8 @@
     <div class="space-y-6">
         {{-- Intro --}}
         <div class="text-center space-y-2">
-            <div class="flex justify-center">
-                @svg('tabler-star-filled', 'w-16 h-16 text-amber-400')
-            </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                La tua opinione conta!
-            </h2>
             <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                @svg('tabler-star-filled', 'w-4 h-4 text-amber-400 inline')
                 Aiutaci a migliorare DinnerTable. Lascia una recensione e raccontaci la tua esperienza.
             </p>
         </div>
