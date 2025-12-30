@@ -35,8 +35,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo-small.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-small.png') }}">
-
-    @vite('resources/css/app.css')
+ @vite('resources/css/app.css')
 </head>
 
 <body class="bg-white antialiased">
@@ -802,7 +801,7 @@
 
     @vite('resources/js/app.js')
 
-    <script>
+<script>
         // Smooth fade-in/out SOLO per le sezioni principali
         const observerOptions = {
             threshold: [0.1, 0.5, 0.9],

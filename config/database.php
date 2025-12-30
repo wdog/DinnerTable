@@ -1,6 +1,5 @@
 <?php
 
-use PDO;
 use Pdo\Mysql;
 use Illuminate\Support\Str;
 
