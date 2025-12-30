@@ -2,9 +2,10 @@
 
 namespace App\Filament\App\Pages;
 
-use Filament\Forms\Form;
+use BackedEnum;
 use Filament\Pages\Page;
 use App\Models\AppReview;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Radio;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
@@ -21,9 +22,7 @@ class LeaveReview extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string $view = 'filament.app.pages.leave-review';
-
-    protected static ?string $navigationIcon = 'tabler-star';
+    protected static string|BackedEnum|null $navigationIcon = 'tabler-star';
 
     protected static ?string $title = 'Lascia una Recensione';
 
@@ -33,6 +32,8 @@ class LeaveReview extends Page implements HasForms
     protected static bool $shouldRegisterNavigation = false;
 
     public ?array $data = [];
+
+    protected string $view = 'filament.app.pages.leave-review';
 
     public function mount(): void
     {
@@ -49,9 +50,9 @@ class LeaveReview extends Page implements HasForms
         }
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Radio::make('rating')
                     ->label('Quanto ti piace DinnerTable?')
