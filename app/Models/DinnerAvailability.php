@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Observers\DinnerAvailabilityObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 /**
@@ -111,6 +112,34 @@ class DinnerAvailability extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(DinnerBooking::class, 'host_availability_id');
+    }
+
+    /**
+     * Logs cronologici per questa disponibilità.
+     *
+     * Relazione diretta con i log tramite availability_id per query facili.
+     * I log sono ordinati cronologicamente inverso (più recenti prima).
+     *
+     * @return HasMany Relazione con il modello DinnerLog
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(DinnerLog::class, 'availability_id')
+            ->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Polymorphic relation per activity logs.
+     *
+     * Relazione polymorphic per estendibilità futura a bookings.
+     * Preferire logs() per query semplici su availability.
+     *
+     * @return MorphMany Relazione polymorphic con DinnerLog
+     */
+    public function activityLogs(): MorphMany
+    {
+        return $this->morphMany(DinnerLog::class, 'loggable')
+            ->orderBy('created_at', 'desc');
     }
 
     /**

@@ -53,6 +53,24 @@ class ShowDinnerAvailability extends ViewRecord
     protected string $view = 'filament.app.resources.dinner-availabilities.pages.show-dinner-availability';
 
     /**
+     * Personalizza l'heading della pagina.
+     *
+     * Questo metodo sovrascrive l'heading di default di Filament
+     * per mostrare la data della cena formattata in italiano.
+     *
+     * Formato output: "Cena di lunedì, 23 gennaio 2025"
+     *
+     * L'heading appare come titolo principale della pagina,
+     * sopra il contenuto e sotto la topbar.
+     *
+     * @return string Heading formattato
+     */
+    public function getHeading(): string
+    {
+        return 'Cena di ' . $this->record->dinnerDate->dinner_date->isoFormat('dddd, D MMMM YYYY');
+    }
+
+    /**
      * Override del metodo di caricamento record per eager loading.
      *
      * Questo metodo viene chiamato automaticamente da Filament quando
@@ -76,6 +94,7 @@ class ShowDinnerAvailability extends ViewRecord
             'dinnerDate',
             'user.profile',
             'bookings.guest.profile',
+            'logs.user', // Eager load logs con utenti per timeline
         ]);
     }
 
@@ -114,23 +133,5 @@ class ShowDinnerAvailability extends ViewRecord
         $actions[] = DeleteAction::make();
 
         return $actions;
-    }
-
-    /**
-     * Personalizza l'heading della pagina.
-     *
-     * Questo metodo sovrascrive l'heading di default di Filament
-     * per mostrare la data della cena formattata in italiano.
-     *
-     * Formato output: "Cena di lunedì, 23 gennaio 2025"
-     *
-     * L'heading appare come titolo principale della pagina,
-     * sopra il contenuto e sotto la topbar.
-     *
-     * @return string Heading formattato
-     */
-    public function getHeading(): string
-    {
-        return 'Cena di ' . $this->record->dinnerDate->dinner_date->isoFormat('dddd, D MMMM YYYY');
     }
 }

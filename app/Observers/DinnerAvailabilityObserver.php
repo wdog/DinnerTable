@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
+use App\Models\DinnerLog;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\DinnerCancelledByHostNotification;
@@ -43,6 +45,27 @@ use App\Notifications\DinnerCancelledByHostNotification;
 class DinnerAvailabilityObserver
 {
     /**
+     * Gestisce l'evento "created" del modello DinnerAvailability.
+     *
+     * Crea un log entry quando viene creata una nuova disponibilità,
+     * tracciando l'utente che l'ha creata e i dati iniziali.
+     *
+     * @param  DinnerAvailability  $availability  Disponibilità appena creata
+     */
+    public function created(DinnerAvailability $availability): void
+    {
+        DinnerLog::logEvent(
+            availability: $availability,
+            status: $availability->status->value,
+            userId: $availability->user_id,
+            metadata: [
+                'event'      => 'created',
+                'max_guests' => $availability->max_guests,
+            ]
+        );
+    }
+
+    /**
      * Gestisce l'evento "updated" del modello DinnerAvailability.
      *
      * Intercetta il cambio di stato della disponibilità e attiva
@@ -62,6 +85,24 @@ class DinnerAvailabilityObserver
      */
     public function updated(DinnerAvailability $dinnerAvailability): void
     {
+        // Log cambio status se avvenuto
+        if ($dinnerAvailability->wasChanged('status')) {
+            $oldStatus = $dinnerAvailability->getOriginal('status');
+            $newStatus = $dinnerAvailability->status->value;
+
+            DinnerLog::logEvent(
+                availability: $dinnerAvailability,
+                status: $newStatus,
+                userId: Auth::id(), // NULLABLE - null per eventi di sistema
+                metadata: [
+                    'event'               => 'status_changed',
+                    'old_status'          => $oldStatus,
+                    'new_status'          => $newStatus,
+                    'cancellation_reason' => $dinnerAvailability->cancellation_reason?->value,
+                ]
+            );
+        }
+
         // Verifica se lo stato è cambiato a HOST_CANCELLED
         if (
             $dinnerAvailability->wasChanged('status') &&

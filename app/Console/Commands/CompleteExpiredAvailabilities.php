@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\DinnerLog;
 use Illuminate\Console\Command;
 use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
@@ -95,9 +96,24 @@ class CompleteExpiredAvailabilities extends Command
 
         $count = 0;
         foreach ($availabilities as $availability) {
+            $oldStatus = $availability->status->value;
+
             $availability->status = DinnerAvailabilityStatus::COMPLETED;
             $availability->bookings()->notConfirmed()->update(['status' => DinnerBookingStatus::CANCELLED]);
             $availability->save();
+
+            // Log completamento automatico - NULLABLE logged_by per eventi di sistema
+
+            DinnerLog::logEvent(
+                availability: $availability,
+                status: DinnerAvailabilityStatus::COMPLETED->value,
+                userId: null, // NULLABLE - Sistema (cron job)
+                metadata: [
+                    'event'        => 'auto_completed',
+                    'old_status'   => $oldStatus,
+                    'completed_by' => 'system',
+                ]
+            );
             $count++;
 
             $this->info("Completata disponibilità ID {$availability->id} per {$availability->user->name} del {$availability->dinnerDate->dinner_date->format('d/m/Y')}");
