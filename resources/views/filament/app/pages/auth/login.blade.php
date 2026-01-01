@@ -1,10 +1,6 @@
 <x-filament-panels::page.simple>
-    {{-- Form di login --}}
-    {{ $this->form }}
-
-    <x-filament::button type="submit" form="authenticate" class="w-full mt-6">
-        Accedi
-    </x-filament::button>
+    {{-- Form di login con actions --}}
+    {{ $this->content }}
 
     {{-- Link personalizzati responsive --}}
     <div class="mt-6 space-y-3 text-center">

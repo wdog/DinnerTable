@@ -1,10 +1,6 @@
 <x-filament-panels::page.simple>
-    {{-- Form di registrazione --}}
-    {{ $this->form }}
-
-    <x-filament::button type="submit" form="register" class="w-full mt-6">
-        Registrati
-    </x-filament::button>
+    {{-- Form di registrazione con actions --}}
+    {{ $this->content }}
 
     {{-- Link personalizzati responsive --}}
     <div class="mt-6 space-y-3 text-center">
