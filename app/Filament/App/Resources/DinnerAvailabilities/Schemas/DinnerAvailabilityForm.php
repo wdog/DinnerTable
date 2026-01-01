@@ -29,7 +29,7 @@ class DinnerAvailabilityForm
                 Section::make()
                     ->columns([
                         'xs' => 3,
-                        'md' => 3,
+                        'md' => 2,
                     ])
                     ->schema([
                         // !
