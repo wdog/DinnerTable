@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources\DinnerAvailabilities\Tables;
 
 use Carbon\Carbon;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Illuminate\Support\Collection;
@@ -23,6 +24,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Filament\App\Resources\DinnerAvailabilities\DinnerAvailabilityResource;
 
 /**
  * Configurazione tabella disponibilità utente.
@@ -58,17 +60,21 @@ class DinnerAvailabilitiesTable
         return $table
             ->groups([
                 Group::make('dinnerDate.dinner_date')
+                    ->label('Data cena')
                     ->titlePrefixedWithLabel(false)
                     ->collapsible()
                     ->getTitleFromRecordUsing(
-                        fn(Model $record): string => 'Dinner del ' . $record->dinnerDate->dinner_date->format('d/m/Y')
+                        fn (Model $record): string => 'Cena di ' . $record->dinnerDate->dinner_date->isoFormat('dddd, D MMMM'),
                     ),
             ])
             ->defaultSort('dinnerDate.dinner_date', 'asc')
+            ->recordAction('show')
             ->columns([
                 // !
                 TextColumn::make('dinnerDate.dinner_date')
-                    ->date('Y M, d')
+                    ->label('Data')
+                    ->date('l - d F Y')
+                    // ->formatStateUsing(fn ($state) => $state?->isoFormat('D/MM/Y'))
                     ->icon('tabler-calendar')
                     ->sortable(),
 
@@ -107,10 +113,10 @@ class DinnerAvailabilitiesTable
                 TextColumn::make('bookings_count')
                     ->label('Prenotazioni')
                     ->alignCenter()
-                    ->badge(fn($record) => $record->can_host)
+                    ->badge(fn ($record) => $record->can_host)
                     ->counts('bookings')
                     ->formatStateUsing(
-                        fn($record): HtmlString|string|null => $record->can_host ?
+                        fn ($record): HtmlString|string|null => $record->can_host ?
                             new HtmlString(
                                 "<div class='text-left'>" .
                                     '<div>Confermati: ' . $record->bookings()->where('status', 'confirmed')->sum('guests_count') . '</div>' .
@@ -145,9 +151,9 @@ class DinnerAvailabilitiesTable
                     ->falseLabel('Solo eventi passati')
                     ->default(true)
                     ->queries(
-                        true: fn(Builder $query) => $query->future(),
-                        false: fn(Builder $query) => $query->past(),
-                        blank: fn(Builder $query) => $query,
+                        true: fn (Builder $query) => $query->future(),
+                        false: fn (Builder $query) => $query->past(),
+                        blank: fn (Builder $query) => $query,
                     ),
                 // !
                 Filter::make('dinner_date')
@@ -169,16 +175,16 @@ class DinnerAvailabilitiesTable
                         return $query
                             ->when(
                                 $data['from'],
-                                fn(Builder $query, $date): Builder => $query->whereHas(
+                                fn (Builder $query, $date): Builder => $query->whereHas(
                                     'dinnerDate',
-                                    fn(Builder $query) => $query->whereDate('dinner_date', '>=', $date)
+                                    fn (Builder $query) => $query->whereDate('dinner_date', '>=', $date)
                                 ),
                             )
                             ->when(
                                 $data['until'],
-                                fn(Builder $query, $date): Builder => $query->whereHas(
+                                fn (Builder $query, $date): Builder => $query->whereHas(
                                     'dinnerDate',
-                                    fn(Builder $query) => $query->whereDate('dinner_date', '<=', $date)
+                                    fn (Builder $query) => $query->whereDate('dinner_date', '<=', $date)
                                 ),
                             );
                     })
@@ -196,14 +202,17 @@ class DinnerAvailabilitiesTable
                         return $indicators;
                     }),
 
-
             ], FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
             ->recordActions([
+                Action::make('show')
+                    ->label('Dettagli')
+                    ->icon('tabler-eye')
+                    ->url(fn ($record) => DinnerAvailabilityResource::getUrl('show', ['record' => $record])),
                 ViewAction::make(),
                 EditAction::make()
                     ->visible(
-                        fn($record) => $record->dinnerDate->dinner_date->isFuture()
+                        fn ($record) => $record->dinnerDate->dinner_date->isFuture()
                     ),
             ])
             ->toolbarActions([
@@ -218,7 +227,7 @@ class DinnerAvailabilitiesTable
                                 /** @var User $user */
                                 $user = Auth::user();
                                 // Verifica autorizzazione tramite policy
-                                if (! $user->can('delete', $record)) {
+                                if ( ! $user->can('delete', $record)) {
                                     $skipped++;
 
                                     // Determina il motivo del blocco

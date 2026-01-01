@@ -13,6 +13,7 @@ use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\EditDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\ViewDinnerAvailability;
+use App\Filament\App\Resources\DinnerAvailabilities\Pages\ShowDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\CreateDinnerAvailability;
 use App\Filament\App\Resources\DinnerAvailabilities\Pages\ListDinnerAvailabilities;
 use App\Filament\App\Resources\DinnerAvailabilities\Schemas\DinnerAvailabilityForm;
@@ -170,7 +171,8 @@ class DinnerAvailabilityResource extends Resource
      * Pagine configurate:
      * - index: Lista di tutte le disponibilità dell'utente
      * - create: Form per creare una nuova disponibilità
-     * - view: Visualizzazione dettaglio in sola lettura
+     * - view: Visualizzazione dettaglio in sola lettura (standard)
+     * - show: Visualizzazione dettaglio custom con layout avanzato
      * - edit: Form per modificare una disponibilità esistente
      *
      * @return array Array associativo di route per le pagine
@@ -181,6 +183,7 @@ class DinnerAvailabilityResource extends Resource
             'index'  => ListDinnerAvailabilities::route('/'),
             'create' => CreateDinnerAvailability::route('/create'),
             'view'   => ViewDinnerAvailability::route('/{record}'),
+            'show'   => ShowDinnerAvailability::route('/{record}/show'),
             'edit'   => EditDinnerAvailability::route('/{record}/edit'),
         ];
     }
