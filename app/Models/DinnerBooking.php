@@ -138,4 +138,34 @@ class DinnerBooking extends Model
             get: fn () => $this->hostAvailability->status->canUpdateBookings()
         );
     }
+
+    /**
+     * Scope per filtrare solo le prenotazioni per date future.
+     *
+     * Include solo le prenotazioni la cui data cena è nel futuro.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFuture($query)
+    {
+        return $query->whereHas('hostAvailability.dinnerDate', function ($query) {
+            $query->where('dinner_date', '>=', now()->startOfDay());
+        });
+    }
+
+    /**
+     * Scope per filtrare solo le prenotazioni per date passate.
+     *
+     * Include solo le prenotazioni la cui data cena è nel passato.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePast($query)
+    {
+        return $query->whereHas('hostAvailability.dinnerDate', function ($query) {
+            $query->where('dinner_date', '<', now()->startOfDay());
+        });
+    }
 }

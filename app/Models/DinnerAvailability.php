@@ -195,4 +195,34 @@ class DinnerAvailability extends Model
             && $this->status->canAcceptBookings()
             && $this->hasAvailableSpots();
     }
+
+    /**
+     * Scope per filtrare solo le disponibilità future.
+     *
+     * Include solo le disponibilità la cui data cena è nel futuro.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFuture($query)
+    {
+        return $query->whereHas('dinnerDate', function ($query) {
+            $query->where('dinner_date', '>=', now()->startOfDay());
+        });
+    }
+
+    /**
+     * Scope per filtrare solo le disponibilità passate.
+     *
+     * Include solo le disponibilità la cui data cena è nel passato.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePast($query)
+    {
+        return $query->whereHas('dinnerDate', function ($query) {
+            $query->where('dinner_date', '<', now()->startOfDay());
+        });
+    }
 }

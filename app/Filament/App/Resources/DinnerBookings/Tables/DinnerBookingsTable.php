@@ -17,6 +17,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TernaryFilter;
 
 class DinnerBookingsTable
 {
@@ -75,12 +76,24 @@ class DinnerBookingsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filtersFormColumns(2)
+            ->filtersFormColumns(3)
             ->filters([
                 SelectFilter::make('status')
                     ->label('Stato')
                     ->options(DinnerBookingStatus::class)
                     ->native(false),
+
+                TernaryFilter::make('hide_past')
+                    ->label('Nascondi eventi passati')
+                    ->placeholder('Tutti gli eventi')
+                    ->trueLabel('Solo eventi futuri')
+                    ->falseLabel('Solo eventi passati')
+                    ->default(true)
+                    ->queries(
+                        true: fn (Builder $query) => $query->future(),
+                        false: fn (Builder $query) => $query->past(),
+                        blank: fn (Builder $query) => $query,
+                    ),
 
                 Filter::make('dinner_date')
                     ->columns(2)
