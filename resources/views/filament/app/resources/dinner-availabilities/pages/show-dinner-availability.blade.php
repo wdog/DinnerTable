@@ -102,7 +102,7 @@
                 <details class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <summary
                         class="cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
-                        @svg('tabler-note', 'w-4 h-4 text-gray-500') Note
+                        @svg('tabler-note', 'w-8 h-8 inline') Note
                     </summary>
                     <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{{ $record->note }}
                     </p>
@@ -111,12 +111,12 @@
         </x-filament::section>
 
         {{-- SEZIONE 2: Prenotazioni Card Mini (solo host) --}}
-        @if ($record->can_host && $record->bookings->isNotEmpty())
-            <x-filament::section heading="Prenotazioni Ricevute" icon="tabler-users">
+        @if ($record->can_host && $record->confirmedBookings->isNotEmpty())
+            <x-filament::section heading="Prenotazioni Confermate" icon="tabler-users">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    @foreach ($record->bookings as $booking)
+                    @foreach ($record->confirmedBookings as $booking)
                         <div
-                            class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            class="flex items-center gap-3 p-3 bg-slate-600/20 h-32 w-32  rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                             {{-- Avatar --}}
                             <div
                                 class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400 font-semibold flex-shrink-0">
