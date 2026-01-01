@@ -15,26 +15,9 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="DinnerTable - Organizza Cene di Gruppo Facilmente">
-    <meta property="og:description"
-        content="Coordina le cene del tuo gruppo senza stress. Gestisci turni, disponibilità e prenotazioni in un'unica piattaforma gratuita.">
-    <meta property="og:image" content="{{ asset('images/logo.png') }}">
-    <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:site_name" content="DinnerTable">
-    <meta property="og:locale" content="it_IT">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="DinnerTable - Organizza Cene di Gruppo">
-    <meta name="twitter:description"
-        content="Semplifica l'organizzazione delle cene di gruppo con DinnerTable. Gratis per sempre!">
-    <meta name="twitter:image" content="{{ asset('images/logo.png') }}">
-
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/logo-small.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo-small.png') }}">
+    <link rel="icon"  href="{{ asset('images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/favicon.ico') }}">
     @vite('resources/css/app.css')
 </head>
 

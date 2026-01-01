@@ -2,10 +2,10 @@
 
 namespace App\Providers\Filament;
 
-use App\Models\User;
-use Filament\Actions\Action;
 use Filament\Panel;
+use App\Models\User;
 use Filament\PanelProvider;
+use Filament\Actions\Action;
 use Filament\Pages\Dashboard;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +52,8 @@ class AppPanelProvider extends PanelProvider
             ->brandName('DinnerTable')
             ->brandLogo(asset('images/logo-small.png'))
             ->brandLogoHeight('3rem')
-            ->favicon(asset('images/favico.png'))
+            ->favicon(asset('images/favicon.ico'))
+            ->font('Roboto Condensed')
             ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
