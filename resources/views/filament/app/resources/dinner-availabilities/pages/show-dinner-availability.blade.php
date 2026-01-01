@@ -115,8 +115,7 @@
             <x-filament::section heading="Prenotazioni Confermate" icon="tabler-users">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     @foreach ($record->confirmedBookings as $booking)
-                        <div
-                            class="flex items-center gap-3 p-3 bg-slate-600/20 h-32 w-32  rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <div class="flex items-center gap-3 p-3 bg-slate-600/20 h-32 w-64  rounded-lg ">
                             {{-- Avatar --}}
                             <div
                                 class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400 font-semibold flex-shrink-0">
@@ -134,6 +133,7 @@
                                 </div>
 
                                 {{-- Bringing items inline --}}
+
                                 @if ($booking->bringing_items && count($booking->bringing_items) > 0)
                                     <div class="text-xs text-gray-400 truncate mt-0.5">
                                         🍷 {{ implode(', ', $booking->bringing_items) }}

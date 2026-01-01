@@ -110,7 +110,7 @@
             {{-- ============================================
                      GRIGLIA CALENDARIO
                      Layout responsive: 3 colonne mobile, 7 desktop
-                     ============================================ --}}
+                     =======avia===================================== --}}
             <div class="pb-4 grid grid-cols-1 lg:grid-cols-7 gap-0">
                 @foreach ($calendarData as $dateInfo)
                     @if ($dateInfo['empty'])
