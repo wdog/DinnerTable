@@ -39,11 +39,11 @@ class AppPanelProvider extends PanelProvider
             ->registration(Register::class)
             ->profile(EditProfile::class)
             ->userMenuItems([
-                'profile' => Action::make()
+                'profile' => Action::make('custom-profile')
                     ->label('Profilo')
                     ->url(fn (): string => EditProfile::getUrl())
                     ->icon('tabler-user'),
-                'review' => Action::make()
+                'review' => Action::make('leave-review')
                     ->label('Recensione')
                     ->url(fn (): string => LeaveReview::getUrl())
                     ->icon('tabler-star'),
