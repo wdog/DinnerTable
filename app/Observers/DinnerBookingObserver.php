@@ -6,6 +6,7 @@ use App\Models\DinnerLog;
 use App\Models\DinnerBooking;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DinnerAvailability;
+use App\Enums\DinnerBookingStatus;
 use App\Enums\DinnerAvailabilityStatus;
 
 /**
@@ -75,7 +76,7 @@ class DinnerBookingObserver
         );
 
         // Aggiorna solo se la prenotazione è confermata
-        if ($dinnerBooking->status === 'confirmed') {
+        if ($dinnerBooking->status === DinnerBookingStatus::CONFIRMED) {
             $this->updateHostStatus($dinnerBooking->hostAvailability);
         }
     }
@@ -218,9 +219,17 @@ class DinnerBookingObserver
             return;
         }
 
-        // Calcola totale ospiti prenotati (somma guests_count delle prenotazioni confermate)
-        $totalBookedGuests = $hostAvailability->total_booked_guests;
-        $maxGuests         = $hostAvailability->max_guests ?? 0;
+        // IMPORTANTE: ricarica il model dal database per avere lo status attuale
+        // (potrebbe essere stato modificato da altri observer o query)
+        $hostAvailability->refresh();
+
+        // Calcola totale ospiti prenotati direttamente dal database (query fresca)
+        // per evitare problemi con relazioni cached
+        $totalBookedGuests = $hostAvailability->bookings()
+            ->where('status', DinnerBookingStatus::CONFIRMED)
+            ->sum('guests_count');
+
+        $maxGuests = $hostAvailability->max_guests ?? 0;
 
         // Determina nuovo stato basato su occupazione
         $newStatus = match (true) {

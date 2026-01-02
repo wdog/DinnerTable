@@ -196,7 +196,7 @@ test('canBeModified returns true when host availability allows updates', functio
     $booking      = DinnerBooking::factory()->forHost($availability)->create();
 
     // Act & Assert: Può essere modificato
-    expect($booking->canBeModified->value)->toBeTrue();
+    expect($booking->canBeModified)->toBeTrue();
 });
 
 test('canBeModified returns false when host availability is completed', function () {
@@ -205,7 +205,7 @@ test('canBeModified returns false when host availability is completed', function
     $booking      = DinnerBooking::factory()->forHost($availability)->create();
 
     // Act & Assert: NON può essere modificato
-    expect($booking->canBeModified->value)->toBeFalse();
+    expect($booking->canBeModified)->toBeFalse();
 });
 
 test('confirmed scope filters only confirmed bookings', function () {

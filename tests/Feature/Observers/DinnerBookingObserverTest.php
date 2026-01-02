@@ -176,8 +176,10 @@ test('observer uses saveQuietly to avoid loop with availability observer', funct
     // Arrange: Host con booking
     $availability = DinnerAvailability::factory()->asHost()->create(['max_guests' => 10]);
 
-    // Conta log availability prima del booking
-    $initialAvailabilityLogs = DinnerLog::where('availability_id', $availability->id)->count();
+    // Conta SOLO log dell'availability (non booking) prima del booking
+    $initialAvailabilityLogs = DinnerLog::where('loggable_type', DinnerAvailability::class)
+        ->where('loggable_id', $availability->id)
+        ->count();
 
     // Act: Crea booking confermato (Observer aggiorna host status con saveQuietly)
     DinnerBooking::factory()->confirmed()->withGuests(2)->forHost($availability)->create();
@@ -185,7 +187,9 @@ test('observer uses saveQuietly to avoid loop with availability observer', funct
     // Assert: Host status aggiornato ma Observer availability NON ha loggato (saveQuietly)
     expect($availability->fresh()->status)->toBe(DinnerAvailabilityStatus::ALMOST_FULL);
 
-    $afterAvailabilityLogs = DinnerLog::where('availability_id', $availability->id)->count();
+    $afterAvailabilityLogs = DinnerLog::where('loggable_type', DinnerAvailability::class)
+        ->where('loggable_id', $availability->id)
+        ->count();
 
     // Log count dovrebbe essere uguale (saveQuietly bypassa availability Observer)
     expect($afterAvailabilityLogs)->toBe($initialAvailabilityLogs);
@@ -360,7 +364,6 @@ test('booking update without status or guests_count change does not update host'
     ]);
 
     $booking = DinnerBooking::factory()->confirmed()->withGuests(2)->forHost($availability)->create();
-
     expect($availability->fresh()->status)->toBe(DinnerAvailabilityStatus::ALMOST_FULL);
 
     // Act: Modifica solo note (non status né guests_count)

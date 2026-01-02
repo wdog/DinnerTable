@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DinnerBookingStatus;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Database\Eloquent\Model;
 use App\Observers\DinnerAvailabilityObserver;
@@ -154,7 +155,7 @@ class DinnerAvailability extends Model
      */
     public function confirmedBookings(): HasMany
     {
-        return $this->bookings()->where('status', 'confirmed');
+        return $this->bookings()->where('status', DinnerBookingStatus::CONFIRMED);
     }
 
     /**
