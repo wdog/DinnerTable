@@ -132,7 +132,7 @@ enum DinnerAvailabilityStatus: string implements HasColor, HasIcon, HasLabel
             // Host states
             self::AVAILABLE_TO_HOST => 'success',  // Verde: tutto ok
             self::ALMOST_FULL       => 'warning',  // Giallo: attenzione, quasi pieno
-            self::FULL              => 'danger',   // Rosso: pieno
+            self::FULL              => 'info',   // Rosso: pieno
             self::HOST_CANCELLED    => 'danger',   // Rosso: cancellato
             self::COMPLETED         => 'info',     // Blu: completato
             // Guest states
