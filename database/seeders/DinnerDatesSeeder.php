@@ -71,8 +71,8 @@ class DinnerDatesSeeder extends Seeder
                     ->values();
 
                 foreach ($selectedDates as $dinnerDate) {
-                    // Aumenta probabilità di poter ospitare (50% invece di 30%)
-                    $canHost = rand(1, 100) <= 50;
+                    // Poche can_host (10%) per avere più guest disponibili per bookings
+                    $canHost = rand(1, 100) <= 10;
 
                     if ($canHost) {
                         // HOST: usa solo stati iniziali validi
