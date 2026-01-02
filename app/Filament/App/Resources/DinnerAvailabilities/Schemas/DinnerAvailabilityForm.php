@@ -94,6 +94,7 @@ class DinnerAvailabilityForm
                             ->grouped()
                             ->label('Ospito io la cena')
                             ->live()
+                            ->disabledOn('edit')
                             ->afterStateUpdated(function (Set $set, $state) {
                                 // Quando can_host cambia, imposta uno status valido
                                 if ($state) {

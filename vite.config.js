@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
                 host: hmrHost,
             },
             watch: {
-                usePolling: true,
+                // usePolling: true,
             }
         },
     };

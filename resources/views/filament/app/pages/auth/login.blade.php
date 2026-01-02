@@ -24,7 +24,6 @@
     {{-- CSS responsive per mobile --}}
     <style>
         .fi-simple-main {
-            background-color: white !important;
             padding: 40px;
             margin: 0;
             width: 90% !important;
