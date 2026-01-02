@@ -53,7 +53,7 @@ class AppPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logo-small.png'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/favicon.ico'))
-            ->font('Roboto Condensed')
+            ->font('Inter')
             ->renderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"))
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)

@@ -48,7 +48,7 @@
             {{-- Stats Inline (solo host) --}}
             <div class="">
                 <div class="grid grid-cols-3 w-full gap-y-2">
-                    <div class="w-full pr-12 ">
+                    <div class="w-full pr-2 lg:pr-12">
                         <div
                             class="flex gap-y-2 flex-col lg:flex-row items-center px-5 py-4
                             relative group overflow-hidden
@@ -65,7 +65,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full pr-12">
+                    <div class="w-full pr-2 lg:pr-12">
                         <div
                             class="flex gap-y-2 flex-col lg:flex-row items-center px-5 py-4
                             relative group overflow-hidden
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full pr-12">
+                    <div class="w-full pr-2 lg:pr-12">
                         <div
                             class="flex gap-y-2 flex-col lg:flex-row items-center px-5 py-4
                             relative group overflow-hidden
@@ -118,7 +118,8 @@
                         <div
                             class="relative group overflow-hidden
                             rounded-xl bg-linear-to-br from-emerald-100 to-lime-100
-                            dark:from-slate-600 dark:to-slate-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                            dark:from-slate-600 dark:to-slate-900 border border-gray-200
+                            dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
 
 
                             {{-- Card content --}}
