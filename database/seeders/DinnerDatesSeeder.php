@@ -62,8 +62,11 @@ class DinnerDatesSeeder extends Seeder
 
             // Per ogni membro del gruppo, crea molte più disponibilità
             foreach ($group->members as $member) {
-                // Numero più alto di disponibilità (60-90 date per avere più eventi)
-                $numAvailabilities = rand(60, 90);
+                // Determina se può ospitare (10% host, 90% guest)
+                $canHost = rand(1, 100) <= 10;
+
+                // Host: tante disponibilità (60-90), Guest: poche (8-12)
+                $numAvailabilities = $canHost ? rand(60, 90) : rand(8, 12);
 
                 // Seleziona date random dal periodo
                 $selectedDates = collect($dates)
@@ -71,8 +74,7 @@ class DinnerDatesSeeder extends Seeder
                     ->values();
 
                 foreach ($selectedDates as $dinnerDate) {
-                    // Poche can_host (10%) per avere più guest disponibili per bookings
-                    $canHost = rand(1, 100) <= 10;
+                    // can_host già determinato prima del loop
 
                     if ($canHost) {
                         // HOST: usa solo stati iniziali validi
