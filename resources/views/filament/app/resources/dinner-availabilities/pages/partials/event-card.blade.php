@@ -2,7 +2,7 @@
 <div
     class="
     inline-block
-     gap-y-2 flex-col lg:flex-row items-center px-5 py-6
+     gap-y-2 flex-col lg:flex-row items-center px-4 py-2
                             relative group overflow-hidden
                             rounded-xl bg-linear-to-br from-emerald-100 to-lime-100
                             dark:from-slate-600 dark:to-slate-900
@@ -25,7 +25,7 @@
     </div>
 
     {{-- Descrizione evento --}}
-    <div class="mb-3">
+    <div class="mb-2">
         @if ($log->metadata && isset($log->metadata['event']))
             @switch($log->metadata['event'])
                 @case('created')
@@ -39,17 +39,26 @@
                 @break
 
                 @case('status_changed')
+                    @php
+                        $oldStatusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->metadata['old_status']);
+                        $newStatusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->metadata['new_status']);
+                    @endphp
                     <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
                         @svg('tabler-arrows-exchange', 'w-4 h-4 inline-block mr-1')
                         Cambio stato
                     </p>
                     <p class="text-xs text-gray-600 dark:text-gray-400">
-                        Da <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log->metadata['old_status'] }}</span>
-                        a <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log->metadata['new_status'] }}</span>
+                        Da <x-filament::badge class='px-2' size="xs"
+                            :color="$oldStatusEnum->getColor()">{{ $oldStatusEnum->getLabel() }}</x-filament::badge>
+                        a <x-filament::badge class='px-2' size="xs"
+                            :color="$newStatusEnum->getColor()">{{ $newStatusEnum->getLabel() }}</x-filament::badge>
                     </p>
                     @if (isset($log->metadata['cancellation_reason']))
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">
-                            Motivo: {{ $log->metadata['cancellation_reason'] }}
+                        @php
+                            $cancellationReasonEnum = \App\Enums\CancellationReason::from($log->metadata['cancellation_reason']);
+                        @endphp
+                        <p class="text-xs text-gray-500 dark:text-slate-100 mt-2 italic">
+                            Motivo: {{ $cancellationReasonEnum->getLabel() }}
                         </p>
                     @endif
                 @break
