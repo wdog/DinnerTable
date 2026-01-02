@@ -68,7 +68,6 @@ class DinnerAvailabilitiesTable
                     ),
             ])
             ->defaultSort('dinnerDate.dinner_date', 'asc')
-            ->recordAction('show')
             ->columns([
                 // !
                 TextColumn::make('dinnerDate.dinner_date')
@@ -204,6 +203,7 @@ class DinnerAvailabilitiesTable
 
             ], FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
+            ->recordUrl(fn ($record) => DinnerAvailabilityResource::getUrl('show', ['record' => $record]))
             ->recordActions([
                 Action::make('show')
                     ->label('Dettagli')

@@ -90,12 +90,19 @@ class ShowDinnerAvailability extends ViewRecord
      */
     protected function resolveRecord($key): \Illuminate\Database\Eloquent\Model
     {
-        return parent::resolveRecord($key)->load([
+        $record = parent::resolveRecord($key);
+
+        // Eager load con ordinamento personalizzato per logs (dal più vecchio al più nuovo)
+        $record->load([
             'dinnerDate',
             'user.profile',
             'bookings.guest.profile',
-            'logs.user', // Eager load logs con utenti per timeline
+            'logs' => function ($query) {
+                $query->orderBy('created_at', 'asc')->with('user');
+            },
         ]);
+
+        return $record;
     }
 
     /**

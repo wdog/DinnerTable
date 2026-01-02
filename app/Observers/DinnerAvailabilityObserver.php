@@ -103,6 +103,48 @@ class DinnerAvailabilityObserver
             );
         }
 
+        // Log cambio dinner_name
+        if ($dinnerAvailability->wasChanged('dinner_name')) {
+            DinnerLog::logEvent(
+                availability: $dinnerAvailability,
+                status: $dinnerAvailability->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'dinner_name_changed',
+                    'old_value' => $dinnerAvailability->getOriginal('dinner_name'),
+                    'new_value' => $dinnerAvailability->dinner_name,
+                ]
+            );
+        }
+
+        // Log cambio max_guests
+        if ($dinnerAvailability->wasChanged('max_guests')) {
+            DinnerLog::logEvent(
+                availability: $dinnerAvailability,
+                status: $dinnerAvailability->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'max_guests_changed',
+                    'old_value' => $dinnerAvailability->getOriginal('max_guests'),
+                    'new_value' => $dinnerAvailability->max_guests,
+                ]
+            );
+        }
+
+        // Log cambio note
+        if ($dinnerAvailability->wasChanged('note')) {
+            DinnerLog::logEvent(
+                availability: $dinnerAvailability,
+                status: $dinnerAvailability->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'note_changed',
+                    'old_value' => $dinnerAvailability->getOriginal('note'),
+                    'new_value' => $dinnerAvailability->note,
+                ]
+            );
+        }
+
         // Verifica se lo stato è cambiato a HOST_CANCELLED
         if (
             $dinnerAvailability->wasChanged('status') &&

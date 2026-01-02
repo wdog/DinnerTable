@@ -118,14 +118,14 @@ class DinnerAvailability extends Model
      * Logs cronologici per questa disponibilità.
      *
      * Relazione diretta con i log tramite availability_id per query facili.
-     * I log sono ordinati cronologicamente inverso (più recenti prima).
+     * I log sono ordinati cronologicamente (dal più vecchio al più nuovo).
      *
      * @return HasMany Relazione con il modello DinnerLog
      */
     public function logs(): HasMany
     {
         return $this->hasMany(DinnerLog::class, 'availability_id')
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'asc');
     }
 
     /**
