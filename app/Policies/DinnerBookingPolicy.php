@@ -300,6 +300,6 @@ class DinnerBookingPolicy
     public function forceDelete(User $user, DinnerBooking $booking): bool
     {
         // Solo admin o il guest possono eliminare definitivamente
-        return $user->hasRole('super_admin') || $booking->guest_user_id === $user->id;
+        return $user->is_admin || $booking->guest_user_id === $user->id;
     }
 }

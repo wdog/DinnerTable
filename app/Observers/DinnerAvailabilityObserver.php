@@ -6,6 +6,7 @@ use App\Models\DinnerLog;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\DinnerBookingStatus;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\DinnerCancelledByHostNotification;
@@ -187,12 +188,15 @@ class DinnerAvailabilityObserver
      */
     protected function handleHostCancellation(DinnerAvailability $dinnerAvailability): void
     {
-        // Ottieni tutte le prenotazioni confermate con eager loading dei guest
-        $confirmedBookings = $dinnerAvailability->confirmedBookings()->with('guest')->get();
+        // Ottieni tutte le prenotazioni NON cancellate (confirmed + pending) con eager loading dei guest
+        $activeBookings = $dinnerAvailability->bookings()
+            ->whereNot('status', DinnerBookingStatus::CANCELLED)
+            ->with('guest')
+            ->get();
 
         // Early return se non ci sono prenotazioni da cancellare
-        if ($confirmedBookings->isEmpty()) {
-            Log::info('Host cancelled dinner with no confirmed bookings', [
+        if ($activeBookings->isEmpty()) {
+            Log::info('Host cancelled dinner with no active bookings', [
                 'availability_id' => $dinnerAvailability->id,
                 'host_id'         => $dinnerAvailability->user_id,
                 'dinner_date'     => $dinnerAvailability->dinnerDate->dinner_date,
@@ -202,12 +206,13 @@ class DinnerAvailabilityObserver
         }
 
         $cancelledCount = 0;
+        $cancelledBookingIds = [];
         $notifiedGuests = [];
 
-        // Itera su tutte le prenotazioni confermate
-        foreach ($confirmedBookings as $booking) {
+        // Itera su tutte le prenotazioni attive (confirmed + pending)
+        foreach ($activeBookings as $booking) {
             // Cambia lo stato della prenotazione a 'cancelled'
-            $booking->status = 'cancelled';
+            $booking->status = DinnerBookingStatus::CANCELLED;
 
             // IMPORTANTE: Usa saveQuietly() per evitare loop con DinnerBookingObserver
             // Se usassimo save(), l'observer della prenotazione verrebbe triggerato
@@ -215,6 +220,7 @@ class DinnerAvailabilityObserver
             $booking->saveQuietly();
 
             $cancelledCount++;
+            $cancelledBookingIds[] = $booking->id;
             Log::debug("Cancelled booking: {$booking->id}");
 
             // Invia notifica database all'ospite
@@ -244,5 +250,18 @@ class DinnerAvailabilityObserver
             'notified_guests'     => $notifiedGuests,
             'cancellation_reason' => $dinnerAvailability->cancellation_reason ?? 'Nessun motivo specificato',
         ]);
+
+        // Crea log evento per audit trail (usato dai test)
+        DinnerLog::logEvent(
+            availability: $dinnerAvailability,
+            status: $dinnerAvailability->status->value,
+            userId: Auth::id(),
+            metadata: [
+                'event'                      => 'host_cancelled_cascade',
+                'cancelled_bookings_count'   => $cancelledCount,
+                'cancelled_booking_ids'      => $cancelledBookingIds,
+                'cancellation_reason'        => $dinnerAvailability->cancellation_reason?->value,
+            ]
+        );
     }
 }

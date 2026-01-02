@@ -110,7 +110,7 @@ test('notification includes host name, date, and reason', function () {
     Notification::assertSentTo(
         $guest,
         DinnerCancelledByHostNotification::class,
-        function ($notification) use ($host, $availability) {
+        function ($notification) use ($host, $availability, $guest) {
             // Verifica dati notifica
             $data = $notification->toArray($guest);
 
