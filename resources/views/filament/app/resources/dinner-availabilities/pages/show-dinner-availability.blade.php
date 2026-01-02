@@ -210,10 +210,9 @@
         {{-- SEZIONE 3: Cronologia Eventi --}}
         @if ($record->logs->isNotEmpty())
             <x-filament::section heading="Cronologia Eventi" icon="tabler-timeline">
-                <div class="relative">
-                    {{-- Linea centrale verticale --}}
-                    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-200 dark:bg-gray-700">
-                    </div>
+                <div class="relative pl-12 max-w-4xl">
+                    {{-- Linea verticale principale --}}
+                    <div class="absolute left-4 top-2 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
 
                     <div class="space-y-8">
                         @foreach ($record->logs as $index => $log)
@@ -222,61 +221,65 @@
                                 $isBooking = $log->loggable_type === 'App\Models\DinnerBooking';
                             @endphp
 
-                            <div class="relative">
-                                {{-- Timeline dot centrale --}}
-                                <div
-                                    class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
-                                    @if ($isCreation)
-                                        {{-- Dot speciale per creazione --}}
-                                        <div
-                                            class="w-12 h-12 rounded-full bg-linear-to-br {{ $isBooking ? 'from-blue-500 to-cyan-500' : 'from-success-500 to-success-600' }} flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-gray-900">
-                                            @svg('tabler-plus', 'w-6 h-6 text-white')
-                                        </div>
-                                    @else
-                                        {{-- Dot normale per altri eventi --}}
-                                        <div
-                                            class="w-8 h-8 rounded-full {{ $isBooking ? 'bg-blue-500' : 'bg-primary-500' }} flex items-center justify-center shadow-md ring-4 ring-white dark:ring-gray-900">
-                                            @svg('tabler-circle-dot-filled', 'w-4 h-4 text-white')
-                                        </div>
-                                    @endif
+                            <div class="relative flex gap-4">
+                                {{-- Icon status sulla linea --}}
+                                <div class="absolute -left-12  top-2">
+                                    @php
+                                        $eventType = $log->metadata['event'] ?? 'default';
+
+                                        if ($isBooking) {
+                                            $statusEnum = \App\Enums\DinnerBookingStatus::from($log->status);
+                                            $bgColor = match($eventType) {
+                                                'created' => 'bg-cyan-500',
+                                                'status_changed' => $log->metadata['new_status'] === 'cancelled' ? 'bg-orange-500' : 'bg-blue-500',
+                                                default => 'bg-blue-500',
+                                            };
+                                        } else {
+                                            $statusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->status);
+                                            $bgColor = match($eventType) {
+                                                'created' => 'bg-emerald-500',
+                                                'status_changed' => in_array($log->metadata['new_status'] ?? '', ['host_cancelled', 'not_available']) ? 'bg-orange-500' : 'bg-primary-500',
+                                                'host_cancelled_cascade' => 'bg-danger-500',
+                                                default => 'bg-primary-500',
+                                            };
+                                        }
+                                    @endphp
+
+                                    {{-- Icona status --}}
+                                    <div
+                                        class="w-8 h-8 rounded-full flex items-center justify-center {{ $bgColor }} shadow-lg ring-4 ring-white dark:ring-gray-900">
+                                        @svg($statusEnum->getIcon(), 'w-4 h-4 text-white')
+                                    </div>
                                 </div>
 
-                                {{-- Card evento --}}
-                                <div class="grid grid-cols-2 gap-8 items-center">
-                                    {{-- Contenuto a sinistra o destra alternato --}}
-                                    @if ($index % 2 === 0)
-                                        {{-- Evento a sinistra --}}
-                                        <div class="text-right pr-8">
-                                            @if ($isBooking)
-                                                @include(
-                                                    'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
-                                                    ['log' => $log]
-                                                )
-                                            @else
-                                                @include(
-                                                    'filament.app.resources.dinner-availabilities.pages.partials.event-card',
-                                                    ['log' => $log, 'isCreation' => $isCreation]
-                                                )
-                                            @endif
-                                        </div>
-                                        <div></div>
-                                    @else
-                                        {{-- Evento a destra --}}
-                                        <div></div>
-                                        <div class="pl-8">
-                                            @if ($isBooking)
-                                                @include(
-                                                    'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
-                                                    ['log' => $log]
-                                                )
-                                            @else
-                                                @include(
-                                                    'filament.app.resources.dinner-availabilities.pages.partials.event-card',
-                                                    ['log' => $log, 'isCreation' => $isCreation]
-                                                )
-                                            @endif
-                                        </div>
-                                    @endif
+                                {{-- Contenuto evento --}}
+                                <div class="pb-4 flex-1 min-w-0 ">
+                                    {{-- Header: Data/Ora --}}
+                                    <div class="flex items-center gap-3 mb-3">
+                                        @svg('tabler-clock', 'w-4 h-4 text-gray-400 dark:text-gray-500')
+                                        <time
+                                            class="text-sm font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
+                                            {{ $log->created_at->isoFormat('D MMMM YYYY') }}
+                                        </time>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                            {{ $log->created_at->isoFormat('HH:mm') }}
+                                        </span>
+                                    </div>
+
+                                    {{-- Card evento --}}
+                                    <div>
+                                        @if ($isBooking)
+                                            @include(
+                                                'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
+                                                ['log' => $log]
+                                            )
+                                        @else
+                                            @include(
+                                                'filament.app.resources.dinner-availabilities.pages.partials.event-card',
+                                                ['log' => $log, 'isCreation' => $isCreation]
+                                            )
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach

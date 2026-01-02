@@ -1,137 +1,144 @@
 {{-- Partial per card evento booking timeline --}}
 <div
-    class="
-    inline-block
-     gap-y-2 flex-col lg:flex-row items-center px-4 py-2
-                            relative group overflow-hidden
-                            rounded-xl bg-linear-to-br from-blue-100 to-cyan-100
-                            dark:from-blue-900 dark:to-cyan-900
-                            border border-blue-200 dark:border-blue-700 shadow-sm
-                            hover:shadow-lg transition-all duration-300 hover:-translate-y-1
-    ">
+    class="group relative overflow-hidden rounded-lg border border-blue-200 dark:border-blue-700 w-1/2
+    bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300">
 
-    {{-- Header: Badge + Timestamp --}}
-    <div class="flex items-center justify-between gap-3 mb-3">
-        @php
-            $statusEnum = \App\Enums\DinnerBookingStatus::from($log->status);
-        @endphp
-        <x-filament::badge :color="$statusEnum->getColor()">
-            {{ $statusEnum->getLabel() }}
-        </x-filament::badge>
+    @php
+        $eventType = $log->metadata['event'] ?? 'default';
+        $barColor = match ($eventType) {
+            'created' => 'from-cyan-500 to-cyan-600 bg-emerald-50 dark:bg-sky-900',
+            'status_changed' => $log->metadata['new_status'] === 'cancelled'
+                ? 'from-orange-500 to-orange-600 bg-orange-50 dark:bg-orange-900'
+                : 'from-blue-500 to-blue-600 ',
+            default => 'from-blue-500 to-blue-600',
+        };
 
-        <time class="text-xs text-gray-500 dark:text-gray-100 whitespace-nowrap">
-            {{ $log->created_at->format('d/m/Y H:i') }}
-        </time>
+    @endphp
+
+    {{-- Barra colorata sinistra --}}
+    <div class="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b {{ $barColor }} ">
     </div>
 
-    {{-- Descrizione evento --}}
-    <div class="mb-2">
-        @if ($log->metadata && isset($log->metadata['event']))
-            @switch($log->metadata['event'])
-                @case('created')
-                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        @svg('tabler-calendar-plus', 'w-4 h-4 inline-block mr-1')
-                        Prenotazione creata
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">
-                        {{ $log->metadata['guests_count'] }} {{ $log->metadata['guests_count'] === 1 ? 'ospite' : 'ospiti' }}
-                    </p>
-                    @if (!empty($log->metadata['bringing_items']) && is_array($log->metadata['bringing_items']))
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Porta:
+    <div class="pl-5 pr-4 py-3  {{ $barColor }}">
+        {{-- Descrizione evento --}}
+        <div class="space-y-2">
+            @if ($log->metadata && isset($log->metadata['event']))
+                @switch($log->metadata['event'])
+                    @case('created')
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Prenotazione creata
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-1">
+                                @svg('tabler-users', 'w-3 h-3')
+                                {{ $log->metadata['guests_count'] }}
+                                {{ $log->metadata['guests_count'] === 1 ? 'ospite' : 'ospiti' }}
+                            </p>
+                            @if (!empty($log->metadata['bringing_items']) && is_array($log->metadata['bringing_items']))
+                                <div class="flex items-center gap-1 mt-2 flex-wrap">
+                                    @svg('tabler-bottle', 'w-3 h-3 text-gray-400')
+                                    @foreach ($log->metadata['bringing_items'] as $item)
+                                        <x-filament::badge size="xs" color="info">
+                                            {{ $item }}
+                                        </x-filament::badge>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @break
 
-                            @foreach ($log->metadata['bringing_items'] as $item)
-                                <x-filament::badge size="xs" class='bg-sky-400/40 text-slate-800 px-2 '>
-                                    {{ $item }}
+                    @case('status_changed')
+                        @php
+                            $oldStatusEnum = \App\Enums\DinnerBookingStatus::from($log->metadata['old_status']);
+                            $newStatusEnum = \App\Enums\DinnerBookingStatus::from($log->metadata['new_status']);
+                        @endphp
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Cambio stato
+                            </p>
+                            <div class="flex items-center gap-2 mt-1 text-xs">
+                                <x-filament::badge size="xs" :color="$oldStatusEnum->getColor()">
+                                    {{ $oldStatusEnum->getLabel() }}
                                 </x-filament::badge>
-                            @endforeach
+                                @svg('tabler-arrow-right', 'w-3 h-3 text-gray-400')
+                                <x-filament::badge size="xs" :color="$newStatusEnum->getColor()">
+                                    {{ $newStatusEnum->getLabel() }}
+                                </x-filament::badge>
+                            </div>
+                        </div>
+                    @break
 
+                    @case('guests_count_changed')
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Numero ospiti modificato
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                {{ $log->metadata['old_value'] }} @svg('tabler-arrow-right', 'w-3 h-3 inline') {{ $log->metadata['new_value'] }} ospiti
+                            </p>
+                        </div>
+                    @break
+
+                    @case('bringing_items_changed')
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Contributo modificato
+                            </p>
+                            <div class="mt-1">
+                                @if (!empty($log->metadata['new_value']))
+                                    <div class="flex items-center gap-1 flex-wrap">
+                                        @foreach ($log->metadata['new_value'] as $item)
+                                            <x-filament::badge size="xs" color="info">
+                                                {{ $item }}
+                                            </x-filament::badge>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">Rimosso</p>
+                                @endif
+                            </div>
+                        </div>
+                    @break
+
+                    @case('notes_changed')
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Note modificate
+                            </p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 italic">
+                                @if ($log->metadata['new_value'])
+                                    <span class="flex items-center gap-1">
+                                        @svg('tabler-quote', 'w-3 h-3')
+                                        "{{ Str::limit($log->metadata['new_value'], 40) }}"
+                                    </span>
+                                @else
+                                    Note rimosse
+                                @endif
+                            </p>
+                        </div>
+                    @break
+
+                    @default
+                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                            {{ $log->metadata['event'] }}
                         </p>
-                    @endif
-                @break
+                @endswitch
+            @else
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                    Stato: {{ $log->status }}
+                </p>
+            @endif
+        </div>
 
-                @case('status_changed')
-                    @php
-                        $oldStatusEnum = \App\Enums\DinnerBookingStatus::from($log->metadata['old_status']);
-                        $newStatusEnum = \App\Enums\DinnerBookingStatus::from($log->metadata['new_status']);
-                    @endphp
-                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        @svg('tabler-refresh', 'w-4 h-4 inline-block mr-1')
-                        Cambio stato prenotazione
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">
-                        Da <x-filament::badge class='px-2' size="xs"
-                            :color="$oldStatusEnum->getColor()">{{ $oldStatusEnum->getLabel() }}</x-filament::badge>
-                        a <x-filament::badge class='px-2' size="xs"
-                            :color="$newStatusEnum->getColor()">{{ $newStatusEnum->getLabel() }}</x-filament::badge>
-                    </p>
-                @break
-
-                @case('guests_count_changed')
-                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        @svg('tabler-users', 'w-4 h-4 inline-block mr-1')
-                        Numero ospiti modificato
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">
-                        Da {{ $log->metadata['old_value'] }} a {{ $log->metadata['new_value'] }} ospiti
-                    </p>
-                @break
-
-                @case('bringing_items_changed')
-                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        @svg('tabler-bottle', 'w-4 h-4 inline-block mr-1')
-                        Contributo modificato
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">
-                        @if (!empty($log->metadata['new_value']))
-                            Porta:
-                            @foreach ($log->metadata['new_value'] as $item)
-                                <x-filament::badge size="xs" class='bg-sky-400/40 text-slate-800 px-2 '>
-                                    {{ $item }}
-                                </x-filament::badge>
-                            @endforeach
-                        @else
-                            Rimosso
-                        @endif
-                    </p>
-                @break
-
-                @case('notes_changed')
-                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        @svg('tabler-message', 'w-4 h-4 inline-block mr-1')
-                        Note modificate
-                    </p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400 italic">
-                        @if ($log->metadata['new_value'])
-                            "{{ Str::limit($log->metadata['new_value'], 50) }}"
-                        @else
-                            Note rimosse
-                        @endif
-                    </p>
-                @break
-
-                @default
-                    <p class="text-sm text-gray-700 dark:text-gray-300">
-                        Evento: {{ $log->metadata['event'] }}
-                    </p>
-            @endswitch
-        @else
-            <p class="text-sm text-gray-700 dark:text-gray-300">
-                Stato: {{ $log->status }}
-            </p>
-        @endif
-    </div>
-
-    {{-- Footer: Utente (guest) --}}
-    <div class="flex items-center gap-2 text-xs text-cyan-600 dark:text-cyan-400">
-        @if ($log->user)
-            @svg('tabler-user-check', 'w-3 h-3')
-            <span>{{ $log->user->name }}</span>
-        @else
-            @svg('tabler-robot', 'w-3 h-3')
-            <span>Sistema</span>
-        @endif
-        <span class="mx-1">•</span>
-        <span class="text-gray-400">{{ $log->created_at->diffForHumans() }}</span>
+        {{-- Footer: Utente --}}
+        <div class="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+            @if ($log->user)
+                @svg('tabler-user-circle', 'w-3.5 h-3.5 text-gray-400')
+                <span class="text-xs text-gray-600 dark:text-gray-400">{{ $log->user->name }}</span>
+            @else
+                @svg('tabler-robot', 'w-3.5 h-3.5 text-gray-400')
+                <span class="text-xs text-gray-600 dark:text-gray-400">Sistema</span>
+            @endif
+        </div>
     </div>
 </div>
