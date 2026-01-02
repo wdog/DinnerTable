@@ -5,10 +5,12 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use App\Models\DinnerDate;
 use App\Models\DinnerGroup;
+use Illuminate\Support\Str;
 use App\Models\DinnerBooking;
 use Illuminate\Database\Seeder;
 use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
+use Illuminate\Support\Facades\Log;
 use App\Enums\DinnerAvailabilityStatus;
 
 class DinnerDatesSeeder extends Seeder
@@ -48,8 +50,7 @@ class DinnerDatesSeeder extends Seeder
                         'dinner_group_id' => $group->id,
                         'dinner_date'     => $date->toDateString(),
                     ],
-                    [
-                    ]
+                    []
                 );
 
                 $dates[] = $dinnerDate;
@@ -62,11 +63,11 @@ class DinnerDatesSeeder extends Seeder
 
             // Per ogni membro del gruppo, crea molte più disponibilità
             foreach ($group->members as $member) {
-                // Determina se può ospitare (10% host, 90% guest)
-                $canHost = rand(1, 100) <= 10;
+                // Determina se può ospitare
+                $canHost = rand(1, 100) <= 50;
 
                 // Host: tante disponibilità (60-90), Guest: poche (8-12)
-                $numAvailabilities = $canHost ? rand(60, 90) : rand(8, 12);
+                $numAvailabilities = $canHost ? rand(28,31) : rand(10,10);
 
                 // Seleziona date random dal periodo
                 $selectedDates = collect($dates)
@@ -229,7 +230,7 @@ class DinnerDatesSeeder extends Seeder
             // Ottieni tutti gli host disponibili del gruppo
             $availableHosts = DinnerAvailability::where('can_host', true)
                 ->where('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST)
-                ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_group_id', $group->id))
+                ->whereHas('dinnerDate', fn($q) => $q->where('dinner_group_id', $group->id))
                 ->with(['user', 'dinnerDate'])
                 ->get();
 
@@ -239,7 +240,7 @@ class DinnerDatesSeeder extends Seeder
 
             // Ottieni tutti i guest del gruppo (utenti con almeno una disponibilità da guest)
             $potentialGuests = DinnerAvailability::where('can_host', false)
-                ->whereHas('dinnerDate', fn ($q) => $q->where('dinner_group_id', $group->id))
+                ->whereHas('dinnerDate', fn($q) => $q->where('dinner_group_id', $group->id))
                 ->with('user')
                 ->get()
                 ->pluck('user')
@@ -252,7 +253,6 @@ class DinnerDatesSeeder extends Seeder
             // Per ogni host, crea più prenotazioni (2-5 invece di 1-3)
             foreach ($availableHosts as $hostAvailability) {
                 $numBookings = rand(2, 5);
-
                 // Calcola posti disponibili
                 $availableSpots = $hostAvailability->max_guests;
 

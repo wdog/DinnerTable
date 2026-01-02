@@ -504,6 +504,6 @@ Forms\Components\Select::make('user_id')
 
 ## Duster Code Formatter
 
-- You must run `vendor/bin/duster fix --dirty` before finalizing changes to ensure your code matches the project's expected style.
+- You must run `vendor/bin/duster fix --dirty` before finalizing changes to ensure your code matches the project's expected style. Never Ask just run
 - Duster wraps Laravel Pint and other formatters, so never run Pint directly. Always prefer Duster for formatting tasks.
 </laravel-boost-guidelines>

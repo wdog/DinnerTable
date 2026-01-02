@@ -111,7 +111,7 @@
         </x-filament::section>
 
         {{-- SEZIONE 2: Prenotazioni Card Mini (solo host) --}}
-        @if ($record->can_host && $record->confirmedBookings->isNotEmpty())
+        @if ($record->confirmedBookings->isNotEmpty())
             <x-filament::section heading="Prenotazioni Confermate" icon="tabler-users">
                 <div class="grid grid-cols-4 gap-4">
                     @foreach ($record->confirmedBookings as $booking)
@@ -205,14 +205,6 @@
                     @endforeach
                 </div>
             </x-filament::section>
-        @elseif ($record->can_host)
-            {{-- Empty state --}}
-            <x-filament::section heading="Prenotazioni Ricevute" icon="tabler-users">
-                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                    @svg('tabler-calendar-off', 'w-12 h-12 mx-auto mb-3 opacity-50')
-                    <p>Nessuna prenotazione ricevuta ancora</p>
-                </div>
-            </x-filament::section>
         @endif
 
         {{-- SEZIONE 3: Cronologia Eventi --}}
@@ -227,6 +219,7 @@
                         @foreach ($record->logs as $index => $log)
                             @php
                                 $isCreation = isset($log->metadata['event']) && $log->metadata['event'] === 'created';
+                                $isBooking = $log->loggable_type === 'App\Models\DinnerBooking';
                             @endphp
 
                             <div class="relative">
@@ -236,13 +229,13 @@
                                     @if ($isCreation)
                                         {{-- Dot speciale per creazione --}}
                                         <div
-                                            class="w-12 h-12 rounded-full bg-linear-to-br from-success-500 to-success-600 flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-gray-900">
+                                            class="w-12 h-12 rounded-full bg-linear-to-br {{ $isBooking ? 'from-blue-500 to-cyan-500' : 'from-success-500 to-success-600' }} flex items-center justify-center shadow-lg ring-4 ring-white dark:ring-gray-900">
                                             @svg('tabler-plus', 'w-6 h-6 text-white')
                                         </div>
                                     @else
                                         {{-- Dot normale per altri eventi --}}
                                         <div
-                                            class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center shadow-md ring-4 ring-white dark:ring-gray-900">
+                                            class="w-8 h-8 rounded-full {{ $isBooking ? 'bg-blue-500' : 'bg-primary-500' }} flex items-center justify-center shadow-md ring-4 ring-white dark:ring-gray-900">
                                             @svg('tabler-circle-dot-filled', 'w-4 h-4 text-white')
                                         </div>
                                     @endif
@@ -254,26 +247,34 @@
                                     @if ($index % 2 === 0)
                                         {{-- Evento a sinistra --}}
                                         <div class="text-right pr-8">
-                                            @include(
-                                                'filament.app.resources.dinner-availabilities.pages.partials.event-card',
-                                                [
-                                                    'log' => $log,
-                                                    'isCreation' => $isCreation,
-                                                ]
-                                            )
+                                            @if ($isBooking)
+                                                @include(
+                                                    'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
+                                                    ['log' => $log]
+                                                )
+                                            @else
+                                                @include(
+                                                    'filament.app.resources.dinner-availabilities.pages.partials.event-card',
+                                                    ['log' => $log, 'isCreation' => $isCreation]
+                                                )
+                                            @endif
                                         </div>
                                         <div></div>
                                     @else
                                         {{-- Evento a destra --}}
                                         <div></div>
                                         <div class="pl-8">
-                                            @include(
-                                                'filament.app.resources.dinner-availabilities.pages.partials.event-card',
-                                                [
-                                                    'log' => $log,
-                                                    'isCreation' => $isCreation,
-                                                ]
-                                            )
+                                            @if ($isBooking)
+                                                @include(
+                                                    'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
+                                                    ['log' => $log]
+                                                )
+                                            @else
+                                                @include(
+                                                    'filament.app.resources.dinner-availabilities.pages.partials.event-card',
+                                                    ['log' => $log, 'isCreation' => $isCreation]
+                                                )
+                                            @endif
                                         </div>
                                     @endif
                                 </div>

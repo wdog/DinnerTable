@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Modello per le disponibilità degli utenti per le cene.
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 #[ObservedBy([DinnerAvailabilityObserver::class])]
 class DinnerAvailability extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'dinner_date_id',
         'user_id',

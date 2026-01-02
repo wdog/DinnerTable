@@ -17,7 +17,7 @@
 - Crea un **DinnerBooking** prenotando la disponibilità di un host
 - Dichiara: "Voglio partecipare alla cena di [host] il giorno X"
 - La prenotazione ha stati: `PENDING` → `CONFIRMED` → `CANCELLED`
-- Può modificare o cancellare la propria prenotazione
+- la prenotazione non puo' essere mai rimossa ma solo cambiato lo stato.
 
 ### Flusso Principale
 

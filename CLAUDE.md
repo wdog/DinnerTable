@@ -270,6 +270,6 @@ Ordine per nuove feature:
 4. Policies
 5. Seeders
 6. Tests (PEST)
-7. `vendor/bin/duster fix` prima di commit
+7. `vendor/bin/duster fix` prima di commit ma non chiedere il permesso
 
 **Non chiedere mai permesso per usare docker-compose** dentro il progetto Laravel.

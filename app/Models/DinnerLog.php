@@ -61,7 +61,7 @@ class DinnerLog extends Model
     ];
 
     /**
-     * Helper per creare log entry.
+     * Helper per creare log entry per DinnerAvailability.
      *
      * Metodo statico per creare facilmente un log entry con tutti i dati necessari.
      * Gestisce automaticamente la relazione polymorphic e availability_id.
@@ -87,6 +87,34 @@ class DinnerLog extends Model
                 'metadata'        => $metadata,
             ])
             : null;
+    }
+
+    /**
+     * Helper per creare log entry per DinnerBooking.
+     *
+     * Crea un log entry per eventi di prenotazione (creazione, cambio stato, modifiche).
+     * Popola automaticamente availability_id dalla prenotazione per query facili.
+     *
+     * @param  DinnerBooking  $booking  Booking associato all'evento
+     * @param  string  $status  Status DOPO l'evento (enum value)
+     * @param  int|null  $userId  NULLABLE - utente che ha causato l'evento
+     * @param  array|null  $metadata  Dati aggiuntivi (event, old_status, guests_count, etc)
+     * @return self Log entry creato
+     */
+    public static function logBookingEvent(
+        DinnerBooking $booking,
+        string $status,
+        ?int $userId = null,
+        ?array $metadata = null
+    ): self {
+        return self::create([
+            'logged_by'       => $userId,
+            'loggable_type'   => DinnerBooking::class,
+            'loggable_id'     => $booking->id,
+            'availability_id' => $booking->host_availability_id,
+            'status'          => $status,
+            'metadata'        => $metadata,
+        ]);
     }
 
     /**

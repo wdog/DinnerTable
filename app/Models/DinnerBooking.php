@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Observers\DinnerBookingObserver;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Modello per le prenotazioni delle cene.
@@ -27,6 +29,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 #[ObservedBy([DinnerBookingObserver::class])]
 class DinnerBooking extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'host_availability_id',
         'guest_user_id',
@@ -167,5 +170,19 @@ class DinnerBooking extends Model
         return $query->whereHas('hostAvailability.dinnerDate', function ($query) {
             $query->where('dinner_date', '<', now()->startOfDay());
         });
+    }
+
+    /**
+     * Relazione polymorphic con i log eventi.
+     *
+     * Permette di accedere a tutti i log relativi a questa prenotazione
+     * (creazione, cambio stato, modifiche).
+     *
+     * @return MorphMany Relazione con il modello DinnerLog
+     */
+    public function logs(): MorphMany
+    {
+        return $this->morphMany(DinnerLog::class, 'loggable')
+            ->orderBy('created_at', 'asc');
     }
 }

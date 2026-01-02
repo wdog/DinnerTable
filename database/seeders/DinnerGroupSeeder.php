@@ -77,7 +77,7 @@ class DinnerGroupSeeder extends Seeder
 
         // Crea solo 15 utenti (5 gruppi x 3 persone max)
         $totalUsers   = 15;
-        $usersPerCity = 4; // Distribuiti tra 4 città
+        $usersPerCity = 2; // Distribuiti tra 4 città
         $userIndex    = 1;
 
         foreach ($this->cities as $cityName => $cityData) {

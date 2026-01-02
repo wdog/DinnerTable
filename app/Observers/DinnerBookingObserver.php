@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Models\DinnerLog;
 use App\Models\DinnerBooking;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
 
@@ -59,6 +61,19 @@ class DinnerBookingObserver
      */
     public function created(DinnerBooking $dinnerBooking): void
     {
+        // Log creazione prenotazione
+        DinnerLog::logBookingEvent(
+            booking: $dinnerBooking,
+            status: $dinnerBooking->status->value,
+            userId: $dinnerBooking->guest_user_id,
+            metadata: [
+                'event'          => 'created',
+                'guests_count'   => $dinnerBooking->guests_count,
+                'bringing_items' => $dinnerBooking->bringing_items,
+                'notes'          => $dinnerBooking->notes,
+            ]
+        );
+
         // Aggiorna solo se la prenotazione è confermata
         if ($dinnerBooking->status === 'confirmed') {
             $this->updateHostStatus($dinnerBooking->hostAvailability);
@@ -81,6 +96,62 @@ class DinnerBookingObserver
      */
     public function updated(DinnerBooking $dinnerBooking): void
     {
+        // Log cambio stato
+        if ($dinnerBooking->wasChanged('status')) {
+            DinnerLog::logBookingEvent(
+                booking: $dinnerBooking,
+                status: $dinnerBooking->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'      => 'status_changed',
+                    'old_status' => $dinnerBooking->getOriginal('status'),
+                    'new_status' => $dinnerBooking->status->value,
+                ]
+            );
+        }
+
+        // Log cambio numero ospiti
+        if ($dinnerBooking->wasChanged('guests_count')) {
+            DinnerLog::logBookingEvent(
+                booking: $dinnerBooking,
+                status: $dinnerBooking->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'guests_count_changed',
+                    'old_value' => $dinnerBooking->getOriginal('guests_count'),
+                    'new_value' => $dinnerBooking->guests_count,
+                ]
+            );
+        }
+
+        // Log cambio items portati
+        if ($dinnerBooking->wasChanged('bringing_items')) {
+            DinnerLog::logBookingEvent(
+                booking: $dinnerBooking,
+                status: $dinnerBooking->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'bringing_items_changed',
+                    'old_value' => $dinnerBooking->getOriginal('bringing_items'),
+                    'new_value' => $dinnerBooking->bringing_items,
+                ]
+            );
+        }
+
+        // Log cambio note
+        if ($dinnerBooking->wasChanged('notes')) {
+            DinnerLog::logBookingEvent(
+                booking: $dinnerBooking,
+                status: $dinnerBooking->status->value,
+                userId: Auth::id(),
+                metadata: [
+                    'event'     => 'notes_changed',
+                    'old_value' => $dinnerBooking->getOriginal('notes'),
+                    'new_value' => $dinnerBooking->notes,
+                ]
+            );
+        }
+
         // Aggiorna solo se è cambiato lo status o il numero di ospiti
         if ($dinnerBooking->wasChanged('status') || $dinnerBooking->wasChanged('guests_count')) {
             $this->updateHostStatus($dinnerBooking->hostAvailability);
