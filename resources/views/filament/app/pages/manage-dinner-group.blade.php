@@ -137,7 +137,7 @@
                         <div class="relative z-10">
                             <div
                                 class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-200 dark:bg-cyan-800 mb-4 group-hover:scale-110 transition-transform duration-300 group-hover:bg-cyan-300 dark:group-hover:bg-cyan-700">
-                                <x-filament::icon icon="tabler-glass-full-filled"
+                                <x-filament::icon icon="tabler-basket-filled"
                                     class="h-10 w-10 text-amber-700 dark:text-amber-300" />
                             </div>
                             <h3 class="text-xl font-bold text-cyan-900 dark:text-cyan-100 mb-3">Unisciti a un Gruppo</h3>

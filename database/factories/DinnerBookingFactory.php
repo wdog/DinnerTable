@@ -36,7 +36,7 @@ class DinnerBookingFactory extends Factory
                 ['Frutta', 'Pane'],
                 [],
             ]),
-            'notes'  => $this->faker->randomElement([
+            'notes' => $this->faker->randomElement([
                 'Non vedo l\'ora!',
                 'Grazie per l\'ospitalità',
                 null,
@@ -50,8 +50,6 @@ class DinnerBookingFactory extends Factory
      *
      * Imposta status=CONFIRMED. Questo stato triggera l'aggiornamento
      * automatico dello status host via Observer.
-     *
-     * @return static
      */
     public function confirmed(): static
     {
@@ -64,8 +62,6 @@ class DinnerBookingFactory extends Factory
      * State: prenotazione in attesa.
      *
      * Imposta status=PENDING (stato di default).
-     *
-     * @return static
      */
     public function pending(): static
     {
@@ -79,8 +75,6 @@ class DinnerBookingFactory extends Factory
      *
      * Imposta status=CANCELLED. La cancellazione libera posti
      * e l'Observer aggiorna lo status host.
-     *
-     * @return static
      */
     public function cancelled(): static
     {
@@ -93,7 +87,6 @@ class DinnerBookingFactory extends Factory
      * State: associa a una disponibilità host specifica.
      *
      * @param  \App\Models\DinnerAvailability  $availability  Disponibilità host
-     * @return static
      */
     public function forHost(DinnerAvailability $availability): static
     {
@@ -106,7 +99,6 @@ class DinnerBookingFactory extends Factory
      * State: associa a un guest specifico.
      *
      * @param  \App\Models\User  $guest  Utente guest
-     * @return static
      */
     public function byGuest(User $guest): static
     {
@@ -119,7 +111,6 @@ class DinnerBookingFactory extends Factory
      * State: imposta numero ospiti specifico.
      *
      * @param  int  $count  Numero di ospiti
-     * @return static
      */
     public function withGuests(int $count): static
     {

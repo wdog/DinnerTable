@@ -3,10 +3,9 @@
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\DinnerDate;
-use App\Models\DinnerGroup;
 use App\Models\DinnerBooking;
-use App\Enums\CancellationReason;
 use App\Models\DinnerAvailability;
+use App\Enums\DinnerBookingStatus;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -36,7 +35,6 @@ uses(RefreshDatabase::class);
  * Test che verificano la corretta creazione delle disponibilità e le
  * validazioni automatiche applicate dal model (booted hook).
  */
-
 test('availability can be created as guest', function () {
     // Arrange: Prepara dati per una disponibilità guest
     $user = User::factory()->create();
@@ -177,7 +175,6 @@ test('unique constraint prevents duplicate availability for same user and date',
  *
  * Test che verificano le relazioni del model con DinnerDate, User e DinnerBooking.
  */
-
 test('availability belongs to dinner date', function () {
     // Arrange: Crea availability con data specifica
     $date         = DinnerDate::factory()->create();
@@ -233,7 +230,7 @@ test('availability has many confirmed bookings filtered correctly', function () 
 
     // Assert: Verifica che ci siano solo 2 confirmed
     expect($confirmedBookings)->toHaveCount(2)
-        ->and($confirmedBookings->every(fn ($b) => $b->status === \App\Enums\DinnerBookingStatus::CONFIRMED))->toBeTrue();
+        ->and($confirmedBookings->every(fn ($b) => $b->status === DinnerBookingStatus::CONFIRMED))->toBeTrue();
 });
 
 /**
@@ -243,7 +240,6 @@ test('availability has many confirmed bookings filtered correctly', function () 
  *
  * Test per gli attributi computed del model (total_booked_guests, available_spots, ecc).
  */
-
 test('total_booked_guests sums guests_count from confirmed bookings only', function () {
     // Arrange: Crea host con max 10 posti
     $availability = DinnerAvailability::factory()->asHost()->create(['max_guests' => 10]);
@@ -316,7 +312,6 @@ test('canAcceptBookings returns true for host with available spots', function ()
  *
  * Test per gli scope query del model (future, past, ecc).
  */
-
 test('future scope filters only future availabilities', function () {
     // Arrange: Crea availabilities con date diverse
     $futureDate = Carbon::tomorrow()->format('Y-m-d');
@@ -392,7 +387,6 @@ test('logs relationship returns all logs ordered by created_at asc', function ()
  *
  * Test per gli stati enum e le loro proprietà (colori, icone, metodi).
  */
-
 test('guest can have AVAILABLE or NOT_AVAILABLE status', function () {
     // Arrange & Act: Crea guest disponibile
     $available = DinnerAvailability::factory()->asGuest()->create();

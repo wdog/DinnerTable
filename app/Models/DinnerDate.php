@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DinnerDate extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'dinner_group_id',
         'dinner_date',

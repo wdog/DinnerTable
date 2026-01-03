@@ -3,11 +3,9 @@
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\DinnerDate;
-use App\Models\DinnerGroup;
 use App\Models\DinnerBooking;
 use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
-use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -36,7 +34,6 @@ uses(RefreshDatabase::class);
  * Test che verificano la corretta creazione delle prenotazioni e le
  * validazioni del model.
  */
-
 test('booking can be created with required fields', function () {
     // Arrange: Prepara host availability e guest
     $availability = DinnerAvailability::factory()->asHost()->create();
@@ -131,7 +128,6 @@ test('bringing_items casts to array correctly', function () {
  *
  * Test che verificano le relazioni del model con DinnerAvailability e User.
  */
-
 test('booking belongs to host availability', function () {
     // Arrange: Crea booking
     $availability = DinnerAvailability::factory()->asHost()->create();
@@ -178,7 +174,6 @@ test('booking has many logs via morphMany', function () {
  *
  * Test per gli attributi computed e gli scope query del model.
  */
-
 test('total_guests equals guests_count', function () {
     // Arrange: Crea booking con 3 ospiti
     $booking = DinnerBooking::factory()->withGuests(3)->create();
@@ -242,7 +237,6 @@ test('cancelled scope filters only cancelled bookings', function () {
  *
  * Test per gli scope che filtrano per data (future, past).
  */
-
 test('future scope filters bookings with future dinner dates', function () {
     // Arrange: Crea date future e passate
     $futureDate = Carbon::tomorrow()->format('Y-m-d');

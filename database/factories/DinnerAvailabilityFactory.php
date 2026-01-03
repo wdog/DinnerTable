@@ -44,8 +44,6 @@ class DinnerAvailabilityFactory extends Factory
      *
      * Imposta can_host=true, status=AVAILABLE_TO_HOST e genera
      * max_guests (4-10) e un dinner_name casuale.
-     *
-     * @return static
      */
     public function asHost(): static
     {
@@ -68,8 +66,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: crea disponibilità come GUEST.
      *
      * Imposta can_host=false, status=AVAILABLE, senza max_guests né dinner_name.
-     *
-     * @return static
      */
     public function asGuest(): static
     {
@@ -86,8 +82,6 @@ class DinnerAvailabilityFactory extends Factory
      *
      * Indica che ci sono già alcune prenotazioni ma non è ancora pieno.
      * Nota: in produzione questo stato è impostato dall'Observer.
-     *
-     * @return static
      */
     public function almostFull(): static
     {
@@ -101,8 +95,6 @@ class DinnerAvailabilityFactory extends Factory
      *
      * Indica che tutti i posti sono stati prenotati.
      * Nota: in produzione questo stato è impostato dall'Observer.
-     *
-     * @return static
      */
     public function full(): static
     {
@@ -115,8 +107,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: host cancellato.
      *
      * Disponibilità cancellata dall'host con motivo PERSONAL_EMERGENCY.
-     *
-     * @return static
      */
     public function cancelled(): static
     {
@@ -130,8 +120,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: completato (cena avvenuta).
      *
      * Stato impostato dal cron job per date passate.
-     *
-     * @return static
      */
     public function completed(): static
     {
@@ -144,8 +132,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: guest non disponibile.
      *
      * Guest che dichiara di NON essere disponibile per quella data.
-     *
-     * @return static
      */
     public function notAvailable(): static
     {
@@ -158,7 +144,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: associa a una data cena specifica.
      *
      * @param  \App\Models\DinnerDate  $date  Data cena
-     * @return static
      */
     public function forDate(DinnerDate $date): static
     {
@@ -169,7 +154,6 @@ class DinnerAvailabilityFactory extends Factory
      * State: associa a un utente specifico.
      *
      * @param  \App\Models\User  $user  Utente
-     * @return static
      */
     public function forUser(User $user): static
     {

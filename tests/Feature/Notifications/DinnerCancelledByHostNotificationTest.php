@@ -33,7 +33,6 @@ uses(RefreshDatabase::class);
  *
  * Test per verificare la struttura e i dati della notifica.
  */
-
 test('notification is sent via database channel', function () {
     Notification::fake();
 
@@ -110,7 +109,7 @@ test('notification includes host name, date, and reason', function () {
     Notification::assertSentTo(
         $guest,
         DinnerCancelledByHostNotification::class,
-        function ($notification) use ($host, $availability, $guest) {
+        function ($notification) use ($host, $guest) {
             // Verifica dati notifica
             $data = $notification->toArray($guest);
 
@@ -129,7 +128,6 @@ test('notification includes host name, date, and reason', function () {
  *
  * Test per verificare che la notifica venga inviata ai guest corretti.
  */
-
 test('notification is sent to all guests with confirmed bookings when host cancels', function () {
     Notification::fake();
 
@@ -161,9 +159,9 @@ test('notification is not sent to guests with cancelled bookings', function () {
     Notification::fake();
 
     // Arrange: Host con mix di bookings
-    $host            = User::factory()->create();
-    $confirmedGuest  = User::factory()->create();
-    $cancelledGuest  = User::factory()->create();
+    $host           = User::factory()->create();
+    $confirmedGuest = User::factory()->create();
+    $cancelledGuest = User::factory()->create();
 
     $availability = DinnerAvailability::factory()->asHost()->forUser($host)->create();
 

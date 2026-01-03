@@ -33,11 +33,10 @@ uses(RefreshDatabase::class);
  *
  * Test per l'autorizzazione alla visualizzazione della lista disponibilità.
  */
-
 test('authenticated user can view any availabilities', function () {
     // Arrange: Utente autenticato
     $user   = User::factory()->create();
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica viewAny
     $canViewAny = $policy->viewAny($user);
@@ -48,9 +47,9 @@ test('authenticated user can view any availabilities', function () {
 
 test('guest cannot view any availabilities', function () {
     // Arrange: Guest non autenticato
-    $guest = new User(); // User senza ID (non salvato)
+    $guest = new User; // User senza ID (non salvato)
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica viewAny con guest
     // In produzione Filament richiede autenticazione, ma testiamo la policy
@@ -67,7 +66,6 @@ test('guest cannot view any availabilities', function () {
  *
  * Test per l'autorizzazione alla visualizzazione di singola disponibilità.
  */
-
 test('user can view availability from their group', function () {
     // Arrange: User e availability nello stesso gruppo
     $group = DinnerGroup::factory()->create();
@@ -76,7 +74,7 @@ test('user can view availability from their group', function () {
     $date         = DinnerDate::factory()->forGroup($group)->create();
     $availability = DinnerAvailability::factory()->forDate($date)->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica view
     $canView = $policy->view($user, $availability);
@@ -95,7 +93,7 @@ test('user cannot view availability from different group', function () {
     $dateB        = DinnerDate::factory()->forGroup($groupB)->create();
     $availability = DinnerAvailability::factory()->forDate($dateB)->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica view
     $canView = $policy->view($user, $availability);
@@ -110,7 +108,7 @@ test('user without group cannot view any availability', function () {
 
     $availability = DinnerAvailability::factory()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica view
     $canView = $policy->view($user, $availability);
@@ -126,11 +124,10 @@ test('user without group cannot view any availability', function () {
  *
  * Test per l'autorizzazione alla creazione disponibilità.
  */
-
 test('authenticated user can create availability', function () {
     // Arrange: Utente autenticato
     $user   = User::factory()->create();
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica create
     $canCreate = $policy->create($user);
@@ -141,8 +138,8 @@ test('authenticated user can create availability', function () {
 
 test('guest cannot create availability', function () {
     // Arrange: Guest non autenticato
-    $guest  = new User();
-    $policy = new DinnerAvailabilityPolicy();
+    $guest  = new User;
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica create
     $canCreate = $policy->create($guest);
@@ -158,13 +155,12 @@ test('guest cannot create availability', function () {
  *
  * Test per l'autorizzazione alla modifica disponibilità.
  */
-
 test('owner can update their availability', function () {
     // Arrange: Proprietario della disponibilità
     $user         = User::factory()->create();
     $availability = DinnerAvailability::factory()->forUser($user)->asHost()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica update
     $canUpdate = $policy->update($user, $availability);
@@ -180,7 +176,7 @@ test('non-owner cannot update availability', function () {
 
     $availability = DinnerAvailability::factory()->forUser($owner)->asHost()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica update con non-proprietario
     $canUpdate = $policy->update($other, $availability);
@@ -194,7 +190,7 @@ test('owner cannot update completed availability', function () {
     $user         = User::factory()->create();
     $availability = DinnerAvailability::factory()->forUser($user)->completed()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica update
     $canUpdate = $policy->update($user, $availability);
@@ -208,7 +204,7 @@ test('owner cannot update if status does not allow updates', function () {
     $user         = User::factory()->create();
     $availability = DinnerAvailability::factory()->forUser($user)->completed()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica update
     $canUpdate = $policy->update($user, $availability);
@@ -224,13 +220,12 @@ test('owner cannot update if status does not allow updates', function () {
  *
  * Test per l'autorizzazione all'eliminazione disponibilità.
  */
-
 test('owner can delete availability without bookings', function () {
     // Arrange: Availability senza bookings
     $user         = User::factory()->create();
     $availability = DinnerAvailability::factory()->forUser($user)->asHost()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica delete
     $canDelete = $policy->delete($user, $availability);
@@ -246,7 +241,7 @@ test('owner cannot delete availability with confirmed bookings', function () {
 
     DinnerBooking::factory()->confirmed()->forHost($availability)->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica delete
     $canDelete = $policy->delete($user, $availability);
@@ -260,7 +255,7 @@ test('owner cannot delete completed availability', function () {
     $user         = User::factory()->create();
     $availability = DinnerAvailability::factory()->forUser($user)->completed()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica delete
     $canDelete = $policy->delete($user, $availability);
@@ -276,7 +271,7 @@ test('non-owner cannot delete availability', function () {
 
     $availability = DinnerAvailability::factory()->forUser($owner)->asHost()->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica delete con non-proprietario
     $canDelete = $policy->delete($other, $availability);
@@ -292,7 +287,7 @@ test('owner can delete availability with only cancelled bookings', function () {
 
     DinnerBooking::factory()->count(2)->cancelled()->forHost($availability)->create();
 
-    $policy = new DinnerAvailabilityPolicy();
+    $policy = new DinnerAvailabilityPolicy;
 
     // Act: Verifica delete
     $canDelete = $policy->delete($user, $availability);

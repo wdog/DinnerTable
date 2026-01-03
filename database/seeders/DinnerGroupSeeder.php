@@ -10,6 +10,15 @@ use Illuminate\Database\Seeder;
 class DinnerGroupSeeder extends Seeder
 {
     /**
+     * ============================================
+     * CONFIGURAZIONE CENTRALE GRUPPI E UTENTI
+     * ============================================
+     */
+    private const TARGET_GROUPS = 1;        // Numero di gruppi da creare
+
+    private const MEMBERS_PER_GROUP = 5;    // Membri massimi per gruppo
+
+    /**
      * Dati delle città con relativi CAP e indirizzi tipici.
      */
     private array $cities = [
@@ -75,10 +84,14 @@ class DinnerGroupSeeder extends Seeder
         // Array per tenere traccia degli utenti creati per città e CAP
         $usersByLocation = [];
 
-        // Crea solo 15 utenti (5 gruppi x 3 persone max)
-        $totalUsers   = 15;
-        $usersPerCity = 2; // Distribuiti tra 4 città
+        // Calcolo automatico basato su TARGET_GROUPS e MEMBERS_PER_GROUP
+        // -1 perché l'admin verrà aggiunto al primo gruppo
+        $totalUsers   = (self::TARGET_GROUPS * self::MEMBERS_PER_GROUP) - 1;
+        $numCities    = count($this->cities);
+        $usersPerCity = (int) ceil($totalUsers / $numCities);
         $userIndex    = 1;
+
+        $this->command->info("📊 Configurazione: {$totalUsers} utenti per " . self::TARGET_GROUPS . ' gruppi da ' . self::MEMBERS_PER_GROUP . ' membri');
 
         foreach ($this->cities as $cityName => $cityData) {
             $this->command->info("📍 Creazione utenti per {$cityName}...");
@@ -121,32 +134,32 @@ class DinnerGroupSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ Creati {$totalUsers} utenti con profili completi");
+        $actualUsersCreated = $userIndex - 1;
+        $this->command->info("✅ Creati {$actualUsersCreated} utenti con profili completi");
 
-        // Crea esattamente 5 gruppi con 3 persone ciascuno
-        $this->command->info('🍽️  Creazione 5 gruppi con 3 membri ciascuno...');
+        // Crea gruppi con configurazione centralizzata
+        $this->command->info('🍽️  Creazione ' . self::TARGET_GROUPS . ' gruppi con ' . self::MEMBERS_PER_GROUP . ' membri ciascuno...');
 
-        $allUsers        = collect($usersByLocation)->flatten(1)->shuffle();
-        $groupsCreated   = 0;
-        $targetGroups    = 5;
-        $membersPerGroup = 3;
+        $allUsers      = collect($usersByLocation)->flatten(1)->shuffle();
+        $groupsCreated = 0;
 
         // Trova l'utente admin
         $admin = User::where('email', 'admin@example.com')->first();
 
-        for ($g = 0; $g < $targetGroups; $g++) {
+        for ($g = 0; $g < self::TARGET_GROUPS; $g++) {
             // Per il primo gruppo, includi l'admin
             if ($g === 0 && $admin) {
-                // Prendi solo 2 utenti normali + admin
-                $groupMembers = $allUsers->splice(0, 2);
-                $groupMembers->prepend($admin);
-                $creator = $admin;
+                // Prendi (MEMBERS_PER_GROUP - 1) utenti normali + admin
+                $normalUsers  = $allUsers->splice(0, self::MEMBERS_PER_GROUP - 1);
+                $groupMembers = $normalUsers->prepend($admin);
+                $creator      = $admin;
             } else {
-                if ($allUsers->count() < $membersPerGroup) {
+                if ($allUsers->count() < self::MEMBERS_PER_GROUP) {
+                    $this->command->warn('⚠️  Utenti insufficienti per creare il gruppo ' . ($g + 1) . ". Gruppi creati: {$groupsCreated}");
                     break;
                 }
-                // Prendi 3 utenti per il gruppo
-                $groupMembers = $allUsers->splice(0, $membersPerGroup);
+                // Prendi MEMBERS_PER_GROUP utenti per il gruppo
+                $groupMembers = $allUsers->splice(0, self::MEMBERS_PER_GROUP);
                 $creator      = $groupMembers->first();
             }
 
@@ -176,9 +189,9 @@ class DinnerGroupSeeder extends Seeder
 
         $this->command->newLine();
         $this->command->info('🎉 Seeding completato!');
-        $this->command->info("   📊 Utenti creati: {$totalUsers}");
+        $this->command->info("   📊 Utenti creati: {$actualUsersCreated}");
         $this->command->info("   👥 Gruppi creati: {$groupsCreated}");
-        $this->command->info("   👤 Membri per gruppo: {$membersPerGroup}");
+        $this->command->info('   👤 Membri per gruppo: ' . self::MEMBERS_PER_GROUP);
 
         // Statistiche finali
         $usersInGroups      = User::whereNotNull('dinner_group_id')->count();

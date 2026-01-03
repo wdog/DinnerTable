@@ -36,7 +36,6 @@ class DinnerDateFactory extends Factory
      * Utile per testare scenari con date precise.
      *
      * @param  string  $date  Data in formato Y-m-d
-     * @return static
      */
     public function futureDate(string $date): static
     {
@@ -47,8 +46,6 @@ class DinnerDateFactory extends Factory
      * State: genera una data passata.
      *
      * Utile per testare scope past() e disponibilità completate.
-     *
-     * @return static
      */
     public function pastDate(): static
     {
@@ -63,7 +60,6 @@ class DinnerDateFactory extends Factory
      * Utile per testare scenari multi-gruppo.
      *
      * @param  \App\Models\DinnerGroup  $group  Gruppo di riferimento
-     * @return static
      */
     public function forGroup(DinnerGroup $group): static
     {

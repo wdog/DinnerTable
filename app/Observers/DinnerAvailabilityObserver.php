@@ -3,10 +3,10 @@
 namespace App\Observers;
 
 use App\Models\DinnerLog;
+use App\Enums\DinnerBookingStatus;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\DinnerBookingStatus;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\DinnerCancelledByHostNotification;
@@ -205,9 +205,9 @@ class DinnerAvailabilityObserver
             return;
         }
 
-        $cancelledCount = 0;
+        $cancelledCount      = 0;
         $cancelledBookingIds = [];
-        $notifiedGuests = [];
+        $notifiedGuests      = [];
 
         // Itera su tutte le prenotazioni attive (confirmed + pending)
         foreach ($activeBookings as $booking) {
@@ -257,10 +257,10 @@ class DinnerAvailabilityObserver
             status: $dinnerAvailability->status->value,
             userId: Auth::id(),
             metadata: [
-                'event'                      => 'host_cancelled_cascade',
-                'cancelled_bookings_count'   => $cancelledCount,
-                'cancelled_booking_ids'      => $cancelledBookingIds,
-                'cancellation_reason'        => $dinnerAvailability->cancellation_reason?->value,
+                'event'                    => 'host_cancelled_cascade',
+                'cancelled_bookings_count' => $cancelledCount,
+                'cancelled_booking_ids'    => $cancelledBookingIds,
+                'cancellation_reason'      => $dinnerAvailability->cancellation_reason?->value,
             ]
         );
     }

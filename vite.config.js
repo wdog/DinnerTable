@@ -10,7 +10,10 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [
             laravel({
-                input: ['resources/css/app.css', 'resources/js/app.js', 'resources/css/filament/dinner/theme.css'],
+                input: [
+                    'resources/css/app.css',
+                    'resources/js/app.js',
+                    'resources/css/filament/dinner/theme.css'],
                 refresh: [...refreshPaths,
                     "app/Livewire/**",
                     "app/Filament/**",
@@ -18,7 +21,7 @@ export default defineConfig(({ mode }) => {
                     "resources/views/**"
                 ],
                 // Set the dev server URL for the hot file
-                valetTls: false,
+                // valetTls: false,
                 detectTls: false,
             }),
             tailwindcss(),

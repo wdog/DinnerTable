@@ -4,9 +4,9 @@ namespace App\Observers;
 
 use App\Models\DinnerLog;
 use App\Models\DinnerBooking;
-use Illuminate\Support\Facades\Auth;
-use App\Models\DinnerAvailability;
 use App\Enums\DinnerBookingStatus;
+use App\Models\DinnerAvailability;
+use Illuminate\Support\Facades\Auth;
 use App\Enums\DinnerAvailabilityStatus;
 
 /**

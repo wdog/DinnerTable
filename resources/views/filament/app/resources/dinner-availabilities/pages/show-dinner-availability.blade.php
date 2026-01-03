@@ -208,85 +208,123 @@
             </x-filament::section>
         @endif
 
+
+
+
+
+
         {{-- SEZIONE 3: Cronologia Eventi --}}
+
         @if ($record->logs->isNotEmpty())
-            <x-filament::section heading="Cronologia Eventi" icon="tabler-timeline">
-                <div class="relative pl-12 max-w-4xl">
-                    {{-- Linea verticale principale --}}
-                    <div class="absolute left-4 top-2 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
+            <x-filament::section header="Cronologia Eventi" icon="tabler-timeline">
+                <!-- Container -->
+                <div
+                    class="space-y-8 relative before:absolute
+                    before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto
+                    md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b
+                    before:from-transparent before:via-slate-600 before:to-transparent">
 
-                    <div class="space-y-8">
-                        @foreach ($record->logs as $index => $log)
-                            @php
-                                $isCreation = isset($log->metadata['event']) && $log->metadata['event'] === 'created';
-                                $isBooking = $log->loggable_type === 'App\Models\DinnerBooking';
-                            @endphp
+                    @foreach ($record->logs as $index => $log)
+                        @php
+                            $isBooking = $log->loggable_type === 'App\Models\DinnerBooking';
+                            $eventType = $log->metadata['event'] ?? 'default';
 
-                            <div class="relative flex gap-4">
-                                {{-- Icon status sulla linea --}}
-                                <div class="absolute -left-12  top-2">
-                                    @php
-                                        $eventType = $log->metadata['event'] ?? 'default';
+                            if ($isBooking) {
+                                $statusEnum = \App\Enums\DinnerBookingStatus::from($log->status);
+                            } else {
+                                $statusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->status);
+                            }
 
-                                        if ($isBooking) {
-                                            $statusEnum = \App\Enums\DinnerBookingStatus::from($log->status);
-                                            $bgColor = match($eventType) {
-                                                'created' => 'bg-cyan-500',
-                                                'status_changed' => $log->metadata['new_status'] === 'cancelled' ? 'bg-orange-500' : 'bg-blue-500',
-                                                default => 'bg-blue-500',
-                                            };
-                                        } else {
-                                            $statusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->status);
-                                            $bgColor = match($eventType) {
-                                                'created' => 'bg-emerald-500',
-                                                'status_changed' => in_array($log->metadata['new_status'] ?? '', ['host_cancelled', 'not_available']) ? 'bg-orange-500' : 'bg-primary-500',
-                                                'host_cancelled_cascade' => 'bg-danger-500',
-                                                default => 'bg-primary-500',
-                                            };
-                                        }
-                                    @endphp
+                            if ($isBooking) {
+                                $iconColor = match ($eventType) {
+                                    'created' => 'bg-green-500',
+                                    'pending' => 'bg-orange-500',
+                                    default => 'bg-gray-500',
+                                };
 
-                                    {{-- Icona status --}}
-                                    <div
-                                        class="w-8 h-8 rounded-full flex items-center justify-center {{ $bgColor }} shadow-lg ring-4 ring-white dark:ring-gray-900">
-                                        @svg($statusEnum->getIcon(), 'w-4 h-4 text-white')
-                                    </div>
-                                </div>
+                                if ($eventType === 'status_changed') {
+                                    $iconColor = match ($log->status) {
+                                        'pending' => 'bg-orange-500',
+                                        'confirmed' => 'bg-green-500',
+                                        'cancelled' => 'bg-red-500',
+                                        default => 'bg-gray-500',
+                                    };
+                                }
+                            } else {
+                                $iconColor = match ($statusEnum->value) {
+                                    'available_to_host' => 'bg-lime-500',
+                                    'almost_full' => 'bg-lime-500',
+                                    'full' => 'bg-orange-500',
+                                    'host_cancelled' => 'bg-red-500',
+                                    'host_cancelled_cascade' => 'bg-red-500',
+                                    'completed' => 'bg-green-500',
+                                    default => 'bg-gray-500',
+                                };
+                            }
 
-                                {{-- Contenuto evento --}}
-                                <div class="pb-4 flex-1 min-w-0 ">
-                                    {{-- Header: Data/Ora --}}
-                                    <div class="flex items-center gap-3 mb-3">
-                                        @svg('tabler-clock', 'w-4 h-4 text-gray-400 dark:text-gray-500')
-                                        <time
-                                            class="text-sm font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
-                                            {{ $log->created_at->isoFormat('D MMMM YYYY') }}
-                                        </time>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                            {{ $log->created_at->isoFormat('HH:mm') }}
-                                        </span>
-                                    </div>
+                        @endphp
 
-                                    {{-- Card evento --}}
-                                    <div>
-                                        @if ($isBooking)
-                                            @include(
-                                                'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
-                                                ['log' => $log]
-                                            )
-                                        @else
-                                            @include(
-                                                'filament.app.resources.dinner-availabilities.pages.partials.event-card',
-                                                ['log' => $log, 'isCreation' => $isCreation]
-                                            )
-                                        @endif
-                                    </div>
-                                </div>
+                        <!-- Item #1 -->
+                        <div
+                            class="md:w-3/4 mx-auto relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <!-- Icon -->
+                            <div
+                                class="flex items-center justify-center w-10 h-10 rounded-full border border-white
+                                {{ $iconColor }}  text-slate-100
+                                 shadow shrink-0 md:order-1
+                                md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                                @svg($statusEnum->getIcon(), 'w-6 h-6')
                             </div>
-                        @endforeach
-                    </div>
+                            <!-- Card -->
+                            @if ($isBooking)
+                                @include(
+                                    'filament.app.resources.dinner-availabilities.pages.partials.booking-event-card',
+                                    ['log' => $log]
+                                )
+                            @else
+                                @include(
+                                    'filament.app.resources.dinner-availabilities.pages.partials.event-card',
+                                    ['log' => $log]
+                                )
+                            @endif
+                        </div>
+                    @endforeach
+
                 </div>
+
             </x-filament::section>
         @endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
 </x-filament-panels::page>

@@ -3,8 +3,8 @@
 use App\Models\User;
 use App\Models\DinnerLog;
 use App\Models\DinnerBooking;
-use App\Models\DinnerAvailability;
 use App\Enums\DinnerBookingStatus;
+use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -33,7 +33,6 @@ uses(RefreshDatabase::class);
  *
  * Test per il logging e aggiornamento status alla creazione del booking.
  */
-
 test('observer logs booking creation', function () {
     // Arrange: Crea host availability
     $availability = DinnerAvailability::factory()->asHost()->create();
@@ -94,7 +93,6 @@ test('pending booking does not update host status', function () {
  *
  * Test per la logica automatica di aggiornamento stato host basata su occupazione.
  */
-
 test('when first confirmed booking created, host status changes to ALMOST_FULL', function () {
     // Arrange: Host con 8 posti, nessun booking
     $availability = DinnerAvailability::factory()->asHost()->create([
@@ -238,7 +236,6 @@ test('when last booking cancelled, host status returns to AVAILABLE_TO_HOST', fu
  *
  * Test per il logging delle modifiche ai campi del booking.
  */
-
 test('observer logs status change from pending to confirmed', function () {
     // Arrange: Crea booking PENDING
     $booking = DinnerBooking::factory()->pending()->create();
@@ -344,7 +341,6 @@ test('observer logs multiple changes in single update', function () {
  *
  * Test per casi limite e scenari particolari.
  */
-
 test('guest availability is never modified by observer', function () {
     // Arrange: Guest availability (can_host = false)
     $guestAvailability = DinnerAvailability::factory()->asGuest()->create();

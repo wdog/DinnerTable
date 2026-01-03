@@ -5,8 +5,8 @@ use App\Models\DinnerLog;
 use App\Models\DinnerDate;
 use App\Models\DinnerBooking;
 use App\Enums\CancellationReason;
-use App\Models\DinnerAvailability;
 use App\Enums\DinnerBookingStatus;
+use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,7 +37,6 @@ uses(RefreshDatabase::class);
  *
  * Test che verificano il logging della creazione disponibilità.
  */
-
 test('observer logs availability creation', function () {
     // Arrange: Prepara dati
     $user = User::factory()->create();
@@ -80,7 +79,6 @@ test('created availability has correct initial status based on can_host', functi
  *
  * Test per il logging delle modifiche ai campi dell'availability.
  */
-
 test('observer logs status change', function () {
     // Arrange: Crea availability host
     $availability = DinnerAvailability::factory()->asHost()->create();
@@ -174,7 +172,6 @@ test('observer does not log if fields unchanged', function () {
  *
  * Test per la gestione della cancellazione host e cascata sui bookings.
  */
-
 test('when host cancels, all confirmed bookings are cancelled', function () {
     // Arrange: Host con 3 bookings confermati
     $availability = DinnerAvailability::factory()->asHost()->create();
@@ -318,7 +315,6 @@ test('cancellation uses saveQuietly to avoid triggering booking observer', funct
  *
  * Test per casi limite e scenari edge.
  */
-
 test('guest availability change does not trigger cancellation cascade', function () {
     Notification::fake();
 

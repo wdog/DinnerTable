@@ -9,8 +9,8 @@ use App\Observers\DinnerAvailabilityObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 /**
  * Modello per le disponibilità degli utenti per le cene.
@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DinnerAvailability extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'dinner_date_id',
         'user_id',
@@ -76,6 +77,10 @@ class DinnerAvailability extends Model
             if ($model->can_host === false) {
                 $model->max_guests  = null;
                 $model->dinner_name = null;
+            }
+            // se l'utente non ha cancellato la disponibilità, la ragione per la cancellazione deve essere null
+            if ($model->status != DinnerAvailabilityStatus::HOST_CANCELLED) {
+                $model->cancellation_reason = null;
             }
         });
     }

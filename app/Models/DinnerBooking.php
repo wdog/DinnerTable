@@ -7,8 +7,8 @@ use App\Observers\DinnerBookingObserver;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 /**
  * Modello per le prenotazioni delle cene.
@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DinnerBooking extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'host_availability_id',
         'guest_user_id',
