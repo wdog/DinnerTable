@@ -1,10 +1,19 @@
 <div
     class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)]
-pt-4 px-4 pb-2 bg-[#F7F3E8] dark:bg-[#033433] border-lg border-gray-200
-dark:border-gray-700 rounded  shadow relative">
+pt-4 px-4 pb-2 bg-[#bfef58] dark:bg-[#083751]  rounded  shadow relative">
 
-<div class='absolute top-1/2 -mt-2 -left-2 h-4 w-4 rotate-45 bg-[#F7F3E8] dark:bg-[#033433]'></div>
 
+
+    <div
+        class='absolute top-1/2 -mt-2 hidden lg:block
+    group-odd:-right-3
+    group-even:-left-3
+    h-6 w-6 rotate-45
+    bg-[#bfef58] dark:bg-[#083751]'>
+    </div>
+
+
+    {{-- card --}}
     <div class="flex items-start justify-between space-x-2 mb-4">
         <div class="font-bold dark:text-gray-100">
 
@@ -130,7 +139,7 @@ dark:border-gray-700 rounded  shadow relative">
             {{-- END CASES --}}
 
         </div>
-
+        {{-- date --}}
         <div class="flex flex-col items-end">
             <time class="text-sm font-semibold  tracking-wide">
                 @svg('tabler-clock', 'inline ')
@@ -143,10 +152,9 @@ dark:border-gray-700 rounded  shadow relative">
 
     </div>
 
-
-
     {{-- user --}}
-    <div class="pt-2 border-t border-gray-400 dark:border-gray-600 flex items-center justify-end gap-2 text-amber-600  dark:text-lime-500">
+    <div
+        class="pt-2 border-t border-gray-400 dark:border-gray-600 flex items-center justify-end gap-2 text-amber-600  dark:text-lime-500">
         @svg('tabler-chef-hat-filled')
         <div>
             {{ $log->user?->name ?? 'Sistema' }}

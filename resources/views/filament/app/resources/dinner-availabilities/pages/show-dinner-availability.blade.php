@@ -264,17 +264,20 @@
 
                         @endphp
 
-                        <!-- Item #1 -->
-                        <div
-                            class="md:w-3/4 mx-auto relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <!-- Item # -->
+                        <div class="md:w-3/4 mx-auto relative flex items-center
+                        justify-between md:justify-normal md:even:flex-row-reverse group">
                             <!-- Icon -->
                             <div
                                 class="flex items-center justify-center w-10 h-10 rounded-full border border-white
-                                {{ $iconColor }}  text-slate-100
-                                 shadow shrink-0 md:order-1
-                                md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                                {{ $iconColor }} text-slate-100
+                                shadow shrink-0 md:order-1 border-2
+                                md:group-odd:translate-x-1/2 md:group-even:-translate-x-1/2">
                                 @svg($statusEnum->getIcon(), 'w-6 h-6')
                             </div>
+
+
+
                             <!-- Card -->
                             @if ($isBooking)
                                 @include(
@@ -287,6 +290,7 @@
                                     ['log' => $log]
                                 )
                             @endif
+
                         </div>
                     @endforeach
 

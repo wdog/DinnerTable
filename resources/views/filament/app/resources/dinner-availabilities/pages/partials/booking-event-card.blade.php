@@ -1,10 +1,15 @@
 <div
     class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] pt-4 px-4 pb-2
-     dark:bg-[#244e57]  bg-[#bab1a4] border-lg
-     border-gray-200 dark:border-gray-700 rounded-lg  shadow relative">
+     dark:bg-[#244e57]  bg-[#ccc79a]  rounded-lg  shadow relative">
 
-    <div class='absolute top-1/2 -mt-2 -left-2 h-4 w-4 rotate-45 dark:bg-[#244e57]  bg-[#bab1a4]'></div>
 
+    <div
+        class='absolute top-1/2 -mt-2 hidden lg:block
+    group-odd:-right-3
+    group-even:-left-3
+    h-6 w-6 rotate-45
+    dark:bg-[#244e57]  bg-[#ccc79a]'>
+    </div>
 
     <div class="flex items-start justify-between space-x-2 mb-1">
         {{-- card --}}
