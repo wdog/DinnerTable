@@ -21,11 +21,18 @@
                             <p class="text-lg font-semibold ">
                                 Prenotazione creata
                             </p>
-                            <p class="text-sm flex items-center gap-1 mt-1">
-                                @svg('tabler-users')
+                            <p class="text-sm flex items-center gap-1 mt-1 mb-4">
+                                @svg('tabler-users','h-4 w-4 ')
                                 {{ $log->metadata['guests_count'] }}
                                 {{ $log->metadata['guests_count'] === 1 ? 'ospite' : 'ospiti' }}
                             </p>
+
+                            <p>
+                                <x-filament::badge size="xs" :color="App\Enums\DinnerBookingStatus::from($log->status)->getColor()" :icon="App\Enums\DinnerBookingStatus::from($log->status)->getIcon()" class="px-2 py-1">
+                                    {{ $log->status }}
+                                </x-filament::badge>
+                            </p>
+
                             @if (!empty($log->metadata['bringing_items']) && is_array($log->metadata['bringing_items']))
                                 <div class="flex items-center gap-1 mt-2 flex-wrap">
                                     @svg('tabler-basket')
@@ -46,7 +53,7 @@
                         @endphp
                         <div>
                             <p class="text-lg font-semibold ">
-                                Cambio stato
+                                Cambio stato Prenotazione
                             </p>
                             <div class="flex items-center gap-2 mt-1 text-xs">
                                 <x-filament::badge size="xs" :color="$oldStatusEnum->getColor()" :icon="$oldStatusEnum->getIcon()" class="px-2 py-1">

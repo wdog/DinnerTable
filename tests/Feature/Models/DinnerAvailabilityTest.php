@@ -4,8 +4,8 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\DinnerDate;
 use App\Models\DinnerBooking;
-use App\Models\DinnerAvailability;
 use App\Enums\DinnerBookingStatus;
+use App\Models\DinnerAvailability;
 use App\Enums\DinnerAvailabilityStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -10,6 +10,7 @@ use App\Enums\CancellationReason;
 use App\Models\DinnerAvailability;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
 use App\Enums\DinnerAvailabilityStatus;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -25,16 +26,14 @@ class DinnerAvailabilityForm
     {
         return $schema
             ->components([
-
-                Section::make()
-                    ->columns([
-                        'xs' => 3,
-                        'md' => 2,
-                    ])
+                // ! Sezione Data
+                Section::make('Quando?')
+                    ->description('Seleziona il giorno per cui vuoi dichiarare la tua disponibilità')
+                    ->icon('tabler-calendar-event')
+                    ->iconColor('primary')
                     ->schema([
-                        // !
                         DatePicker::make('dinnerDate.dinner_date')
-                            ->label('Giorno')
+                            ->label('Giorno della cena')
                             ->date()
                             ->closeOnDateSelection()
                             ->format('Y-m-d')
@@ -51,7 +50,7 @@ class DinnerAvailabilityForm
                             })
                             ->rules([
                                 function ($livewire) {
-                                    return function ($attribute, $value, Closure $fail) use ($livewire) {
+                                    return function (string $attribute, $value, Closure $fail) use ($livewire) {
                                         $dateSearch = Carbon::parse($value)->format('Y-m-d');
                                         $dinnerDate = DinnerDate::where('dinner_group_id', Auth::user()->dinner_group_id)
                                             ->where('dinner_date', $dateSearch)
@@ -76,14 +75,24 @@ class DinnerAvailabilityForm
                                     };
                                 },
                             ])
-                            ->required(),
+                            ->required()
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->columns(1),
 
-                        // !
+                // ! Sezione Ruolo
+                Section::make('Come parteciperai?')
+                    ->description('Scegli se ospitare la cena o partecipare come ospite')
+                    ->icon('tabler-users')
+                    ->iconColor('primary')
+                    ->schema([
                         ToggleButtons::make('can_host')
+                            ->label('Ruolo')
                             ->default(false)
                             ->boolean()
                             ->colors([
-                                true  => 'primary',
+                                true  => 'success',
                                 false => 'info',
                             ])
                             ->icons([
@@ -92,49 +101,53 @@ class DinnerAvailabilityForm
                             ])
                             ->inline()
                             ->grouped()
-                            ->label('Ospito io la cena')
                             ->live()
                             ->disabledOn('edit')
                             ->afterStateUpdated(function (Set $set, $state) {
-                                // Quando can_host cambia, imposta uno status valido
+                                // Quando can_host cambia, aggiorna campi correlati (ma NON status)
                                 if ($state) {
-                                    // Se diventa host, imposta AVAILABLE_TO_HOST
-                                    $set('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST->value);
-                                    // Usa max_guests del profilo utente come default
+                                    // Se diventa host, usa max_guests del profilo
                                     $userMaxGuests = Auth::user()->profile?->max_guests ?? 1;
                                     $set('max_guests', $userMaxGuests);
                                 } else {
-                                    // Se diventa guest, imposta AVAILABLE
-                                    $set('status', DinnerAvailabilityStatus::AVAILABLE->value);
-                                    // IMPORTANTE: Resetta max_guests e dinner_name quando non può ospitare
+                                    // Se diventa guest, resetta campi host
                                     $set('max_guests', null);
                                     $set('dinner_name', null);
                                 }
                             })
-                            ->required(),
+                            ->options([
+                                false => 'Partecipo come ospite',
+                                true  => 'Ospito io la cena',
+                            ])
+                            ->required()
+                            ->columnSpanFull(),
 
-                        // ! Campo dinner_name visibile solo quando can_host è true
-                        TextInput::make('dinner_name')
-                            ->label('Titolo della cena')
-                            ->maxLength(255)
-                            ->placeholder('es. Pizza napoletana, Pasta al forno, Sushi night...')
-                            ->visible(fn (Get $get) => $get('can_host') === true)
-                            ->helperText('Dai un nome alla tua cena per renderla più invitante!'),
-
-                        // !
                         Select::make('status')
-                            ->default(DinnerAvailabilityStatus::AVAILABLE)
-                            ->options(function (Get $get) {
+                            ->label('Stato disponibilità')
+                            ->default(function (Get $get, $context) {
+                                // Imposta default solo in creazione
+                                if ($context !== 'create') {
+                                    return;
+                                }
+
+                                $canHost = $get('can_host');
+
+                                // Default in base a can_host
+                                return $canHost
+                                    ? DinnerAvailabilityStatus::AVAILABLE_TO_HOST->value
+                                    : DinnerAvailabilityStatus::AVAILABLE->value;
+                            })
+                            ->options(function (Get $get, $context) {
                                 $canHost = $get('can_host');
 
                                 // Filtra gli stati in base a can_host
                                 $allStatuses = DinnerAvailabilityStatus::cases();
 
-                                $filtered = collect($allStatuses)->filter(function ($status) use ($canHost) {
+                                $filtered = collect($allStatuses)->filter(function ($status) use ($canHost, $context) {
                                     if ($canHost) {
-                                        return $status->isHostStatus();
+                                        return $context == 'create' ? $status == DinnerAvailabilityStatus::AVAILABLE_TO_HOST : $status->isHostStatus();
                                     } else {
-                                        return $status->isGuestStatus();
+                                        return $context == 'create' ? $status == DinnerAvailabilityStatus::AVAILABLE : $status->isGuestStatus();
                                     }
                                 });
 
@@ -142,38 +155,84 @@ class DinnerAvailabilityForm
                                     ->map(fn ($value) => DinnerAvailabilityStatus::from($value)->getLabel())
                                     ->toArray();
                             })
-                            ->live()
-                            ->required(),
+                            ->selectablePlaceholder(false)
+                            ->required()
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->columns(1),
 
-                        // ! Campo max_guests visibile solo quando can_host è true
-                        TextInput::make('max_guests')
-                            ->label('Numero massimo ospiti')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(50)
-                            ->default(fn () => Auth::user()->profile?->max_guests ?? 1)
-                            ->visible(fn (Get $get) => $get('can_host') === true)
-                            ->required(fn (Get $get) => $get('can_host') === true)
-                            ->dehydrated() // IMPORTANTE: assicura che il campo venga sempre processato anche quando nascosto
-                            ->helperText('Valore di default dal tuo profilo'),
+                // ! Sezione Note (sempre visibile)
+                Section::make('Note aggiuntive')
+                    ->description('Aggiungi eventuali note o informazioni utili')
+                    ->icon('tabler-notes')
+                    ->iconColor('primary')
 
-                        // ! Campo cancellation_reason visibile solo quando status è HOST_CANCELLED
+                    ->schema([
+                        Textarea::make('note')
+                            ->hiddenLabel()
+                            ->placeholder('es. Allergie, preferenze alimentari, dettagli sulla location...')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ])
+
+                    ->columns(1),
+
+                // ! Sezione Dettagli Host (visibile solo se can_host = true)
+                Section::make('Dettagli della cena')
+                    ->description('Personalizza i dettagli della tua cena')
+                    ->icon('tabler-chef-hat')
+                    ->iconColor('primary')
+
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('dinner_name')
+                                    ->label('Nome della cena')
+                                    ->maxLength(255)
+                                    ->placeholder('es. Pizza napoletana, Pasta al forno, Sushi night...')
+                                    ->helperText('Dai un nome invitante alla tua cena!')
+                                    ->columnSpan(1),
+
+                                TextInput::make('max_guests')
+                                    ->label('Posti disponibili')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(50)
+                                    ->suffix('ospiti')
+                                    ->prefixIcon('tabler-users')
+                                    ->default(fn () => Auth::user()->profile?->max_guests ?? 1)
+                                    ->required()
+                                    ->dehydrated()
+                                    ->helperText('Quanti ospiti puoi accogliere?')
+                                    ->columnSpan(1),
+                            ]),
+                    ])
+                    ->visible(fn (Get $get) => $get('can_host') === true)
+                    ->collapsible()
+                    ->columns(1),
+
+                // ! Sezione Cancellazione (visibile solo se HOST_CANCELLED)
+                Section::make('Motivo cancellazione')
+                    ->description('Specifica perché stai cancellando questa cena')
+                    ->icon('tabler-calendar-x')
+                    ->iconColor('primary')
+
+                    ->schema([
                         Select::make('cancellation_reason')
-                            ->label('Motivo della cancellazione')
+                            ->label('Motivo')
                             ->options(CancellationReason::class)
-                            ->visible(
-                                fn (Get $get) => $get('can_host') === true &&
-                                    $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
-                            )
-                            ->required(
-                                fn (Get $get) => $get('can_host') === true &&
-                                    $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
-                            )
-                            ->helperText('Specifica il motivo per cui stai cancellando la cena'),
-                        // ! NOTES
+                            ->required()
+                            ->helperText('Aiuta il gruppo a capire il motivo della cancellazione')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(
+                        fn (Get $get) => $get('can_host') === true &&
+                            $get('status') === DinnerAvailabilityStatus::HOST_CANCELLED->value
+                    )
+                    ->collapsible()
+                    ->columns(1),
 
-                        Textarea::make('note'),
-                    ])->columnSpanFull(),
             ]);
     }
 }

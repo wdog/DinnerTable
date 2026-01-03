@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Filters\Filter;
@@ -209,7 +208,6 @@ class DinnerAvailabilitiesTable
                     ->label('Dettagli')
                     ->icon('tabler-eye')
                     ->url(fn ($record) => DinnerAvailabilityResource::getUrl('show', ['record' => $record])),
-                ViewAction::make(),
                 EditAction::make()
                     ->visible(
                         fn ($record) => $record->dinnerDate->dinner_date->isFuture()
