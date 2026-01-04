@@ -23,10 +23,11 @@ pt-4 px-4 pb-2 bg-[#bfef58] dark:bg-[#083751]  rounded  shadow relative">
                 @switch($log->metadata['event'])
                     @case('created')
                         <div>
-                            <p class="text-lg font-semibold ">
-                                Disponibilità creata
+                            <p class="text-lg font-semibold text-lime-900 bg-lime-500 px-2 rounded flex items-center gap-2">
+                                @svg('tabler-chef-hat-filled')
+                                <span>Disponibilità creata</span>
                             </p>
-                            <p class="flex text-sm gap-x-2 items-center">
+                            <p class="flex text-sm gap-x-2 items-center mt-2">
                                 @svg('tabler-users-group', 'inline ')
                                 {{ $log->metadata['max_guests'] }} posti disponibili
                             </p>
@@ -37,12 +38,27 @@ pt-4 px-4 pb-2 bg-[#bfef58] dark:bg-[#083751]  rounded  shadow relative">
                         @php
                             $oldStatusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->metadata['old_status']);
                             $newStatusEnum = \App\Enums\DinnerAvailabilityStatus::from($log->metadata['new_status']);
+                            $statusColors = match ($newStatusEnum->value) {
+                                'completed' => 'text-lime-900 bg-lime-500',
+                                'host_cancelled' => 'text-red-900 bg-red-500',
+                                'available_to_host' => 'text-green-900 bg-green-500',
+                                default => '',
+                            };
+                            $statusText = match ($newStatusEnum->value) {
+                                'completed' => 'Evento concluso',
+                                'host_cancelled' => 'Evento cancellato',
+                                'available_to_host' => 'Disponibile ad ospitare',
+                                'almost_full' => 'Quasi al completo',
+                                'full' => 'Al completo',
+                                default => 'Cambio stato',
+                            };
                         @endphp
                         <div>
-                            <p class="text-lg">
-                                Cambio stato
+                            <p class="{{ $statusColors }} text-lg font-semibold px-2 rounded-lg flex items-center gap-2">
+                                {{ svg($newStatusEnum->getIcon()) }}
+                                <span>{{ $statusText }}</span>
                             </p>
-                            <div class="flex items-center gap-2 mt-1">
+                            <div class="flex items-center gap-2 mt-2">
                                 <x-filament::badge :color="$oldStatusEnum->getColor()" :icon="$oldStatusEnum->getIcon()" size="sm" class="p-2">
                                     {{ $oldStatusEnum->getLabel() }}
                                 </x-filament::badge>
@@ -121,6 +137,15 @@ pt-4 px-4 pb-2 bg-[#bfef58] dark:bg-[#083751]  rounded  shadow relative">
                                 @svg('tabler-users-minus', '')
                                 {{ $log->metadata['cancelled_bookings_count'] }}
                                 {{ $log->metadata['cancelled_bookings_count'] === 1 ? 'prenotazione cancellata' : 'prenotazioni cancellate' }}
+                            </p>
+                        </div>
+                    @break
+
+                    @case('auto_completed')
+                      <div>
+                            <p class="text-lg font-semibold ">
+                              {{ svg('tabler-lock', 'inline') }}
+                                Chiuso
                             </p>
                         </div>
                     @break

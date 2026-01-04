@@ -22,7 +22,7 @@
                                 Prenotazione creata
                             </p>
                             <p class="text-sm flex items-center gap-1 mt-1 mb-4">
-                                @svg('tabler-users','h-4 w-4 ')
+                                @svg('tabler-users', 'h-4 w-4 ')
                                 {{ $log->metadata['guests_count'] }}
                                 {{ $log->metadata['guests_count'] === 1 ? 'ospite' : 'ospiti' }}
                             </p>
@@ -52,8 +52,24 @@
                             $newStatusEnum = \App\Enums\DinnerBookingStatus::from($log->metadata['new_status']);
                         @endphp
                         <div>
-                            <p class="text-lg font-semibold ">
-                                Cambio stato Prenotazione
+
+                            @php
+                                $icon = $newStatusEnum->getIcon();
+                                $colorsChangedState = match ($newStatusEnum->value) {
+                                    'confirmed' => 'text-green-900 bg-green-500',
+                                    'cancelled' => 'text-red-900 bg-red-500',
+                                    default => '',
+                                };
+                                $statusText = match ($newStatusEnum->value) {
+                                    'confirmed' => 'Prenotazione Confermata',
+                                    'cancelled' => 'Prenotazione Cancellata',
+                                    'pending' => 'Prenotazione in Attesa',
+                                    default => 'Cambio stato Prenotazione',
+                                };
+                            @endphp
+                            <p class="{{ $colorsChangedState }} text-lg font-semibold flex gap-2 px-2 rounded">
+                                {{ svg($icon) }}
+                                <span>{{ $statusText }}</span>
                             </p>
                             <div class="flex items-center gap-2 mt-1 text-xs">
                                 <x-filament::badge size="xs" :color="$oldStatusEnum->getColor()" :icon="$oldStatusEnum->getIcon()" class="px-2 py-1">

@@ -84,22 +84,23 @@ class DinnerAvailabilityPolicy
      * La modifica è permessa solo se:
      * 1. L'utente è il proprietario della disponibilità
      * 2. Lo stato NON è COMPLETED (cena già conclusa)
+     * 3. Lo stato NON è HOST_CANCELLED (cena già cancellata)
      *
      * Questo previene:
      * - Altri membri del gruppo modifichino disponibilità altrui
-     * - Modifiche a cene già concluse (storico immutabile)
+     * - Modifiche a cene già concluse o cancellate (storico immutabile)
      *
      * Stati modificabili:
      * - AVAILABLE_TO_HOST, ALMOST_FULL, FULL (stati attivi host)
-     * - HOST_CANCELLED (può essere riattivato cambiando stato)
-     * - AVAILABLE, BOOKED, UNAVAILABLE (stati guest)
+     * - AVAILABLE, NOT_AVAILABLE (stati guest)
      *
      * Stati NON modificabili:
      * - COMPLETED: cena già avvenuta, dato storico
+     * - HOST_CANCELLED: cena cancellata, dato storico
      *
      * @param  User  $user  Utente autenticato
      * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da modificare
-     * @return bool True se proprietario e non completato
+     * @return bool True se proprietario e stato modificabile
      */
     public function update(User $user, DinnerAvailability $dinnerAvailability): bool
     {
@@ -108,8 +109,11 @@ class DinnerAvailabilityPolicy
             return false;
         }
 
-        // Non può modificare disponibilità completate (cena conclusa)
-        if ($dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED) {
+        // Non può modificare disponibilità completate o cancellate (dato storico)
+        if (
+            $dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED ||
+            $dinnerAvailability->status === DinnerAvailabilityStatus::HOST_CANCELLED
+        ) {
             return false;
         }
 
@@ -122,16 +126,17 @@ class DinnerAvailabilityPolicy
      * L'eliminazione fisica (hard delete) è permessa solo se:
      * 1. L'utente è il proprietario della disponibilità
      * 2. Lo stato NON è COMPLETED (cena già conclusa, dato storico)
-     * 3. Non ci sono prenotazioni associate (di qualsiasi stato)
+     * 3. Lo stato NON è HOST_CANCELLED (cena già cancellata, dato storico)
+     * 4. Non ci sono prenotazioni associate (di qualsiasi stato)
      *
      * Questa regola protegge lo storico: un host non può eliminare una
      * disponibilità se ci sono prenotazioni collegate o se la cena è
-     * già stata completata. Questo mantiene l'integrità dei dati storici.
+     * già stata completata/cancellata. Questo mantiene l'integrità dei dati storici.
      *
      * Flusso per cancellazione:
-     * - **Senza prenotazioni E non completata**: può eliminare direttamente (hard delete)
+     * - **Senza prenotazioni E stato attivo**: può eliminare direttamente (hard delete)
      * - **Con prenotazioni** (pending/confirmed/cancelled): deve cambiare stato a HOST_CANCELLED
-     * - **COMPLETED**: NON può eliminare né modificare (dato storico immutabile)
+     * - **COMPLETED o HOST_CANCELLED**: NON può eliminare né modificare (dato storico immutabile)
      *
      * Il cambio stato a HOST_CANCELLED:
      * - Mantiene le prenotazioni nel database per storico
@@ -141,7 +146,7 @@ class DinnerAvailabilityPolicy
      *
      * @param  User  $user  Utente autenticato
      * @param  DinnerAvailability  $dinnerAvailability  Disponibilità da eliminare
-     * @return bool True se proprietario, non completata e senza prenotazioni
+     * @return bool True se proprietario, stato attivo e senza prenotazioni
      */
     public function delete(User $user, DinnerAvailability $dinnerAvailability): bool
     {
@@ -150,8 +155,11 @@ class DinnerAvailabilityPolicy
             return false;
         }
 
-        // Non può eliminare disponibilità completate (dato storico)
-        if ($dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED) {
+        // Non può eliminare disponibilità completate o cancellate (dato storico)
+        if (
+            $dinnerAvailability->status === DinnerAvailabilityStatus::COMPLETED ||
+            $dinnerAvailability->status === DinnerAvailabilityStatus::HOST_CANCELLED
+        ) {
             return false;
         }
 

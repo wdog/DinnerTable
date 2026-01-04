@@ -39,14 +39,18 @@ class DinnerAvailabilityForm
                             ->format('Y-m-d')
                             ->native(false)
                             ->minDate(function ($context) {
+                                // In creazione: solo da domani in poi (non oggi)
                                 if ($context == 'create') {
-                                    return Carbon::now()->format('Y-m-d');
+                                    return Carbon::tomorrow()->format('Y-m-d');
                                 }
+
+                                // In modifica: da oggi in poi (oggi incluso, passato bloccato)
+                                return Carbon::today()->format('Y-m-d');
                             })
                             ->formatStateUsing(function ($record) {
                                 return $record?->dinnerDate
                                     ->dinner_date?->format('Y-m-d')
-                                    ?? Carbon::now()->toDateString();
+                                    ?? Carbon::tomorrow()->toDateString();
                             })
                             ->rules([
                                 function ($livewire) {
@@ -104,15 +108,17 @@ class DinnerAvailabilityForm
                             ->live()
                             ->disabledOn('edit')
                             ->afterStateUpdated(function (Set $set, $state) {
-                                // Quando can_host cambia, aggiorna campi correlati (ma NON status)
+                                // Quando can_host cambia, aggiorna campi correlati E status
                                 if ($state) {
-                                    // Se diventa host, usa max_guests del profilo
+                                    // Se diventa host, usa max_guests del profilo e imposta status host
                                     $userMaxGuests = Auth::user()->profile?->max_guests ?? 1;
                                     $set('max_guests', $userMaxGuests);
+                                    $set('status', DinnerAvailabilityStatus::AVAILABLE_TO_HOST->value);
                                 } else {
-                                    // Se diventa guest, resetta campi host
+                                    // Se diventa guest, resetta campi host e imposta status guest
                                     $set('max_guests', null);
                                     $set('dinner_name', null);
+                                    $set('status', DinnerAvailabilityStatus::AVAILABLE->value);
                                 }
                             })
                             ->options([
@@ -156,6 +162,7 @@ class DinnerAvailabilityForm
                                     ->toArray();
                             })
                             ->selectablePlaceholder(false)
+                            ->dehydrated()
                             ->required()
                             ->columnSpanFull(),
                     ])

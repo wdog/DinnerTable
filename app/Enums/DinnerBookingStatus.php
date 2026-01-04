@@ -43,7 +43,7 @@ enum DinnerBookingStatus: string implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             self::PENDING   => 'tabler-clock',
-            self::CONFIRMED => 'tabler-check',
+            self::CONFIRMED => 'tabler-thumb-up-filled',
             self::CANCELLED => 'tabler-x',
         };
     }
