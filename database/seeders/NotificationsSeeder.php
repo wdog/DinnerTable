@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Seeder per generare notifiche di test per l'utente admin.
@@ -19,7 +19,7 @@ class NotificationsSeeder extends Seeder
     {
         $admin = User::where('email', 'admin@example.com')->first();
 
-        if (! $admin) {
+        if ( ! $admin) {
             $this->command->warn('Admin user not found. Skipping notifications seeding.');
 
             return;
@@ -71,8 +71,8 @@ class NotificationsSeeder extends Seeder
             $createdDays = fake()->numberBetween(0, 30);
 
             DB::table('notifications')->insert([
-                'id'              => (string) Str::uuid(),
-                'type'            => fake()->randomElement([
+                'id'   => (string) Str::uuid(),
+                'type' => fake()->randomElement([
                     'App\\Notifications\\DinnerCreatedNotification',
                     'App\\Notifications\\DinnerCancelledByHostNotification',
                 ]),
@@ -88,9 +88,9 @@ class NotificationsSeeder extends Seeder
                     'status'    => $type['color'],
                     'title'     => $type['title'],
                 ]),
-                'read_at'         => $isRead ? now()->subDays(fake()->numberBetween(0, $createdDays)) : null,
-                'created_at'      => now()->subDays($createdDays),
-                'updated_at'      => now()->subDays($createdDays),
+                'read_at'    => $isRead ? now()->subDays(fake()->numberBetween(0, $createdDays)) : null,
+                'created_at' => now()->subDays($createdDays),
+                'updated_at' => now()->subDays($createdDays),
             ]);
         }
 
